@@ -10,4 +10,5 @@ app.use('/', (req, res) => {
 app.listen(3000, () => {
     console.log(`El servidor esta corriendo en http://localhost:3000`);
 });
+console.log('hello');
 //# sourceMappingURL=app.js.map
