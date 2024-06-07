@@ -1,0 +1,32 @@
+### obtener todos los genres
+GET http://localhost:3000/api/genres
+
+### obtener un genre
+GET http://localhost:3000/api/genres/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+
+### crear un nuevo genre
+POST http://localhost:3000/api/genres
+Content-Type: application/json
+
+{
+  "name": "Terror"
+}
+
+### modificar un genre (PUT- recurso completo e idempotente)
+PUT http://localhost:3000/api/genres/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+Content-Type: application/json
+
+{
+  "name": "Gracioso"
+}
+
+### modificar un genre (PATCH- recurso parcial)
+PATCH http://localhost:3000/api/genres/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+Content-Type: application/json
+
+{
+  "name": "Divertido"
+}
+
+### borrar un genre
+DELETE http://localhost:3000/api/genres/a02b91bc-3769-4221-beb1-d7a3aeba7dad
