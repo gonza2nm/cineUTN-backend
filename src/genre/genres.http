@@ -2,7 +2,7 @@
 GET http://localhost:3000/api/genres
 
 ### obtener un genre
-GET http://localhost:3000/api/genres/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+GET http://localhost:3000/api/genres/1
 
 ### crear un nuevo genre
 POST http://localhost:3000/api/genres
@@ -13,7 +13,7 @@ Content-Type: application/json
 }
 
 ### modificar un genre (PUT- recurso completo e idempotente)
-PUT http://localhost:3000/api/genres/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+PUT http://localhost:3000/api/genres/1
 Content-Type: application/json
 
 {
@@ -21,7 +21,7 @@ Content-Type: application/json
 }
 
 ### modificar un genre (PATCH- recurso parcial)
-PATCH http://localhost:3000/api/genres/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+PATCH http://localhost:3000/api/genres/1
 Content-Type: application/json
 
 {
@@ -29,4 +29,4 @@ Content-Type: application/json
 }
 
 ### borrar un genre
-DELETE http://localhost:3000/api/genres/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+DELETE http://localhost:3000/api/genres/5

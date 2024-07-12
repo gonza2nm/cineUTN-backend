@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from "express"
-import { GenreRepository } from "./genre.repository.js"
 import { Genre } from "./genre.entity.js"
+import { orm } from '../shared/db/orm.js'
 
-
-const repository = new GenreRepository()
+const em = orm.em
 
 function sanitizeGenreInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
@@ -18,55 +17,56 @@ function sanitizeGenreInput(req: Request, res: Response, next: NextFunction) {
   next()
 }
 
-function findAll(req: Request, res: Response) {
-  res.json({ data: repository.findAll() })
-}
-
-function findOne(req: Request, res: Response) {
-  const id = req.params.id
-  const genre = repository.findOne({ id })
-  if (!genre) {
-    return res.status(404).send({ message: 'genre not found' })
-  }
-  res.json({ data: genre })
-}
-
-
-function add(req: Request, res: Response) {
-  const input = req.body.sanitizedInput
-
-  const genreInput = new Genre(
-    input.name
-  )
-
-  const genre = repository.add(genreInput)
-  return res.status(201).send({ message: 'genre created', data: genre })
-}
-
-function update(req: Request, res: Response) {
-  req.body.sanitizedInput.id = req.params.id
-  const genre = repository.update(req.body.sanitizedInput)
-
-  if (!genre) {
-    return res.status(404).send({ message: 'genre not found' })
-  }
-
-  return res.status(200).send({ message: 'genre updated successfully', data: genre })
-}
-
-
-function remove(req: Request, res: Response) {
-  const id = req.params.id
-  const genre = repository.delete({ id })
-
-  if (!genre) {
-    res.status(404).send({ message: 'genre not found' })
-  } else {
-    res.status(200).send({ message: 'genre deleted successfully' })
+async function findAll(req: Request, res: Response) {
+  try {
+    const genres = await em.find(Genre, {},)
+    res.status(200).json({ message: 'found all genres', data: genres })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
   }
 }
 
+async function findOne(req: Request, res: Response) {
+  try {
+    const id = Number.parseInt(req.params.id)
+    const genre = await em.findOneOrFail(Genre, { id },)
+    res.status(200).json({ message: 'found genre', data: genre })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
+}
 
+async function add(req: Request, res: Response) {
+  try {
+    const genre = em.create(Genre, req.body.sanitizedInput)
+    await em.flush()
+    res.status(201).json({ message: 'genre created', data: genre })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
+}
 
+async function update(req: Request, res: Response) {
+  try {
+    const id = Number.parseInt(req.params.id)
+    const genreToUpdate = await em.findOneOrFail(Genre, { id })
+    em.assign(genreToUpdate, req.body.sanitizedInput)
+    await em.flush()
+    res.status(200).json({ message: 'genre updated', data: genreToUpdate })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+async function remove(req: Request, res: Response) {
+  try {
+    const id = Number.parseInt(req.params.id)
+    const genre = em.getReference(Genre, id)
+    await em.removeAndFlush(genre)
+    res.status(200).send({ message: 'genre deleted' })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
+}
 
 export { sanitizeGenreInput, findAll, findOne, add, update, remove }
