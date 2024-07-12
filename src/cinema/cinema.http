@@ -1,0 +1,16 @@
+### GET ALL
+
+GET http://localhost:3000/api/cinemas
+
+###POST
+POST http://localhost:3000/api/cinemas
+Content-Type: application/json
+
+{
+  "name": "Showcase",
+  "address": "Junin 501, Rosario,Santa Fe"
+}
+
+### GET ONE
+
+GET http://localhost:3000/api/cinemas/2
