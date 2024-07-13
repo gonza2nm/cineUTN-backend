@@ -7,4 +7,13 @@ export class Theater extends BaseEntity {
   numChairs!: number;
   @ManyToOne(() => Cinema, { nullable: false })
   cinema!: Rel<Cinema>;
+
+  /*
+  //Relacion con Funcion
+  
+  @OneToMany(() => Show, (show) => show.theater, {
+    cascade: [Cascade.ALL],
+  })
+  shows = new Collection<Show>(this);
+  */
 }
