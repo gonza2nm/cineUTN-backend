@@ -33,11 +33,15 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const cinema = await em.findOneOrFail(Cinema, { id }); //probar el manejo de erroes con el metodo finOne()
-    res.status(200).json({ message: 'found cinema', data: cinema });
+    const cinema = await em.findOne(Cinema, { id });
+    if (cinema === null) {
+      res.status(404).json({ message: 'cinema not found' });
+    } else {
+      res.status(200).json({ message: 'found cinema', data: cinema });
+    }
   } catch (error: any) {
     res.status(500).json({
-      message: 'An error occurred while querying the data',
+      message: 'An error occurred while querying the cinema',
       error: error.message,
     });
   }
@@ -50,18 +54,48 @@ async function add(req: Request, res: Response) {
     res.status(201).json({ message: 'cinema created', data: cinema });
   } catch (error: any) {
     res.status(500).json({
-      message: 'An error occurred while adding the data',
+      message: 'An error occurred while adding the cinema',
       error: error.message,
     });
   }
 }
 
 async function update(req: Request, res: Response) {
-  res.status(500).json({ message: 'Not implemented' });
+  try {
+    const id = Number.parseInt(req.params.id);
+    const cinemaToUpdate = await em.findOne(Cinema, { id });
+    if (cinemaToUpdate === null) {
+      res.status(404).json({ message: 'cinema not found' });
+    } else {
+      em.assign(cinemaToUpdate, req.body.sanitizedInput);
+      await em.flush();
+      res.status(200).json({ message: 'cinema updated', data: cinemaToUpdate });
+    }
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'An error occurred while updating the cinema',
+      error: error.message,
+    });
+  }
 }
 
 async function remove(req: Request, res: Response) {
-  res.status(500).json({ message: 'Not implemented' });
+  try {
+    const id = Number.parseInt(req.params.id);
+    const cinemaToRemove = em.getReference(Cinema, id);
+    const cinema = await em.findOne(Cinema, { id });
+    if (cinema === null) {
+      res.status(404).json({ message: 'cinema not found for deletion.' });
+    } else {
+      await em.removeAndFlush(cinemaToRemove);
+      res.status(204).send({ message: 'cinema deleted' });
+    }
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'An error occurred while deleting the cinema',
+      error: error.message,
+    });
+  }
 }
 
 export { sanitizeCinemaInput, findAll, findOne, add, update, remove };

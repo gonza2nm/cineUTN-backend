@@ -1,8 +1,7 @@
-### GET ALL
-
+### FIND ALL
 GET http://localhost:3000/api/cinemas
 
-###POST
+### CREATE CINEMA
 POST http://localhost:3000/api/cinemas
 Content-Type: application/json
 
@@ -11,6 +10,17 @@ Content-Type: application/json
   "address": "Junin 501, Rosario,Santa Fe"
 }
 
-### GET ONE
+### FIND ONE CINEMA BY ID
+GET http://localhost:3000/api/cinemas/5
 
-GET http://localhost:3000/api/cinemas/2
+### UPDATE CINEMA
+PUT http://localhost:3000/api/cinemas/2
+Content-Type: application/json
+
+{
+  "name": "CineUTN",
+  "address":"Zeballos 1300, Rosario, Santa Fe"
+}
+
+### DELETE CINEMA
+DELETE http://localhost:3000/api/cinemas/10
