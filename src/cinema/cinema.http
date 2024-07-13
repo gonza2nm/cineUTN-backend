@@ -6,12 +6,13 @@ POST http://localhost:3000/api/cinemas
 Content-Type: application/json
 
 {
-  "name": "Showcase",
-  "address": "Junin 501, Rosario,Santa Fe"
+  "name": "Gonza",
+  "address": "Junin 501, Rosario,Santa Fe",
+  "theaters":[]
 }
 
 ### FIND ONE CINEMA BY ID
-GET http://localhost:3000/api/cinemas/5
+GET http://localhost:3000/api/cinemas/6
 
 ### UPDATE CINEMA
 PUT http://localhost:3000/api/cinemas/2
@@ -23,4 +24,4 @@ Content-Type: application/json
 }
 
 ### DELETE CINEMA
-DELETE http://localhost:3000/api/cinemas/10
+DELETE http://localhost:3000/api/cinemas/6
