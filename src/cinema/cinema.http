@@ -7,21 +7,21 @@ Content-Type: application/json
 
 {
   "name": "Gonza",
-  "address": "Junin 501, Rosario,Santa Fe",
+  "address": "Junin 501, Rosario,Santa Fe1",
   "theaters":[]
 }
 
 ### FIND ONE CINEMA BY ID
-GET http://localhost:3000/api/cinemas/6
+GET http://localhost:3000/api/cinemas/4
 
 ### UPDATE CINEMA
-PUT http://localhost:3000/api/cinemas/2
+PUT http://localhost:3000/api/cinemas/4
 Content-Type: application/json
 
 {
   "name": "CineUTN",
-  "address":"Zeballos 1300, Rosario, Santa Fe"
+  "address":"Zeballos 1344, Rosario, Santa Fe",
 }
 
 ### DELETE CINEMA
-DELETE http://localhost:3000/api/cinemas/6
+DELETE http://localhost:3000/api/cinemas/4

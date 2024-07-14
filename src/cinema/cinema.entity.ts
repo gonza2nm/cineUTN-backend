@@ -23,7 +23,7 @@ export class Cinema extends BaseEntity {
   theaters = new Collection<Theater>(this);
 
   /*
-  //Relacion con pelicula posibles nombres: Movie or Film
+  //Relacion con pelicula posibles nombres: Movie or Film despues modificar los metodos de eliminacion y actualizacion en las demas relaciones
 
   @ManyToMany(() => Movie, (movie) => movie.cinemas, {
     cascade: [Cascade.ALL],

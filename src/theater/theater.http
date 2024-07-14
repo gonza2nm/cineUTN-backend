@@ -7,11 +7,11 @@ Content-Type: application/json
 
 {
   "numChairs": 100,
-  "cinema": 6
+  "cinema": 4
 }
 
 ### FIND ONE THEATER BY ID
-GET http://localhost:3000/api/theaters/1
+GET http://localhost:3000/api/theaters/7
 
 ### UPDATE THEATER
 PATCH  http://localhost:3000/api/theaters/5
