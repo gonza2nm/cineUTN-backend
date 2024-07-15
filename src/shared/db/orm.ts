@@ -1,8 +1,8 @@
-import { MikroORM } from '@mikro-orm/core'
-import { SqlHighlighter } from '@mikro-orm/sql-highlighter'
+import { MikroORM } from '@mikro-orm/core';
+import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
 
 export const orm = await MikroORM.init({
-  entities: ['dist/**/*.entity.js'], //le dice que las entidades son todos los archivos que tengan .entity 
+  entities: ['dist/**/*.entity.js'], //le dice que las entidades son todos los archivos que tengan .entity
   entitiesTs: ['src/**/*.entity.ts'],
   dbName: 'cine_UTN',
   type: 'mysql',
@@ -15,13 +15,13 @@ export const orm = await MikroORM.init({
     createForeignKeyConstraints: true, //crea las FK que se salteo en el comando anterior.
     ignoreSchema: [],
   },
-})
+});
 
 export const syncSchema = async () => {
-  const generator = orm.getSchemaGenerator()
+  const generator = orm.getSchemaGenerator();
   /*   
   await generator.dropSchema()
   await generator.createSchema()
   */
-  await generator.updateSchema()
-}
+  await generator.updateSchema();
+};

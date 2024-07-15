@@ -1,0 +1,25 @@
+### FIND ALL
+GET http://localhost:3000/api/theaters
+
+### CREATE THEATER
+POST http://localhost:3000/api/theaters
+Content-Type: application/json
+
+{
+  "numChairs": 100,
+  "cinema": 4
+}
+
+### FIND ONE THEATER BY ID
+GET http://localhost:3000/api/theaters/7
+
+### UPDATE THEATER
+PATCH  http://localhost:3000/api/theaters/5
+Content-Type: application/json
+
+{
+  "numChairs": 2
+}
+
+### DELETE THEATER
+DELETE http://localhost:3000/api/theaters/8
