@@ -49,7 +49,7 @@ async function add(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const genreToUpdate = await em.findOneOrFail(Genre, { id })
+    const genreToUpdate = await em.findOneOrFail(Genre, { id })//asigna los valores del sanitizedInput al objeto de entidad genreToUpdate
     em.assign(genreToUpdate, req.body.sanitizedInput)
     await em.flush()
     res.status(200).json({ message: 'genre updated', data: genreToUpdate })
@@ -61,8 +61,8 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const genre = em.getReference(Genre, id)
-    await em.removeAndFlush(genre)
+    const genreToDelete = em.getReference(Genre, id)// no realiza una consulta inmediata a la base de datos.En su lugar, devuelve una instancia de la entidad que puede utilizarse para realizar operaciones como la eliminación.
+    await em.removeAndFlush(genreToDelete)
     res.status(200).send({ message: 'genre deleted' })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
