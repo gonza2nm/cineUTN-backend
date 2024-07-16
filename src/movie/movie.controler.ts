@@ -30,7 +30,7 @@ async function findAll(req: Request, res: Response) {
 
 async function findOne(req: Request, res: Response) {
   try {
-    const id = Number.parseInt(req.body.id)
+    const id = Number.parseInt(req.params.id)
     const movie = await em.findOneOrFail(Movie, { id })
     res.status(200).json({ message: 'movie found', data: movie })
   } catch (error: any) {

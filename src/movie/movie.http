@@ -15,8 +15,7 @@ Content-Type: application/json
 }
 
 ### modificar una movie (PUT -> recurso completo e idempotente)
-PUT http://localhost:3000/api/movies/2
-
+PUT http://localhost:3000/api/movies/1
 Content-Type: application/json
 
 {
@@ -27,7 +26,7 @@ Content-Type: application/json
 
 ### modificar una movie (PATCH -> recurso parcial)
 PATCH http://localhost:3000/api/movies/1
-Content-Type: application/application/json
+Content-Type: application/json
 
 {
   "format": "2D Subtitulada, 2D Doblada"
