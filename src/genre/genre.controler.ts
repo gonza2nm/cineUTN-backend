@@ -61,8 +61,8 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const genreToDelete = em.getReference(Genre, id)// no realiza una consulta inmediata a la base de datos.En su lugar, devuelve una instancia de la entidad que puede utilizarse para realizar operaciones como la eliminación.
-    await em.removeAndFlush(genreToDelete)
+    const genreToRemove = em.getReference(Genre, id)// no realiza una consulta inmediata a la base de datos.En su lugar, devuelve una instancia de la entidad que puede utilizarse para realizar operaciones como la eliminación.
+    await em.removeAndFlush(genreToRemove)
     res.status(200).send({ message: 'genre deleted' })
   } catch (error: any) {
     res.status(500).json({ message: error.message })

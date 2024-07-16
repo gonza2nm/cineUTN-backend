@@ -1,0 +1,37 @@
+### obtener todas las movies
+GET http://localhost:3000/api/movies
+
+### obtener una movie
+GET http://localhost:3000/api/movies/1
+
+### crear un movie
+POST http://localhost:3000/api/movies
+Content-Type: application/json
+
+{
+  "name": "Guardianes De La Galaxia",
+  "description": "El temerario aventurero Peter Quill, tras robar una misteriosa esfera codiciada por Ronan, un poderoso villano cuyas ambiciones amenazan a todo el universo, se convierte en la presa más codiciada por todos los cazarrecompensas de la galaxia.",
+  "format": "2D Doblada"
+}
+
+### modificar una movie (PUT -> recurso completo e idempotente)
+PUT http://localhost:3000/api/movies/2
+
+Content-Type: application/json
+
+{
+  "name": "Guardians Of The Galaxy",
+  "description": "The reckless adventurer Peter Quill, after stealing a mysterious sphere coveted by Ronan, a powerful villain whose ambitions threaten the entire universe, becomes the most coveted prey for all bounty hunters in the galaxy.",
+  "format":"2D Subtitulada"
+}
+
+### modificar una movie (PATCH -> recurso parcial)
+PATCH http://localhost:3000/api/movies/1
+Content-Type: application/application/json
+
+{
+  "format": "2D Subtitulada, 2D Doblada"
+}
+
+### borrar una movie
+DELETE http://localhost:3000/api/movies/1

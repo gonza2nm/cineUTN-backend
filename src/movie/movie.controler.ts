@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction, response } from "express";
+import { Request, Response, NextFunction, } from "express";
 import { Movie } from "./movie.entity.js";
 import { orm } from "../shared/db/orm.js";
 
@@ -63,8 +63,8 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const movieToDelete = em.getReference(Movie, id)
-    await em.removeAndFlush(movieToDelete)
+    const movieToRemove = em.getReference(Movie, id)
+    await em.removeAndFlush(movieToRemove)
     res.status(200).send({ message: 'movie deleted' })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
