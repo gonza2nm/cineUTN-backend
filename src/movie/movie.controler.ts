@@ -24,7 +24,7 @@ async function findAll(req: Request, res: Response) {
     const movies = await em.find(Movie, {})
     res.status(200).json({ message: 'found all movies', data: movies })
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: 'An error occurred while finding all the movies', error: error.message })
   }
 }
 
@@ -34,7 +34,7 @@ async function findOne(req: Request, res: Response) {
     const movie = await em.findOneOrFail(Movie, { id })
     res.status(200).json({ message: 'movie found', data: movie })
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: 'An error occurred while finding the movie', error: error.message })
   }
 }
 
@@ -44,7 +44,7 @@ async function add(req: Request, res: Response) {
     await em.flush()
     res.status(201).json({ message: 'movie created', data: movie })
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: 'An error occurred while adding the movie', error: error.message })
   }
 }
 
@@ -56,10 +56,10 @@ async function update(req: Request, res: Response) {
     await em.flush()
     res.status(200).json({ message: 'movie updated', data: movieToUpdate })
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: 'An error occurred while updating the movie', error: error.message })
   }
 }
-
+/*
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
@@ -68,6 +68,21 @@ async function remove(req: Request, res: Response) {
     res.status(200).send({ message: 'movie deleted' })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
+  }
+}
+*/
+async function remove(req: Request, res: Response) {
+  try {
+    const id = Number.parseInt(req.params.id)
+    const movieToRemove = await em.findOne(Movie, { id })
+    if (!movieToRemove) { //verifica si es null o undefined
+      res.status(404).json({ message: 'movie not found for deletion.' })
+    } else {
+      await em.removeAndFlush(movieToRemove)
+      res.status(200).json({ message: 'movie deleted' });
+    }
+  } catch (error: any) {
+    res.status(500).json({ message: 'An error occurred while deleting the movie', error: error.message })
   }
 }
 

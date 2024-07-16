@@ -22,7 +22,7 @@ async function findAll(req: Request, res: Response) {
     const genres = await em.find(Genre, {},)
     res.status(200).json({ message: 'found all genres', data: genres })
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: 'An error occurred while finding all the genres', error: error.message })
   }
 }
 
@@ -32,7 +32,7 @@ async function findOne(req: Request, res: Response) {
     const genre = await em.findOneOrFail(Genre, { id },)
     res.status(200).json({ message: 'found genre', data: genre })
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: 'An error occurred while finding the genre', error: error.message })
   }
 }
 
@@ -42,7 +42,7 @@ async function add(req: Request, res: Response) {
     await em.flush()
     res.status(201).json({ message: 'genre created', data: genre })
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: 'An error occurred while adding the genre', error: error.message })
   }
 }
 
@@ -54,18 +54,34 @@ async function update(req: Request, res: Response) {
     await em.flush()
     res.status(200).json({ message: 'genre updated', data: genreToUpdate })
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: 'An error occurred while updating the genre', error: error.message })
   }
 }
-
+/*
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const genreToRemove = em.getReference(Genre, id)// no realiza una consulta inmediata a la base de datos.En su lugar, devuelve una instancia de la entidad que puede utilizarse para realizar operaciones como la eliminación.
+    const genreToRemove = em.findOneOrFail(Genre, {id})
     await em.removeAndFlush(genreToRemove)
     res.status(200).send({ message: 'genre deleted' })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
+  }
+}
+*/
+
+async function remove(req: Request, res: Response) {
+  try {
+    const id = Number.parseInt(req.params.id)
+    const genreToRemove = await em.findOne(Genre, { id })
+    if (!genreToRemove) { //verifica si es null o undefined
+      res.status(404).json({ message: 'genre not found for deletion.' })
+    } else {
+      await em.removeAndFlush(genreToRemove)
+      res.status(200).json({ message: 'genre deleted' });
+    }
+  } catch (error: any) {
+    res.status(500).json({ message: 'An error occurred while deleting the genre', error: error.message })
   }
 }
 

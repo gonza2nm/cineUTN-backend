@@ -2,7 +2,7 @@
 GET http://localhost:3000/api/movies
 
 ### obtener una movie
-GET http://localhost:3000/api/movies/1
+GET http://localhost:3000/api/movies/3
 
 ### crear un movie
 POST http://localhost:3000/api/movies
@@ -15,7 +15,7 @@ Content-Type: application/json
 }
 
 ### modificar una movie (PUT -> recurso completo e idempotente)
-PUT http://localhost:3000/api/movies/1
+PUT http://localhost:3000/api/movies/5
 Content-Type: application/json
 
 {
@@ -33,4 +33,4 @@ Content-Type: application/json
 }
 
 ### borrar una movie
-DELETE http://localhost:3000/api/movies/1
+DELETE http://localhost:3000/api/movies/3
