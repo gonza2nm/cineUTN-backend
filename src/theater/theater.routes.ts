@@ -13,5 +13,5 @@ export const theaterRouter = Router();
 theaterRouter.get('/', findAll);
 theaterRouter.get('/:id', findOne);
 theaterRouter.post('/', sanitizeTheaterInput, add);
-theaterRouter.patch('/:id', sanitizeTheaterInput, update);
+theaterRouter.put('/:id', sanitizeTheaterInput, update);
 theaterRouter.delete('/:id', remove);

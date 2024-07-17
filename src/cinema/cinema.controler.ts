@@ -63,13 +63,9 @@ async function add(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const cinemaToUpdate = await em.findOne(
-      Cinema,
-      { id },
-      { populate: ['theaters'] }
-    );
+    const cinemaToUpdate = await em.findOne(Cinema, { id });
     if (cinemaToUpdate === null) {
-      res.status(404).json({ message: 'cinema not found' });
+      res.status(404).json({ message: 'cinema not found to update' });
     } else {
       em.assign(cinemaToUpdate, req.body.sanitizedInput);
       await em.flush();
@@ -89,7 +85,7 @@ async function remove(req: Request, res: Response) {
     const cinemaToRemove = em.getReference(Cinema, id);
     const cinema = await em.findOne(Cinema, { id }, { populate: ['theaters'] });
     if (cinema === null) {
-      res.status(404).json({ message: 'cinema not found for deletion.' });
+      res.status(404).json({ message: 'cinema not found to delete.' });
     } else {
       await em.removeAndFlush(cinemaToRemove);
       res.status(204).send({ message: 'cinema deleted' });
