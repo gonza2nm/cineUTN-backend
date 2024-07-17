@@ -1,0 +1,40 @@
+
+### FIND ALL --------------------------------------------------------------------
+GET http://localhost:3000/api/buys
+
+
+
+### FIND ONE --------------------------------------------------------------------
+GET http://localhost:3000/api/buys/1
+
+
+
+### CREATE a buy 1 --------------------------------------------------------------
+### A este create agregarle el usuario
+POST http://localhost:3000/api/buys
+Content-Type: application/json
+
+{
+  "tipo": "Compra de comida"
+}
+
+### CREATE a buy 2 --------------------------------------------------------------
+### A este create agregarle el usuario
+POST http://localhost:3000/api/buys
+Content-Type: application/json
+
+{
+  "tipo": "Entrada de cine"
+}
+
+
+### UPDATE a buy 1 ---------------------------------------------------------------
+PUT http://localhost:3000/api/buys/1
+Content-Type: application/json
+
+{
+  "tipo": "Compra de pororo"
+}
+
+### DELETE a buy 2 ---------------------------------------------------------------
+DELETE http://localhost:3000/api/buys/2
