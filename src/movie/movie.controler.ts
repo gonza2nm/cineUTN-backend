@@ -22,11 +22,7 @@ function sanitizeMovieInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const movies = await em.find(
-      Movie,
-      {},
-      { populate: ['genres', 'cinemas'] }
-    ); //en este tercer parametro le indicamos que relaciones queremos que cargue
+    const movies = await em.find(Movie, {}, { populate: ['genres'] }); //en este tercer parametro le indicamos que relaciones queremos que cargue
     res.status(200).json({ message: 'found all movies', data: movies });
   } catch (error: any) {
     res.status(500).json({
@@ -42,7 +38,7 @@ async function findOne(req: Request, res: Response) {
     const movie = await em.findOneOrFail(
       Movie,
       { id },
-      { populate: ['genres', 'cinemas'] }
+      { populate: ['genres'] }
     );
     res.status(200).json({ message: 'movie found', data: movie });
   } catch (error: any) {
