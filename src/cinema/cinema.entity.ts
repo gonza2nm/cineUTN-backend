@@ -8,6 +8,7 @@ import {
 } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Theater } from '../theater/theater.entity.js';
+import { Movie } from '../movie/movie.entity.js';
 
 @Entity()
 export class Cinema extends BaseEntity {
@@ -22,20 +23,13 @@ export class Cinema extends BaseEntity {
   })
   theaters = new Collection<Theater>(this);
 
-  /*
-  //Relacion con pelicula posibles nombres: Movie or Film despues modificar los metodos de eliminacion y actualizacion en las demas relaciones
-
   @ManyToMany(() => Movie, (movie) => movie.cinemas, {
     cascade: [Cascade.ALL],
-    owner: true //esto solo va para 
+    owner: true,
   })
-  movies! = Cinema[]
+  movies = new Collection<Movie>(this);
 
-  //esto deberia ser en la entidad Movie or Film
-
-  @ManyToMany(() => Cinema, (cinema) => cinema.movies)
-  cinemas = new Collection<Cinema>(this);
-  
+  /*
   //revisar relacion con encargado
 
   @OneToMany(() => Manager, (manager) => manager.cinema, {
