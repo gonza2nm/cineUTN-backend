@@ -2,7 +2,7 @@
 GET http://localhost:3000/api/cinemas
 
 ### FIND ONE CINEMA BY ID
-GET http://localhost:3000/api/cinemas/2
+GET http://localhost:3000/api/cinemas/1
 
 ### CREATE CINEMA
 POST http://localhost:3000/api/cinemas
@@ -18,8 +18,9 @@ PUT http://localhost:3000/api/cinemas/2
 Content-Type: application/json
 
 {
-  "name": "CineUTN",
-  "address":"Zeballos 1341, Rosario, Santa Fe"
+  "name": "Showcase",
+  "address":"Junin 501, Rosario, Santa Fe",
+  "movies":[2]
 }
 
 ### DELETE CINEMA

@@ -8,6 +8,7 @@ function sanitizeCinemaInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     name: req.body.name,
     address: req.body.address,
+    movies: req.body.movies,
   };
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {

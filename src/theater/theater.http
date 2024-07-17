@@ -2,23 +2,23 @@
 GET http://localhost:3000/api/theaters
 
 ### FIND ONE THEATER BY ID
-GET http://localhost:3000/api/theaters/10
+GET http://localhost:3000/api/theaters/1
 
 ### CREATE THEATER
 POST http://localhost:3000/api/theaters
 Content-Type: application/json
 
 {
-  "numChairs": 100,
-  "cinema": 2
+  "numChairs": 22,
+  "cinema": 3
 }
 
 ### UPDATE THEATER
-PUT  http://localhost:3000/api/theaters/10
+PUT  http://localhost:3000/api/theaters/1
 Content-Type: application/json
 
 {
-  "numChairs": 68
+  "numChairs": 48
 }
 
 ### DELETE THEATER
