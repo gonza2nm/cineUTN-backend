@@ -8,8 +8,9 @@ function sanitizeMovieInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     name: req.body.name,
     description: req.body.description,
-    format: req.body.format
-  }
+    format: req.body.format,
+    genres: req.body.genres
+  } //cuidado! antes mostraba los generos vacios pero fue porque no los habia agregado en este sanitize input
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined) {
@@ -21,7 +22,7 @@ function sanitizeMovieInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const movies = await em.find(Movie, {})
+    const movies = await em.find(Movie, {}, { populate: ['genres'] }) //en este tercer parametro le indicamos que relaciones queremos que cargue
     res.status(200).json({ message: 'found all movies', data: movies })
   } catch (error: any) {
     res.status(500).json({ message: 'An error occurred while finding all the movies', error: error.message })
@@ -31,7 +32,7 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const movie = await em.findOneOrFail(Movie, { id })
+    const movie = await em.findOneOrFail(Movie, { id }, { populate: ['genres'] })
     res.status(200).json({ message: 'movie found', data: movie })
   } catch (error: any) {
     res.status(500).json({ message: 'An error occurred while finding the movie', error: error.message })

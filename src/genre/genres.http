@@ -15,7 +15,7 @@ Content-Type: application/json
 }
 
 ### modificar un genre (PUT -> recurso completo e idempotente)
-PUT http://localhost:3000/api/genres/7
+PUT http://localhost:3000/api/genres/1
 Content-Type: application/json
 
 {
@@ -31,4 +31,4 @@ Content-Type: application/json
 }
 
 ### borrar un genre
-DELETE http://localhost:3000/api/genres/7
+DELETE http://localhost:3000/api/genres/1

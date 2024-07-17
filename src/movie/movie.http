@@ -11,21 +11,24 @@ Content-Type: application/json
 {
   "name": "Guardianes De La Galaxia",
   "description": "El temerario aventurero Peter Quill, tras robar una misteriosa esfera codiciada por Ronan, un poderoso villano cuyas ambiciones amenazan a todo el universo, se convierte en la presa más codiciada por todos los cazarrecompensas de la galaxia.",
-  "format": "2D Doblada"
-}
+  "format": "2D Doblada",
+  "genres": [1] 
+} 
+### antes de crear verificar que haya genero con id 1
 
 ### modificar una movie (PUT -> recurso completo e idempotente)
-PUT http://localhost:3000/api/movies/5
+PUT http://localhost:3000/api/movies/3
 Content-Type: application/json
 
 {
   "name": "Guardians Of The Galaxy",
   "description": "The reckless adventurer Peter Quill, after stealing a mysterious sphere coveted by Ronan, a powerful villain whose ambitions threaten the entire universe, becomes the most coveted prey for all bounty hunters in the galaxy.",
-  "format":"2D Subtitulada"
+  "format":"2D Subtitulada",
+  "genres": [1] 
 }
 
 ### modificar una movie (PATCH -> recurso parcial)
-PATCH http://localhost:3000/api/movies/1
+PATCH http://localhost:3000/api/movies/3
 Content-Type: application/json
 
 {
