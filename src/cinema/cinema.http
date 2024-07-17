@@ -12,10 +12,10 @@ Content-Type: application/json
 }
 
 ### FIND ONE CINEMA BY ID
-GET http://localhost:3000/api/cinemas/4
+GET http://localhost:3000/api/cinemas/1
 
 ### UPDATE CINEMA
-PUT http://localhost:3000/api/cinemas/4
+PUT http://localhost:3000/api/cinemas/1
 Content-Type: application/json
 
 {
@@ -24,4 +24,4 @@ Content-Type: application/json
 }
 
 ### DELETE CINEMA
-DELETE http://localhost:3000/api/cinemas/4
+DELETE http://localhost:3000/api/cinemas/1

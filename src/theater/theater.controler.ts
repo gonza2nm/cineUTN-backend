@@ -21,7 +21,7 @@ function sanitizeTheaterInput(req: Request, res: Response, next: NextFunction) {
 async function findAll(req: Request, res: Response) {
   try {
     const theaters = await em.find(Theater, {});
-    res.status(200).json({ message: 'found all cinemas', data: theaters });
+    res.status(200).json({ message: 'found all cinemas', data: theaters }); //no seria "found all  theaters?"
   } catch (error: any) {
     res.status(500).json({
       message: 'An error occurred while querying all theaters',

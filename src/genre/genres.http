@@ -5,14 +5,16 @@ GET http://localhost:3000/api/genres
 GET http://localhost:3000/api/genres/1
 
 ### crear un nuevo genre
+### content-Type: application/json le dice al servidor que el cuerpo de la solicitud está en formato JSON.
+
 POST http://localhost:3000/api/genres
 Content-Type: application/json
 
 {
-  "name": "Terror"
+  "name": "Comedia"
 }
 
-### modificar un genre (PUT- recurso completo e idempotente)
+### modificar un genre (PUT -> recurso completo e idempotente)
 PUT http://localhost:3000/api/genres/1
 Content-Type: application/json
 
@@ -20,7 +22,7 @@ Content-Type: application/json
   "name": "Gracioso"
 }
 
-### modificar un genre (PATCH- recurso parcial)
+### modificar un genre (PATCH -> recurso parcial)
 PATCH http://localhost:3000/api/genres/1
 Content-Type: application/json
 
@@ -29,4 +31,4 @@ Content-Type: application/json
 }
 
 ### borrar un genre
-DELETE http://localhost:3000/api/genres/5
+DELETE http://localhost:3000/api/genres/1
