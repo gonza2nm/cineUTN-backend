@@ -7,6 +7,7 @@ import { cinemaRouter } from './cinema/cinema.routes.js';
 import { theaterRouter } from './theater/theater.routes.js';
 import { movieRouter } from './movie/movie.routes.js';
 import { buyRouter } from './buy/buy.routes.js';
+import { showRouter } from './show/show.routes.js';
 
 
 const app = express();
@@ -22,6 +23,7 @@ app.use('/api/cinemas', cinemaRouter);
 app.use('/api/theaters', theaterRouter);
 app.use('/api/movies', movieRouter);
 app.use('/api/buys', buyRouter);
+app.use('/api/shows', showRouter);
 
 
 app.use((_, res) => {

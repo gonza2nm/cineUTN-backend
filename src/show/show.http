@@ -1,0 +1,45 @@
+
+### GET ALL ---------------------------------------------------------------------
+GET http://localhost:3000/api/shows
+
+
+
+### GET ONE --------------------------------------------------------------------
+GET http://localhost:3000/api/shows/1
+
+
+
+### CREATE a show 1 -------------------------------------------------------------
+### 
+POST http://localhost:3000/api/shows
+Content-Type: application/json
+
+{
+  "dayAndTime": "Lunes 5, 15:00hs",
+  "theater": 1,
+  "movie": 2
+}
+
+### CREATE a show 2 -------------------------------------------------------------
+### 
+POST http://localhost:3000/api/shows
+Content-Type: application/json
+
+{
+  "dayAndTime": "Marte 6, 19:00hs",
+  "theater": 1,
+  "movie": 2
+}
+
+
+### UPDATE a show 1 -------------------------------------------------------------
+### Solo se modifica el horario de la funcion
+PUT http://localhost:3000/api/shows/1
+Content-Type: application/json
+
+{
+  "dayAndTime": "Marte 6, 21:00hs"
+}
+
+### DELETE a show 2 -------------------------------------------------------------
+DELETE http://localhost:3000/api/shows/2

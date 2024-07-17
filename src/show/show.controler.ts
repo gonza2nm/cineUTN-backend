@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from "express"
-import { Buy } from "./buy.entity.js"
+import { Show } from "./show.entity.js"
 import { orm } from '../shared/db/orm.js'
 
 const em = orm.em
 
-function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
+function sanitizeShowInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    tipo: req.body.tipo, //Agregue un atributo para hacer una prueba
-    //user: req.body.user
+    dayAndTime: req.body.dayAndTime,
+    theater: req.body.theater,
+    movie: req.body.movie
 
   }
 
@@ -21,8 +22,8 @@ function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const buys = await em.find(Buy, {}) // {populate: ['user']}
-    res.status(200).json({ message: 'Found all buys', data: buys })
+    const shows = await em.find(Show, {}, {populate: ['theater', 'movie']})
+    res.status(200).json({ message: 'Found all shows', data: shows })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
@@ -31,8 +32,8 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const buy = await em.findOneOrFail(Buy, { id })
-    res.status(200).json({ message: 'Found buy', data: buy })
+    const show = await em.findOneOrFail(Show, { id }, {populate: ['theater', 'movie']})
+    res.status(200).json({ message: 'Found show', data: show })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
@@ -40,9 +41,9 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    const buy = em.create(Buy, req.body.sanitizedInput)
+    const show = em.create(Show, req.body.sanitizedInput)
     await em.flush()
-    res.status(201).json({ message: 'Buy created', data: buy })
+    res.status(201).json({ message: 'Show created', data: show })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
@@ -51,10 +52,10 @@ async function add(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const buyToUpdate = await em.findOneOrFail(Buy, { id })
-    em.assign(buyToUpdate, req.body.sanitizedInput)
+    const showToUpdate = await em.findOneOrFail(Show, { id })
+    em.assign(showToUpdate, req.body.sanitizedInput)
     await em.flush()
-    res.status(200).json({ message: 'Buy updated', data: buyToUpdate })
+    res.status(200).json({ message: 'Show updated', data: showToUpdate })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
@@ -63,12 +64,12 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const buy = em.getReference(Buy, id)
-    await em.removeAndFlush(buy)
-    res.status(200).send({ message: 'Buy deleted' })
+    const show = em.getReference(Show, id)
+    await em.removeAndFlush(show)
+    res.status(200).send({ message: 'Show deleted' })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
 }
 
-export { sanitizeBuyInput, findAll, findOne, add, update, remove }
+export { sanitizeShowInput, findAll, findOne, add, update, remove }

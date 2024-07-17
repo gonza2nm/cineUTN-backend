@@ -1,5 +1,5 @@
 ### obtener todos los genres
-GET http://localhost:3000/api/genres
+GET http://localhost:3000/api/genres 
 
 ### obtener un genre
 GET http://localhost:3000/api/genres/1
