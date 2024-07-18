@@ -23,8 +23,8 @@ Content-Type: application/json
 {
   "name": "Guardians Of The Galaxy",
   "description": "The reckless adventurer Peter Quill, after stealing a mysterious sphere coveted by Ronan, a powerful villain whose ambitions threaten the entire universe, becomes the most coveted prey for all bounty hunters in the galaxy.",
-  "format":"2D Subtitulada",
-  "genres": [1] 
+  "format":"2D Subtitulada, 2D Doblada",
+  "genres": [1,4] 
 }
 
 ### modificar una movie (PATCH -> recurso parcial)
@@ -36,4 +36,4 @@ Content-Type: application/json
 }
 
 ### borrar una movie
-DELETE http://localhost:3000/api/movies/4
+DELETE http://localhost:3000/api/movies/3

@@ -9,18 +9,18 @@ POST http://localhost:3000/api/cinemas
 Content-Type: application/json
 
 {
-  "name": "CineUTN",
-  "address": "Zeballos 1341, Rosario, Santa Fe"
+  "name": "ToDelete",
+  "address": "delete"
 }
 
 ### UPDATE CINEMA
-PUT http://localhost:3000/api/cinemas/2
+PUT http://localhost:3000/api/cinemas/1
 Content-Type: application/json
 
 {
-  "name": "Showcase",
-  "address":"Junin 501, Rosario, Santa Fe",
-  "movies":[2]
+  "name": "ToDelete",
+  "address": "delete",
+  "movies": [1,2]
 }
 
 ### DELETE CINEMA

@@ -9,16 +9,16 @@ POST http://localhost:3000/api/theaters
 Content-Type: application/json
 
 {
-  "numChairs": 22,
-  "cinema": 3
+  "numChairs": 100,
+  "cinema": 4
 }
 
 ### UPDATE THEATER
-PUT  http://localhost:3000/api/theaters/1
+PUT  http://localhost:3000/api/theaters/5
 Content-Type: application/json
 
 {
-  "numChairs": 48
+  "numChairs": 102
 }
 
 ### DELETE THEATER

@@ -92,7 +92,7 @@ async function remove(req: Request, res: Response) {
       res.status(404).json({ message: 'theater not found to delete.' });
     } else {
       await em.removeAndFlush(theaterToRemove);
-      res.status(204).send({ message: 'theater deleted' });
+      res.status(200).json({ message: 'theater deleted' });
     }
   } catch (error: any) {
     res.status(500).json({

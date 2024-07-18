@@ -11,15 +11,15 @@ POST http://localhost:3000/api/genres
 Content-Type: application/json
 
 {
-  "name": "Comedia"
+  "name": "TestDelete"
 }
 
 ### modificar un genre (PUT -> recurso completo e idempotente)
-PUT http://localhost:3000/api/genres/1
+PUT http://localhost:3000/api/genres/4
 Content-Type: application/json
 
 {
-  "name": "Gracioso"
+  "name": "Delete"
 }
 
 ### modificar un genre (PATCH -> recurso parcial)
