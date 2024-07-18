@@ -1,27 +1,27 @@
 ### FIND ALL
 GET http://localhost:3000/api/cinemas
 
+### FIND ONE CINEMA BY ID
+GET http://localhost:3000/api/cinemas/1
+
 ### CREATE CINEMA
 POST http://localhost:3000/api/cinemas
 Content-Type: application/json
 
 {
-  "name": "Gonza",
-  "address": "Junin 501, Rosario,Santa Fe1",
-  "theaters":[]
+  "name": "CineUTN",
+  "address": "Zeballos 1341, Rosario, Santa Fe"
 }
 
-### FIND ONE CINEMA BY ID
-GET http://localhost:3000/api/cinemas/1
-
 ### UPDATE CINEMA
-PUT http://localhost:3000/api/cinemas/1
+PUT http://localhost:3000/api/cinemas/2
 Content-Type: application/json
 
 {
-  "name": "CineUTN",
-  "address":"Zeballos 1344, Rosario, Santa Fe",
+  "name": "Showcase",
+  "address":"Junin 501, Rosario, Santa Fe",
+  "movies":[2]
 }
 
 ### DELETE CINEMA
-DELETE http://localhost:3000/api/cinemas/1
+DELETE http://localhost:3000/api/cinemas/7
