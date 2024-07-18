@@ -12,6 +12,7 @@ import { Movie } from '../movie/movie.entity.js';
 
 @Entity()
 export class Cinema extends BaseEntity {
+
   @Property({ nullable: false })
   name!: string;
 
