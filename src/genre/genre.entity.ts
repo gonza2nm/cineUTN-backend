@@ -4,6 +4,7 @@ import { Movie } from '../movie/movie.entity.js';
 
 @Entity()
 export class Genre extends BaseEntity {
+  
   @Property({ nullable: false, unique: true })
   name!: string
 

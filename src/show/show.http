@@ -17,7 +17,7 @@ Content-Type: application/json
 {
   "dayAndTime": "Lunes 5, 15:00hs",
   "theater": 1,
-  "movie": 2
+  "movie": 1
 }
 
 ### CREATE a show 2 -------------------------------------------------------------

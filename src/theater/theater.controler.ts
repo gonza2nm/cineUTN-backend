@@ -21,7 +21,7 @@ function sanitizeTheaterInput(req: Request, res: Response, next: NextFunction) {
 async function findAll(req: Request, res: Response) {
   try {
     const theaters = await em.find(Theater, {});
-    res.status(200).json({ message: 'found all cinemas', data: theaters }); //no seria "found all  theaters?"
+    res.status(200).json({ message: 'found all theaters', data: theaters }); //no seria "found all  theaters?"
   } catch (error: any) {
     res.status(500).json({
       message: 'An error occurred while querying all theaters',
@@ -62,18 +62,13 @@ async function add(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const { numChairs, cinema } = req.body;
-    console.log(`numero de sillas${numChairs}, id de cine: ${cinema}`);
+    const { numChairs } = req.body;
     const theaterToUpdate = await em.findOne(Theater, { id });
     if (!theaterToUpdate) {
-      res.status(404).json({ message: 'Theater not found' });
+      res.status(404).json({ message: 'Theater not found to update' });
     } else {
       if (numChairs !== undefined) {
         theaterToUpdate.numChairs = numChairs;
-      }
-      if (cinema !== undefined) {
-        //no permito asignar la sala a otro cine
-        theaterToUpdate.cinema = theaterToUpdate.cinema;
       }
       await em.flush();
       res
@@ -94,10 +89,10 @@ async function remove(req: Request, res: Response) {
     const theaterToRemove = em.getReference(Theater, id);
     const theater = await em.findOne(Theater, { id });
     if (theater === null) {
-      res.status(404).json({ message: 'theater not found for deletion.' });
+      res.status(404).json({ message: 'theater not found to delete.' });
     } else {
       await em.removeAndFlush(theaterToRemove);
-      res.status(204).send({ message: 'theater deleted' });
+      res.status(200).json({ message: 'theater deleted' });
     }
   } catch (error: any) {
     res.status(500).json({
