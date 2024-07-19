@@ -25,9 +25,12 @@ async function findAll(req: Request, res: Response) {
     const shows = await em.find(Show, {}, {populate: ['theater', 'movie']})
     res.status(200).json({ message: 'Found all shows', data: shows })
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ 
+      message: 'An error occurred while querying all shows',
+      error: error.message, })
   }
 }
+
 
 async function findOne(req: Request, res: Response) {
   try {
@@ -39,15 +42,19 @@ async function findOne(req: Request, res: Response) {
   }
 }
 
+
 async function add(req: Request, res: Response) {
   try {
     const show = em.create(Show, req.body.sanitizedInput)
     await em.flush()
     res.status(201).json({ message: 'Show created', data: show })
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ 
+      message: 'An error occurred while adding the cinema',
+      error: error.message, })
   }
 }
+
 
 async function update(req: Request, res: Response) {
   try {
@@ -61,14 +68,23 @@ async function update(req: Request, res: Response) {
   }
 }
 
+
 async function remove(req: Request, res: Response) {
   try {
-    const id = Number.parseInt(req.params.id)
-    const show = em.getReference(Show, id)
-    await em.removeAndFlush(show)
-    res.status(200).send({ message: 'Show deleted' })
+    const id = Number.parseInt(req.params.id);
+    const showToRemove = em.getReference(Show, id);
+    const show = await em.findOne(Show, { id });
+    if (show === null) {
+      res.status(404).json({ message: 'Show not found for deletion.' });
+    } else {
+      await em.removeAndFlush(showToRemove);
+      res.status(204).send({ message: 'Show deleted' });
+    }
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({
+      message: 'An error occurred while deleting the show',
+      error: error.message,
+    });
   }
 }
 

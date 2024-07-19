@@ -4,7 +4,7 @@ import { BaseEntity } from '../shared/db/baseEntity.entity.js'
 @Entity()
 export class Buy extends BaseEntity {
 
-  @Property({nullable: false}) //Agregue un atributo para hacer una prueba
+  @Property({nullable: false}) //Agregué un atributo para hacer una prueba
   tipo!: string
 
 

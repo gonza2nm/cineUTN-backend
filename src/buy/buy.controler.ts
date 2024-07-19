@@ -6,7 +6,7 @@ const em = orm.em
 
 function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    tipo: req.body.tipo, //Agregue un atributo para hacer una prueba
+    tipo: req.body.tipo, //Agregué un atributo para hacer una prueba
     //user: req.body.user
 
   }
@@ -24,9 +24,13 @@ async function findAll(req: Request, res: Response) {
     const buys = await em.find(Buy, {}) // {populate: ['user']}
     res.status(200).json({ message: 'Found all buys', data: buys })
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ 
+      message: 'An error occurred while querying all buys',
+      error: error.message, })
   }
 }
+
+//Mirar de nuevo y preguntar ------------------------------------------------------------
 
 async function findOne(req: Request, res: Response) {
   try {
@@ -34,9 +38,11 @@ async function findOne(req: Request, res: Response) {
     const buy = await em.findOneOrFail(Buy, { id })
     res.status(200).json({ message: 'Found buy', data: buy })
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: 'An error occurred while querying the buy', error: error.message, })
   }
 }
+
+// --------------------------------------------------------------------------------------
 
 async function add(req: Request, res: Response) {
   try {
@@ -44,9 +50,13 @@ async function add(req: Request, res: Response) {
     await em.flush()
     res.status(201).json({ message: 'Buy created', data: buy })
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ 
+      message: 'An error occurred while adding the buy', 
+      error: error.message, })
   }
 }
+
+//Mirar de nuevo y preguntar ------------------------------------------------------------
 
 async function update(req: Request, res: Response) {
   try {
@@ -60,14 +70,25 @@ async function update(req: Request, res: Response) {
   }
 }
 
+// --------------------------------------------------------------------------------------
+
+
 async function remove(req: Request, res: Response) {
   try {
-    const id = Number.parseInt(req.params.id)
-    const buy = em.getReference(Buy, id)
-    await em.removeAndFlush(buy)
-    res.status(200).send({ message: 'Buy deleted' })
+    const id = Number.parseInt(req.params.id);
+    const buyToRemove = em.getReference(Buy, id);
+    const buy = await em.findOne(Buy, { id });
+    if (buy === null) {
+      res.status(404).json({ message: 'Buy not found for deletion.' });
+    } else {
+      await em.removeAndFlush(buyToRemove);
+      res.status(204).send({ message: 'Buy deleted' });
+    }
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({
+      message: 'An error occurred while deleting the buy',
+      error: error.message,
+    });
   }
 }
 

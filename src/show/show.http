@@ -34,7 +34,7 @@ Content-Type: application/json
 
 ### UPDATE a show 1 -------------------------------------------------------------
 ### Solo se modifica el horario de la funcion
-PUT http://localhost:3000/api/shows/1
+PUT http://localhost:3000/api/shows/2
 Content-Type: application/json
 
 {
