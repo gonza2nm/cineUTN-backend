@@ -30,7 +30,6 @@ async function findAll(req: Request, res: Response) {
   }
 }
 
-//Mirar de nuevo y preguntar ------------------------------------------------------------
 
 async function findOne(req: Request, res: Response) {
   try {
@@ -42,7 +41,6 @@ async function findOne(req: Request, res: Response) {
   }
 }
 
-// --------------------------------------------------------------------------------------
 
 async function add(req: Request, res: Response) {
   try {
@@ -56,7 +54,6 @@ async function add(req: Request, res: Response) {
   }
 }
 
-//Mirar de nuevo y preguntar ------------------------------------------------------------
 
 async function update(req: Request, res: Response) {
   try {
@@ -70,7 +67,6 @@ async function update(req: Request, res: Response) {
   }
 }
 
-// --------------------------------------------------------------------------------------
 
 
 async function remove(req: Request, res: Response) {
