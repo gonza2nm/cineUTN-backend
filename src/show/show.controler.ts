@@ -68,11 +68,17 @@ async function add(req: Request, res: Response) {
 
 async function update(req: Request, res: Response) {
   try {
+    const {theater, dayAndTime, finishTime} = req.body.sanitizedInput;
     const id = Number.parseInt(req.params.id)
     const showToUpdate = await em.findOneOrFail(Show, { id })
-    em.assign(showToUpdate, req.body.sanitizedInput)
-    await em.flush()
-    res.status(200).json({ message: 'Show updated', data: showToUpdate })
+    const overlapping = await checkTimeShowInTheater(dayAndTime,finishTime,theater);
+    if(overlapping){
+      res.status(400).json({ error: 'The show time overlaps with another show in the same theater' }) 
+    }else{
+      em.assign(showToUpdate, req.body.sanitizedInput)
+      await em.flush()
+      res.status(200).json({ message: 'Show updated', data: showToUpdate })
+    }
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
