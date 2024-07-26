@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express"
 import { Show } from "./show.entity.js"
 import { orm } from '../shared/db/orm.js'
+import { checkTimeShowInTheater } from "../utils/checkTimeShowInTheater.js"
 
 const em = orm.em
 
@@ -8,7 +9,8 @@ function sanitizeShowInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     dayAndTime: req.body.dayAndTime,
     theater: req.body.theater,
-    movie: req.body.movie
+    movie: req.body.movie,
+    finishTime: req.body.finishTime
 
   }
 
@@ -45,12 +47,20 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    const show = em.create(Show, req.body.sanitizedInput)
-    await em.flush()
-    res.status(201).json({ message: 'Show created', data: show })
+    const {dayAndTime, theater, finishTime} = req.body.sanitizedInput;
+    const overlapping = await checkTimeShowInTheater(dayAndTime,finishTime,theater);
+    if(overlapping){
+      res.status(400).json({ error: 'The show time overlaps with another show in the same theater' })  
+    }else{
+      const show = em.create(Show, req.body.sanitizedInput)
+      await em.flush()
+      res.status(201).json({ message: 'Show created', data: show })
+      
+    }
+    
   } catch (error: any) {
     res.status(500).json({ 
-      message: 'An error occurred while adding the cinema',
+      message: 'An error occurred while adding the show',
       error: error.message, })
   }
 }

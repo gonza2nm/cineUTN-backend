@@ -9,8 +9,8 @@ POST http://localhost:3000/api/theaters
 Content-Type: application/json
 
 {
-  "numChairs": 100,
-  "cinema": 4
+  "numChairs": 44,
+  "cinema": 1
 }
 
 ### UPDATE THEATER

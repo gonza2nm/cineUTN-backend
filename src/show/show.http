@@ -15,9 +15,10 @@ POST http://localhost:3000/api/shows
 Content-Type: application/json
 
 {
-  "dayAndTime": "Lunes 5, 15:00hs",
   "theater": 1,
-  "movie": 1
+  "movie": 1,
+  "dayAndTime":"2024-08-01 18:30:00",
+  "finishTime":"2024-08-01 21:01:00"
 }
 
 ### CREATE a show 2 -------------------------------------------------------------
@@ -26,9 +27,10 @@ POST http://localhost:3000/api/shows
 Content-Type: application/json
 
 {
-  "dayAndTime": "Marte 6, 19:00hs",
   "theater": 1,
-  "movie": 2
+  "movie": 1,
+  "dayAndTime":"2024-07-30 22:45:00",
+  "finishTime":"2024-07-31 00:00:00"
 }
 
 
@@ -38,8 +40,9 @@ PUT http://localhost:3000/api/shows/2
 Content-Type: application/json
 
 {
-  "dayAndTime": "Marte 6, 21:00hs"
+  "dayAndTime":"2024-07-30 21:00:00",
+  "finishTime":"2024-07-30 22:45:00"
 }
 
 ### DELETE a show 2 -------------------------------------------------------------
-DELETE http://localhost:3000/api/shows/2
+DELETE http://localhost:3000/api/shows/4

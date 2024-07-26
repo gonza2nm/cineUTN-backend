@@ -9,6 +9,7 @@ export const orm = await MikroORM.init({
   clientUrl: 'mysql://root:root@localhost:3306/cine_UTN',
   highlighter: new SqlHighlighter(),
   debug: true,
+  forceUtcTimezone: true,
   schemaGenerator: {
     //never in production
     disableForeignKeys: true, //desactiva las FK al momento de crear la base para que no haya problemas
