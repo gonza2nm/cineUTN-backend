@@ -5,6 +5,8 @@ GET http://localhost:3000/api/movies
 GET http://localhost:3000/api/movies/1
 
 ### crear un movie
+### antes de crear verificar que haya genero con id 1
+
 POST http://localhost:3000/api/movies
 Content-Type: application/json
 
@@ -14,7 +16,7 @@ Content-Type: application/json
   "format": "2D Doblada",
   "genres": [1] 
 } 
-### antes de crear verificar que haya genero con id 1
+
 
 ### modificar una movie (PUT -> recurso completo e idempotente)
 PUT http://localhost:3000/api/movies/1
