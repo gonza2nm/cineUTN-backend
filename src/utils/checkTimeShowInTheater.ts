@@ -7,12 +7,8 @@ import { Show } from "../show/show.entity.js"
 export async function  checkTimeShowInTheater(dayAndTime:string, finishTime:string, theaterId:string):Promise<Boolean>{
   const em = orm.em
   const newtheaterId = Number(theaterId);
-  console.log(theaterId)
-  console.log(newtheaterId)
   const startDate = new Date(`${dayAndTime}Z`);
   const endDate = new Date(`${finishTime}Z`);
-  console.log(startDate)
-  console.log(endDate)
   try{
     const overlappingShows = await em.find(Show, {
       theater: newtheaterId,
@@ -28,10 +24,8 @@ export async function  checkTimeShowInTheater(dayAndTime:string, finishTime:stri
             ]
     });
     if (overlappingShows.length > 0) {
-      console.log("Overlapping shows detected.");
       return true;
     } else {
-      console.log("No overlapping shows detected.");
       return false;
     }
   }catch(error){
