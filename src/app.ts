@@ -41,5 +41,3 @@ app.listen(3000, () => {
   console.log('Server running on http://localhost:3000/');
 });
 
-
-//con el codigo de Genre en la parte de remove si mandas un id que no existe aparece que se elimino igualmente
