@@ -1,0 +1,34 @@
+### POST Crear un nuevo usuario
+
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+    "name": "martina",
+    "dni": "123456789",
+    "apellido": "fernandez",
+    "email": "martina.fer@gmail.com",
+    "password": "password123",
+    "type": "regular"
+}
+
+### GET /users - Obtener todos los usuarios
+GET http://localhost:3000/users
+
+### GET - Obtener un usuario por DNI
+GET http://localhost:3000/users/123456789
+
+### PUT  Actualizar un usuario por DNI
+PUT http://localhost:3000/users/123456789
+Content-Type: application/json
+
+{
+    "name": "martina Updated",
+    "apellido": "fernandez Updated",
+    "email": "martina.updated@egmail.com",
+    "password": "newpassword",
+    "type": "admin"
+}
+
+### DELETE /users/:dni - Eliminar un usuario por DNI
+DELETE http://localhost:3000/users/123456789
