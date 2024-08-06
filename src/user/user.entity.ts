@@ -24,7 +24,7 @@ export class User extends BaseEntity{
   @Property({nullable: false})
   type!: "user" | "admin";  
 
-  @ManyToOne(() => Cinema)
+  @ManyToOne(() => Cinema,{nullable:true})
   Cinema!: Rel<Cinema>
 
   @OneToMany(() => Buy, (buy) => buy.user, { cascade: [Cascade.ALL] })
