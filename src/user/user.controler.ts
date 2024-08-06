@@ -2,9 +2,9 @@ import { Request, Response, NextFunction } from "express"
 import { User } from "./user.entity.js"
 import { orm } from '../shared/db/orm.js'
 
-//Deberiamos poner para que se actualizen y se busquen usuarios por dni y no por id
+//findOne an update reciben dni y remove el id por la implementacion de getreference
 const em = orm.em
-
+//aca hago la comprobacion para limpiar el input de que si no es manager no puede asociarse a un cine
 function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     name: req.body.name,
@@ -12,7 +12,11 @@ function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
     surname: req.body.surname,
     email: req.body.email,
     password: req.body.password,
-    type: req.body.type,  
+    type: req.body.type,
+    cinema: req.body.cinema  
+  }
+  if(req.body.sanitizedInput["type"] !== "manager"){
+      delete req.body.sanitizedInput["cinema"];
   }
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined) {
@@ -25,9 +29,15 @@ function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
 
 async function add(req: Request, res: Response) {
   try {
+    let message = "user created"
+    if(req.body.cinema !== undefined && req.body.type === "user" ){
+      message += ", but this user does not have permissions to associate with a cinema as a manager"
+    } else if(req.body.type === "manager" && req.body.cinema === undefined ) {
+      throw new Error("A manager must be associated with a cinema");
+    }
     const user = em.create(User, req.body.sanitizedInput);
     await em.flush();
-    res.status(201).json({ message: 'user created', data: user });
+    res.status(201).json({ message: message, data: user });
   } catch (error: any) {
     res.status(500).json({
       message: 'An error occurred while adding the user',
@@ -50,8 +60,8 @@ async function findAll(req: Request, res: Response) {
     
 async function findOne(req: Request, res: Response) {
   try {
-    const id = Number.parseInt(req.params.id);
-    const user = await em.findOneOrFail(User, { id },{populate:["buys"]});
+    const dni = req.params.dni;
+    const user = await em.findOneOrFail(User, { dni },{populate:["buys"]});
     if(!user){
       res.status(404).json({ message: 'user not found' });  
     } else{
@@ -67,8 +77,8 @@ async function findOne(req: Request, res: Response) {
     
 async function update(req: Request, res: Response) {
   try {
-    const id = Number.parseInt(req.params.id);
-    const userToUpdate = await em.findOne(User, { id });
+    const dni = req.params.dni;
+    const userToUpdate = await em.findOne(User, { dni });
     if (userToUpdate === null) {
       res.status(404).json({ message: 'user not found to update' });
     } else {
@@ -87,7 +97,7 @@ async function update(req: Request, res: Response) {
   }
 }
     
-  
+//por id para poder hacer el getReference 
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);

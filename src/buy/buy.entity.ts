@@ -5,14 +5,17 @@ import { User } from '../user/user.entity.js';
 @Entity()
 export class Buy extends BaseEntity {
 
-  @Property({nullable: false}) //Agregué un atributo para hacer una prueba
+  @Property({nullable: true}) 
   description!: string;
+  
+  @Property({nullable: false}) 
+  total!: number;
 
   @Property({ type: DateTimeType})
   fechaHora = new Date();
 
   //Relacion con la entidad usuario
-  @ManyToOne(() => User, {nullable: false})
+  @ManyToOne(() => User, {nullable:true})
   user!: Rel<User>
 
   //Relacion con la entidad entrada

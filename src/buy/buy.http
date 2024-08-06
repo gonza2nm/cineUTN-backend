@@ -16,7 +16,8 @@ Content-Type: application/json
 
 {
   "description": "Compra de comida",
-  "user": 1
+  "user": 14,
+  "total": 13000
 }
 
 ### CREATE a buy 2 --------------------------------------------------------------
@@ -39,4 +40,4 @@ Content-Type: application/json
 }
 
 ### DELETE a buy 2 ---------------------------------------------------------------
-DELETE http://localhost:3000/api/buys/2
+DELETE http://localhost:3000/api/buys/1

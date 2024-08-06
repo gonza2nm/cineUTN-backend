@@ -22,11 +22,11 @@ export class User extends BaseEntity{
   password!: string;
 
   @Property({nullable: false})
-  type!: "user" | "admin";  
+  type!: "user" | "manager";  
 
   @ManyToOne(() => Cinema,{nullable:true})
   cinema!: Rel<Cinema>
 
-  @OneToMany(() => Buy, (buy) => buy.user, { cascade: [Cascade.ALL] })
+  @OneToMany(() => Buy, (buy) => buy.user, { cascade: [Cascade.PERSIST, Cascade.MERGE]})
   buys = new Collection<Buy>(this);
 }

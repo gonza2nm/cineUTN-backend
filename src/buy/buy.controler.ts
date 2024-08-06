@@ -7,7 +7,8 @@ const em = orm.em
 function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     description: req.body.description,
-    user: req.body.user
+    user: req.body.user,
+    total: req.body.total
   }
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined) {
@@ -39,9 +40,13 @@ async function findOne(req: Request, res: Response) {
   }
 }
 
-
+/*por problemas al eliminar el usuario y no perder las compras, 
+permito poner nulo el userId pero al crearlo debe tenerlo si o si*/
 async function add(req: Request, res: Response) {
   try {
+    if(req.body.sanitizedInput["user"] === undefined ){
+      throw new Error("the buy must have an user");
+    }  
     const buy = em.create(Buy, req.body.sanitizedInput)
     await em.flush()
     res.status(201).json({ message: 'Buy created', data: buy })

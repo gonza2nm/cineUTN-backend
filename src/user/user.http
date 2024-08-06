@@ -17,21 +17,22 @@ Content-Type: application/json
 
 {
     "name": "gonzalo",
-    "dni": "44523501",
+    "dni": "12221",
     "surname": "mansilla",
-    "email": "gonzalo2nm@gmail.com",
+    "email": "g2221@gmail.com",
     "password": "password123",
-    "type": "user"
+    "type": "user",
+    "cinema":1
 }
 
 ### GET /users - Obtener todos los usuarios
 GET http://localhost:3000/api/users
 
 ### GET - Obtener un usuario por DNI
-GET http://localhost:3000/api/users/1
+GET http://localhost:3000/api/users/12221
 
 ### PUT  Actualizar un usuario por DNI
-PUT http://localhost:3000/api/users/1
+PUT http://localhost:3000/api/users/123456789
 Content-Type: application/json
 
 {
@@ -43,4 +44,4 @@ Content-Type: application/json
 }
 
 ### DELETE /users/:dni - Eliminar un usuario por DNI
-DELETE http://localhost:3000/api/users/1
+DELETE http://localhost:3000/api/users/11
