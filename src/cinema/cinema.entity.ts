@@ -2,6 +2,7 @@ import { Cascade, Collection, Entity, ManyToMany, OneToMany, Property } from '@m
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Theater } from '../theater/theater.entity.js';
 import { Movie } from '../movie/movie.entity.js';
+import { User } from '../user/user.entity.js';
 
 @Entity()
 export class Cinema extends BaseEntity {
@@ -23,12 +24,9 @@ export class Cinema extends BaseEntity {
   })
   movies = new Collection<Movie>(this);
 
-  /*
-  //revisar relacion con encargado
-
-  @OneToMany(() => Manager, (manager) => manager.cinema, {
+  @OneToMany(() => User, (user) => user.cinema, {
     cascade: [Cascade.ALL],
   })
-  managers = new Collection<Manager>(this);
-  */
+  managers = new Collection<User>(this);
+  
 }

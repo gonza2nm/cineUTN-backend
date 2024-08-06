@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express"
 import { User } from "./user.entity.js"
 import { orm } from '../shared/db/orm.js'
 
-
+//Deberiamos poner para que se actualizen y se busquen usuarios por dni y no por id
 const em = orm.em
 
 function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
@@ -51,7 +51,7 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const user = await em.findOneOrFail(User, { id });
+    const user = await em.findOneOrFail(User, { id },{populate:["buys"]});
     if(!user){
       res.status(404).json({ message: 'user not found' });  
     } else{
@@ -65,7 +65,6 @@ async function findOne(req: Request, res: Response) {
   }
 }
     
-  
 async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
