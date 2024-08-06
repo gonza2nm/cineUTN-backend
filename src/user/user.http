@@ -6,10 +6,10 @@ Content-Type: application/json
 {
     "name": "martina",
     "dni": "123456789",
-    "apellido": "fernandez",
+    "surname": "fernandez",
     "email": "martina.fer@gmail.com",
     "password": "password123",
-    "type": "regular"
+    "type": "user"
 }
 
 ### GET /users - Obtener todos los usuarios
@@ -24,7 +24,7 @@ Content-Type: application/json
 
 {
     "name": "martina Updated",
-    "apellido": "fernandez Updated",
+    "surname": "fernandez Updated",
     "email": "martina.updated@egmail.com",
     "password": "newpassword",
     "type": "admin"
