@@ -6,7 +6,7 @@ import { User } from '../user/user.entity.js';
 export class Buy extends BaseEntity {
 
   @Property({nullable: false}) //Agregué un atributo para hacer una prueba
-  tipo!: string;
+  description!: string;
 
   @Property({ type: DateTimeType})
   fechaHora = new Date();

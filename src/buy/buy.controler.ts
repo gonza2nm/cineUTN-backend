@@ -6,11 +6,9 @@ const em = orm.em
 
 function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    tipo: req.body.tipo, //Agregué un atributo para hacer una prueba
-    //user: req.body.user
-
+    description: req.body.description,
+    user: req.body.user
   }
-
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined) {
       delete req.body.sanitizedInput[key]
@@ -21,7 +19,7 @@ function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const buys = await em.find(Buy, {}) // {populate: ['user']}
+    const buys = await em.find(Buy, {},{populate: ['user']}); 
     res.status(200).json({ message: 'Found all buys', data: buys })
   } catch (error: any) {
     res.status(500).json({ 
@@ -34,7 +32,7 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const buy = await em.findOneOrFail(Buy, { id })
+    const buy = await em.findOneOrFail(Buy, { id },{populate:['user']});
     res.status(200).json({ message: 'Found buy', data: buy })
   } catch (error: any) {
     res.status(500).json({ message: 'An error occurred while querying the buy', error: error.message, })
