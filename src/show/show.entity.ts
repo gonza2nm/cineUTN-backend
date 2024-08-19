@@ -2,6 +2,7 @@ import { Collection, Entity, ManyToOne, OneToMany, Property, Rel, DateTimeType }
 import { BaseEntity } from '../shared/db/baseEntity.entity.js'
 import { Theater } from '../theater/theater.entity.js';
 import { Movie } from '../movie/movie.entity.js';
+import { Ticket } from '../ticket/ticket.entity.js';
 
 @Entity()
 export class Show extends BaseEntity {
@@ -25,12 +26,8 @@ export class Show extends BaseEntity {
   @ManyToOne(() => Movie, { nullable: false })
   movie!: Rel<Movie>
 
-
-
   //Relacion con entrada
-  /*
   @OneToMany(() => Ticket, (ticket) => ticket.show)
   tickets = new Collection<Ticket>(this)
-  */
 
 }
