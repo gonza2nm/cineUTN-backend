@@ -1,0 +1,28 @@
+### obtener todos los tickets
+GET http://localhost:3000/api/tickets
+
+### obtener un ticket
+GET http://localhost:3000/api/tickets/1
+
+### crear un nuevo ticket
+### content-Type: application/json le dice al servidor que el cuerpo de la solicitud está en formato JSON.
+
+POST http://localhost:3000/api/tickets
+Content-Type: application/json
+
+{
+  "show": 1,
+  "buy": 1
+}
+
+### modificar un ticket (PUT -> recurso completo e idempotente)
+PUT http://localhost:3000/api/tickets/1
+Content-Type: application/json
+
+{
+  "show": 1,
+  "buy": 2
+}
+
+### borrar un ticket
+DELETE http://localhost:3000/api/tickets/1
