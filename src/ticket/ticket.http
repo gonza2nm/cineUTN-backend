@@ -1,13 +1,13 @@
-### obtener todos los ticket
-GET http://localhost:3000/api/ticket 
+### obtener todos los tickets
+GET http://localhost:3000/api/tickets
 
 ### obtener un ticket
-GET http://localhost:3000/api/ticket/1
+GET http://localhost:3000/api/tickets/1
 
 ### crear un nuevo ticket
 ### content-Type: application/json le dice al servidor que el cuerpo de la solicitud está en formato JSON.
 
-POST http://localhost:3000/api/ticket
+POST http://localhost:3000/api/tickets
 Content-Type: application/json
 
 {
@@ -16,7 +16,7 @@ Content-Type: application/json
 }
 
 ### modificar un ticket (PUT -> recurso completo e idempotente)
-PUT http://localhost:3000/api/ticket/1
+PUT http://localhost:3000/api/tickets/1
 Content-Type: application/json
 
 {
@@ -25,4 +25,4 @@ Content-Type: application/json
 }
 
 ### borrar un ticket
-DELETE http://localhost:3000/api/ticket/1
+DELETE http://localhost:3000/api/tickets/1
