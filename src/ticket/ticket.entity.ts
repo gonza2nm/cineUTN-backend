@@ -1,4 +1,4 @@
-import { Entity, ManyToOne } from "@mikro-orm/core";
+import { Entity, ManyToOne, Rel } from "@mikro-orm/core";
 import { Show } from "../show/show.entity.js";
 import { BaseEntity } from "../shared/db/baseEntity.entity.js";
 import { Buy } from "../buy/buy.entity.js";
@@ -8,7 +8,7 @@ import { Buy } from "../buy/buy.entity.js";
 export class Ticket extends BaseEntity {
 
   @ManyToOne(() => Show, { nullable: false })
-  show!: Show;
+  show!: Rel<Show>;
 
   @ManyToOne(() => Buy, { nullable: false })
   buy!: Buy;
