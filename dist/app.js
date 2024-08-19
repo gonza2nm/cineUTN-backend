@@ -9,6 +9,7 @@ import { movieRouter } from './movie/movie.routes.js';
 import { buyRouter } from './buy/buy.routes.js';
 import { showRouter } from './show/show.routes.js';
 import { userRouter } from './user/user.routes.js';
+import { ticketRouter } from './ticket/ticket.routes.js';
 const app = express();
 app.use(express.json());
 app.use((req, res, next) => {
@@ -21,6 +22,7 @@ app.use('/api/movies', movieRouter);
 app.use('/api/buys', buyRouter);
 app.use('/api/shows', showRouter);
 app.use('/api/users', userRouter);
+app.use('/api/tickets', ticketRouter);
 app.use((_, res) => {
     return res.status(404).send({ message: 'Resource not found' });
 });
@@ -28,5 +30,4 @@ await syncSchema(); //never in production
 app.listen(3000, () => {
     console.log('Server running on http://localhost:3000/');
 });
-//con el codigo de Genre en la parte de remove si mandas un id que no existe aparece que se elimino igualmente
 //# sourceMappingURL=app.js.map
