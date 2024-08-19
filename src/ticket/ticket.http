@@ -20,8 +20,8 @@ PUT http://localhost:3000/api/tickets/1
 Content-Type: application/json
 
 {
-  //cuando voy a querer modificar un ticket?, deberia cambiar show o buy?
-  // suena ilogico
+  "show": 1,
+  "buy": 2
 }
 
 ### borrar un ticket
