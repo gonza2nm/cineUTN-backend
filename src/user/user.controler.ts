@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction } from "express"
-import { User } from "./user.entity.js"
-import { orm } from '../shared/db/orm.js'
+import { Request, Response, NextFunction } from 'express';
+import { User } from './user.entity.js';
+import { orm } from '../shared/db/orm.js';
 
 //findOne an update reciben dni y remove el id por la implementacion de getreference
-const em = orm.em
+const em = orm.em;
 //aca hago la comprobacion para limpiar el input de que si no es manager no puede asociarse a un cine
 function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
@@ -13,10 +13,10 @@ function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
     email: req.body.email,
     password: req.body.password,
     type: req.body.type,
-    cinema: req.body.cinema  
-  }
-  if(req.body.sanitizedInput["type"] !== "manager"){
-      delete req.body.sanitizedInput["cinema"];
+    cinema: req.body.cinema,
+  };
+  if (req.body.sanitizedInput['type'] !== 'manager') {
+    delete req.body.sanitizedInput['cinema'];
   }
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined) {
@@ -25,15 +25,15 @@ function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
   });
   next();
 }
-  
 
 async function add(req: Request, res: Response) {
   try {
-    let message = "user created"
-    if(req.body.cinema !== undefined && req.body.type === "user" ){
-      message += ", but this user does not have permissions to associate with a cinema as a manager"
-    } else if(req.body.type === "manager" && req.body.cinema === undefined ) {
-      throw new Error("A manager must be associated with a cinema");
+    let message = 'user created';
+    if (req.body.cinema !== undefined && req.body.type === 'user') {
+      message +=
+        ', but this user does not have permissions to associate with a cinema as a manager';
+    } else if (req.body.type === 'manager' && req.body.cinema === undefined) {
+      throw new Error('A manager must be associated with a cinema');
     }
     const user = em.create(User, req.body.sanitizedInput);
     await em.flush();
@@ -51,20 +51,20 @@ async function findAll(req: Request, res: Response) {
     const users = await em.find(User, {});
     res.status(200).json({ message: 'found all users', data: users });
   } catch (error: any) {
-    res.status(500).json({ 
-      message: 'An error occurred while finding all the users', 
-      error: error.message 
+    res.status(500).json({
+      message: 'An error occurred while finding all the users',
+      error: error.message,
     });
   }
 }
-    
+
 async function findOne(req: Request, res: Response) {
   try {
-    const dni = req.params.dni;
-    const user = await em.findOneOrFail(User, { dni },{populate:["buys"]});
-    if(!user){
-      res.status(404).json({ message: 'user not found' });  
-    } else{
+    const id = parseInt(req.params.id);
+    const user = await em.findOneOrFail(User, { id }, { populate: ['buys'] });
+    if (!user) {
+      res.status(404).json({ message: 'user not found' });
+    } else {
       res.status(200).json({ message: 'found user', data: user });
     }
   } catch (error: any) {
@@ -74,19 +74,19 @@ async function findOne(req: Request, res: Response) {
     });
   }
 }
-    
+
 async function update(req: Request, res: Response) {
   try {
-    const dni = req.params.dni;
-    const userToUpdate = await em.findOne(User, { dni });
+    const id = parseInt(req.params.id);
+    const userToUpdate = await em.findOne(User, { id });
     if (userToUpdate === null) {
       res.status(404).json({ message: 'user not found to update' });
     } else {
       em.assign(userToUpdate, req.body.sanitizedInput);
       await em.flush();
-      res.status(200).json({ 
-        message: 'user updated', 
-        data: userToUpdate 
+      res.status(200).json({
+        message: 'user updated',
+        data: userToUpdate,
       });
     }
   } catch (error: any) {
@@ -96,16 +96,16 @@ async function update(req: Request, res: Response) {
     });
   }
 }
-    
-//por id para poder hacer el getReference 
+
+//por id para poder hacer el getReference
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
     const userToRemove = await em.getReference(User, id);
-    const user = await em.findOne(User, {id});
+    const user = await em.findOne(User, { id });
     if (!user) {
-      return res.status(404).json({ 
-        message: 'user not found to delete.' 
+      return res.status(404).json({
+        message: 'user not found to delete.',
       });
     } else {
       await em.removeAndFlush(userToRemove);
@@ -118,5 +118,5 @@ async function remove(req: Request, res: Response) {
     });
   }
 }
- 
+
 export { sanitizeUserInput, findAll, findOne, add, update, remove };
