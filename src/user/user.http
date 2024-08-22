@@ -28,11 +28,11 @@ Content-Type: application/json
 ### GET /users - Obtener todos los usuarios
 GET http://localhost:3000/api/users
 
-### GET - Obtener un usuario por DNI
-GET http://localhost:3000/api/users/12221
+### GET - Obtener un usuario por ID
+GET http://localhost:3000/api/users/1
 
-### PUT  Actualizar un usuario por DNI
-PUT http://localhost:3000/api/users/123456789
+### PUT  Actualizar un usuario por ID
+PUT http://localhost:3000/api/users/1
 Content-Type: application/json
 
 {
@@ -43,5 +43,5 @@ Content-Type: application/json
     "type": "admin"
 }
 
-### DELETE /users/:dni - Eliminar un usuario por DNI
-DELETE http://localhost:3000/api/users/11
+### DELETE /users/:dni - Eliminar un usuario por ID
+DELETE http://localhost:3000/api/users/1

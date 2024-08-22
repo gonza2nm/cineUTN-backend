@@ -10,10 +10,12 @@ import { buyRouter } from './buy/buy.routes.js';
 import { showRouter } from './show/show.routes.js';
 import { userRouter } from './user/user.routes.js';
 import { ticketRouter } from './ticket/ticket.routes.js';
+import cors from 'cors';
 
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.use((req, res, next) => {
   RequestContext.create(orm.em, next);
