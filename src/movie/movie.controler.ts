@@ -9,6 +9,7 @@ function sanitizeMovieInput(req: Request, res: Response, next: NextFunction) {
     name: req.body.name,
     description: req.body.description,
     format: req.body.format,
+    imageLink: req.body.imageLink,
     genres: req.body.genres,
   }; //cuidado! antes mostraba los generos vacios pero fue porque no los habia agregado en este sanitize input
 
