@@ -13,7 +13,18 @@ import { ticketRouter } from './ticket/ticket.routes.js';
 import cors from 'cors';
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: (origin, callback) => {
+        const ACCEPTED_ORIGINS = ['http://localhost:4200'];
+        if (!origin) {
+            return callback(null, false);
+        }
+        else if (ACCEPTED_ORIGINS.includes(origin)) {
+            return callback(null, true);
+        }
+        return callback(new Error('not allowed by cors'));
+    },
+}));
 app.use((req, res, next) => {
     RequestContext.create(orm.em, next);
 });
