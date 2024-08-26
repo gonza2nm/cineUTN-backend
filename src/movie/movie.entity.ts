@@ -1,4 +1,10 @@
-import {Collection,Entity,ManyToMany,OneToMany,Property,} from '@mikro-orm/core';
+import {
+  Collection,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  Property,
+} from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Genre } from '../genre/genre.entity.js';
 import { Cinema } from '../cinema/cinema.entity.js';
@@ -6,12 +12,14 @@ import { Show } from '../show/show.entity.js';
 
 @Entity()
 export class Movie extends BaseEntity {
-  
   @Property({ nullable: false }) //no es unique porque varias peliculas pueden tener el mismo nombre
   name!: string;
 
   @Property({ nullable: false })
   description!: string;
+
+  @Property({ nullable: false })
+  imageLink!: string;
 
   @Property({ nullable: false })
   format!: string;
