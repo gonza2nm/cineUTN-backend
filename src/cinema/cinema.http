@@ -1,8 +1,11 @@
 ### FIND ALL
 GET http://localhost:3000/api/cinemas
 
-### FIND ONE CINEMA BY ID
-GET http://localhost:3000/api/cinemas/1
+### FIND ONE CINEMA BY ID solo devuelve datos de cine y salas y peliculas sin sus generos
+GET http://localhost:3000/api/cinemas/2
+
+### FIND ONE CINEMA BY ID devuelve datos de cine con sala, peliculas y sus generos
+GET http://localhost:3000/api/cinemas/2?genres=all
 
 ### CREATE CINEMA
 POST http://localhost:3000/api/cinemas

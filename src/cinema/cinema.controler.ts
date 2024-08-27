@@ -21,7 +21,11 @@ function sanitizeCinemaInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const cinemas = await em.find(Cinema,{},{ populate: ['theaters', 'movies'] });
+    const cinemas = await em.find(
+      Cinema,
+      {},
+      { populate: ['theaters', 'movies'] }
+    );
     res.status(200).json({ message: 'found all cinemas', data: cinemas });
   } catch (error: any) {
     res.status(500).json({
@@ -30,11 +34,30 @@ async function findAll(req: Request, res: Response) {
     });
   }
 }
-
+/*agregue para pasarle query strings
+ej: http://localhost:3000/api/cinemas/1?genres=all
+los querys se comienzan con '?', separan atributos por '&' y
+se le asigna valor a un atributo con '='
+valores permitidos:
+genres = all,
+si no se especifica devuelve solo el cine con sus salas
+*/
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const cinema = await em.findOne(Cinema,{ id },{ populate: ['theaters', 'movies'] });
+    let cinema;
+    if (req.query.genres !== 'all') {
+      cinema = await em.findOne(
+        Cinema,
+        { id },
+        { populate: ['theaters', 'movies'] }
+      );
+    } else if (req.query.genres === 'all')
+      cinema = await em.findOne(
+        Cinema,
+        { id },
+        { populate: ['theaters', 'movies', 'movies.genres'] }
+      );
     if (cinema === null) {
       res.status(404).json({ message: 'cinema not found' });
     } else {
