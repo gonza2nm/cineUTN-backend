@@ -1,0 +1,89 @@
+### Pense en hacer esto como una manera facil de iniciar la base de datos luego de hacer el dropSchema, hace la creacion inicial de todas las entidades
+### si ven que necesitan agregar algo (ejemplo "movies": 1 , a cinema haganlo con un put lo mas proximo posible y abajo de algun metodo que no rompa nada :)
+### ej: no ponerlo antes de crear la pelicula 1! o el genero de la pelicula 1!
+
+### CREATE CINEMA
+POST http://localhost:3000/api/cinemas
+Content-Type: application/json
+
+{
+  "name": "Cine UTN",
+  "address": "Zeballos 1000, Rosario, Santa Fe"
+}
+
+### crear un nuevo genre
+### content-Type: application/json le dice al servidor que el cuerpo de la solicitud está en formato JSON.
+
+POST http://localhost:3000/api/genres
+Content-Type: application/json
+
+{
+  "name": "Comedia"
+}
+
+### crear un movie
+POST http://localhost:3000/api/movies
+Content-Type: application/json
+
+{
+  "name": "Guardianes De La Galaxia",
+  "description": "El temerario aventurero Peter Quill, tras robar una misteriosa esfera codiciada por Ronan, un poderoso villano cuyas ambiciones amenazan a todo el universo, se convierte en la presa más codiciada por todos los cazarrecompensas de la galaxia.",
+  "format": "2D Doblada",
+  "genres": [1] ,
+  "imageLink": "soyUnLink"
+} 
+
+### CREATE THEATER
+POST http://localhost:3000/api/theaters
+Content-Type: application/json
+
+{
+  "numChairs": 44,
+  "cinema": 1
+}
+
+### CREATE a show 1 -------------------------------------------------------------
+POST http://localhost:3000/api/shows
+Content-Type: application/json
+
+{
+  "theater": 1,
+  "movie": 1,
+  "dayAndTime":"2024-08-01 14:00:00",
+  "finishTime":"2024-08-01 15:00:00"
+}
+
+### POST Crear un nuevo usuario
+
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+    "name": "martina",
+    "dni": "123456789",
+    "surname": "fernandez",
+    "email": "martina.fer@gmail.com",
+    "password": "password123",
+    "type": "user"
+}
+
+### CREATE a buy 1 --------------------------------------------------------------
+### A este create agregarle el usuario
+POST http://localhost:3000/api/buys
+Content-Type: application/json
+
+{
+  "description": "Compra de comida",
+  "user": 1,
+  "total": 13000
+}
+
+### crear un nuevo ticket
+
+POST http://localhost:3000/api/tickets
+Content-Type: application/json
+
+{
+  "show": 1,
+  "buy": 1
+}
