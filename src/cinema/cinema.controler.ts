@@ -21,11 +21,7 @@ function sanitizeCinemaInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const cinemas = await em.find(
-      Cinema,
-      {},
-      { populate: ['theaters', 'movies'] }
-    );
+    const cinemas = await em.find(Cinema, {}, { populate: ['theaters', 'movies'] });
     res.status(200).json({ message: 'found all cinemas', data: cinemas });
   } catch (error: any) {
     res.status(500).json({
@@ -45,19 +41,7 @@ si no se especifica devuelve solo el cine con sus salas
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    let cinema;
-    if (req.query.genres !== 'all') {
-      cinema = await em.findOne(
-        Cinema,
-        { id },
-        { populate: ['theaters', 'movies'] }
-      );
-    } else if (req.query.genres === 'all')
-      cinema = await em.findOne(
-        Cinema,
-        { id },
-        { populate: ['theaters', 'movies', 'movies.genres'] }
-      );
+    const cinema = await em.findOne(Cinema, { id }, { populate: ['theaters', 'movies'] });
     if (cinema === null) {
       res.status(404).json({ message: 'cinema not found' });
     } else {
@@ -106,13 +90,12 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const cinemaToRemove = em.getReference(Cinema, id);
     const cinema = await em.findOne(Cinema, { id }, { populate: ['theaters'] });
     if (cinema === null) {
       res.status(404).json({ message: 'cinema not found to delete.' });
     } else {
-      await em.removeAndFlush(cinemaToRemove);
-      res.status(200).json({ message: 'cinema deleted' });
+      await em.removeAndFlush(cinema);
+      res.status(200).json({ data: cinema, message: 'cinema deleted' });
     }
   } catch (error: any) {
     res.status(500).json({
