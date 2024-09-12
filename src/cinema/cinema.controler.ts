@@ -30,7 +30,14 @@ async function findAll(req: Request, res: Response) {
     });
   }
 }
-
+/*agregue para pasarle query strings
+ej: http://localhost:3000/api/cinemas/1?genres=all
+los querys se comienzan con '?', separan atributos por '&' y
+se le asigna valor a un atributo con '='
+valores permitidos:
+genres = all,
+si no se especifica devuelve solo el cine con sus salas
+*/
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
