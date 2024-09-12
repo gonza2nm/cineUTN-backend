@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Movie } from './movie.entity.js';
 import { orm } from '../shared/db/orm.js';
+import { error } from 'console';
 
 const em = orm.em;
 
@@ -8,8 +9,9 @@ function sanitizeMovieInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     name: req.body.name,
     description: req.body.description,
-    format: req.body.format,
     imageLink: req.body.imageLink,
+    formats: req.body.formats,
+    languages: req.body.languages,
     genres: req.body.genres,
   }; //cuidado! antes mostraba los generos vacios pero fue porque no los habia agregado en este sanitize input
 
@@ -23,7 +25,7 @@ function sanitizeMovieInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const movies = await em.find(Movie, {}, { populate: ['genres'] }); //en este tercer parametro le indicamos que relaciones queremos que cargue
+    const movies = await em.find(Movie, {}, { populate: ['genres', 'formats','languages'] }); //en este tercer parametro le indicamos que relaciones queremos que cargue
     res.status(200).json({ message: 'found all movies', data: movies });
   } catch (error: any) {
     res.status(500).json({
@@ -39,7 +41,7 @@ async function findOne(req: Request, res: Response) {
     const movie = await em.findOneOrFail(
       Movie,
       { id },
-      { populate: ['genres'] }
+      { populate: ['genres','formats','languages'] }
     );
     res.status(200).json({ message: 'movie found', data: movie });
   } catch (error: any) {
@@ -49,12 +51,16 @@ async function findOne(req: Request, res: Response) {
     });
   }
 }
-
+//al añadir la pelicula controla que por lo menos este asignada a un formato y a un idioma
 async function add(req: Request, res: Response) {
   try {
-    const movie = em.create(Movie, req.body.sanitizedInput);
-    await em.flush();
-    res.status(201).json({ message: 'movie created', data: movie });
+    if(!req.body.sanitizedInput.formats || !req.body.sanitizedInput.languages || req.body.sanitizedInput.formats.length === 0 || req.body.sanitizedInput.languages.length === 0){
+      res.status(400).json({ message: 'format or languages are undefined or null', error: "Bad Request" });  
+    }else{
+      const movie = em.create(Movie, req.body.sanitizedInput);
+      await em.flush();
+      res.status(201).json({ message: 'movie created', data: movie });
+    }
   } catch (error: any) {
     res.status(500).json({
       message: 'An error occurred while adding the movie',

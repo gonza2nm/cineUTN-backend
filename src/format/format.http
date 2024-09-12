@@ -1,0 +1,24 @@
+### obtener todos los formats
+GET http://localhost:3000/api/formats 
+
+### obtener un format
+GET http://localhost:3000/api/formats/1
+
+### crear un nuevo format
+POST http://localhost:3000/api/formats
+Content-Type: application/json
+
+{
+  "format_name": "3D"
+}
+
+### crear un nuevo format
+POST http://localhost:3000/api/formats
+Content-Type: application/json
+
+{
+  "format_name": "4D"
+}
+
+### borrar un format
+DELETE http://localhost:3000/api/formats/1

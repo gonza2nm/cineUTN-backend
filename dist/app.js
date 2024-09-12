@@ -10,6 +10,8 @@ import { buyRouter } from './buy/buy.routes.js';
 import { showRouter } from './show/show.routes.js';
 import { userRouter } from './user/user.routes.js';
 import { ticketRouter } from './ticket/ticket.routes.js';
+import { formatRouter } from './format/format.routes.js';
+import { languageRouter } from './language/language.routes.js';
 import cors from 'cors';
 const app = express();
 app.use(express.json());
@@ -36,6 +38,8 @@ app.use('/api/buys', buyRouter);
 app.use('/api/shows', showRouter);
 app.use('/api/users', userRouter);
 app.use('/api/tickets', ticketRouter);
+app.use('/api/formats', formatRouter);
+app.use('/api/languages', languageRouter);
 app.use((_, res) => {
     return res.status(404).send({ message: 'Resource not found' });
 });

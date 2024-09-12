@@ -11,9 +11,35 @@ Content-Type: application/json
   "address": "Zeballos 1000, Rosario, Santa Fe"
 }
 
-### crear un nuevo genre
-### content-Type: application/json le dice al servidor que el cuerpo de la solicitud está en formato JSON.
+### create format 1
+POST http://localhost:3000/api/formats
+Content-Type: application/json
 
+{
+  "format_name": "3D"
+}
+### create foramto 2
+POST http://localhost:3000/api/formats
+Content-Type: application/json
+
+{
+  "format_name": "4D"
+}
+### create language 1
+POST http://localhost:3000/api/languages
+Content-Type: application/json
+
+{
+  "language_name": "Original, Subtitulada"
+}
+### create language 2
+POST http://localhost:3000/api/languages
+Content-Type: application/json
+
+{
+  "language_name": "Doblada"
+}
+### genre 1
 POST http://localhost:3000/api/genres
 Content-Type: application/json
 
@@ -21,19 +47,20 @@ Content-Type: application/json
   "name": "Comedia"
 }
 
-### crear un movie
+### create movie 1
 POST http://localhost:3000/api/movies
 Content-Type: application/json
 
 {
   "name": "Guardianes De La Galaxia",
   "description": "El temerario aventurero Peter Quill, tras robar una misteriosa esfera codiciada por Ronan, un poderoso villano cuyas ambiciones amenazan a todo el universo, se convierte en la presa más codiciada por todos los cazarrecompensas de la galaxia.",
-  "format": "2D Doblada",
+  "formats": [1,2],
+  "languages": [1,2],
   "genres": [1] ,
   "imageLink": "soyUnLink"
 } 
 
-### CREATE THEATER
+### create theather 1
 POST http://localhost:3000/api/theaters
 Content-Type: application/json
 
@@ -49,12 +76,13 @@ Content-Type: application/json
 {
   "theater": 1,
   "movie": 1,
+  "format": 1,
+  "language": 1,
   "dayAndTime":"2024-08-01 14:00:00",
   "finishTime":"2024-08-01 15:00:00"
 }
 
 ### POST Crear un nuevo usuario
-
 POST http://localhost:3000/api/users
 Content-Type: application/json
 
@@ -79,7 +107,6 @@ Content-Type: application/json
 }
 
 ### crear un nuevo ticket
-
 POST http://localhost:3000/api/tickets
 Content-Type: application/json
 
