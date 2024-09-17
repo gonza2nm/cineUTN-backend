@@ -60,8 +60,10 @@ async function findAll(req: Request, res: Response) {
 
 async function findOne(req: Request, res: Response) {
   try {
-    const id = parseInt(req.params.id);
-    const user = await em.findOneOrFail(User, { id }, { populate: ['buys'] });
+    //const id = parseInt(req.params.id);
+    const email = req.params.email;
+    const password = req.params.password;
+    const user = await em.findOneOrFail(User, { email, password }, { populate: ['buys'] });
     if (!user) {
       res.status(404).json({ message: 'user not found' });
     } else {
