@@ -50,12 +50,12 @@ async function add(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const formatToRemove = await em.findOne(Format, { id })
-    if (!formatToRemove) { //verifica si es null o undefined
+    const format = await em.findOne(Format, { id })
+    if (!format) { //verifica si es null o undefined
       res.status(404).json({ message: 'format not found for deletion.' })
     } else {
-      await em.removeAndFlush(formatToRemove)
-      res.status(200).json({ message: 'format deleted' });
+      await em.removeAndFlush(format)
+      res.status(200).json({ data: format, message: 'format deleted' });
     }
   } catch (error: any) {
     res.status(500).json({ message: 'An error occurred while deleting the format', error: error.message })

@@ -50,12 +50,12 @@ async function add(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const languageToRemove = await em.findOne(Language, { id })
-    if (!languageToRemove) { //verifica si es null o undefined
+    const language = await em.findOne(Language, { id })
+    if (!language) { //verifica si es null o undefined
       res.status(404).json({ message: 'language not found for deletion.' })
     } else {
-      await em.removeAndFlush(languageToRemove)
-      res.status(200).json({ message: 'language deleted' });
+      await em.removeAndFlush(language)
+      res.status(200).json({ data: language, message: 'language deleted' });
     }
   } catch (error: any) {
     res.status(500).json({ message: 'An error occurred while deleting the language', error: error.message })
