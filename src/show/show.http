@@ -5,7 +5,7 @@ GET http://localhost:3000/api/shows
 
 
 ### GET ONE --------------------------------------------------------------------
-GET http://localhost:3000/api/shows/1
+GET http://localhost:3000/api/shows/5
 
 
 
@@ -16,9 +16,11 @@ Content-Type: application/json
 
 {
   "theater": 1,
-  "movie": 1,
-  "dayAndTime":"2024-08-01 14:00:00",
-  "finishTime":"2024-08-01 15:00:00"
+  "movie": 16,
+  "format": 1,
+  "language": 1,
+  "dayAndTime":"2024-08-23 14:00:00",
+  "finishTime":"2024-08-23 15:00:00"
 }
 
 ### CREATE a show 2 -------------------------------------------------------------

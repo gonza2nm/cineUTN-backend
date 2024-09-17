@@ -1,0 +1,24 @@
+### obtener todos los languages
+GET http://localhost:3000/api/languages 
+
+### obtener un language
+GET http://localhost:3000/api/languages/1
+
+### crear un nuevo language
+POST http://localhost:3000/api/languages
+Content-Type: application/json
+
+{
+  "language_name": "Original, Subtitulada"
+}
+
+### crear un nuevo language
+POST http://localhost:3000/api/languages
+Content-Type: application/json
+
+{
+  "language_name": "Doblada"
+}
+
+### borrar un language
+DELETE http://localhost:3000/api/languages/3
