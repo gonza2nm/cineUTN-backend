@@ -17,13 +17,13 @@ Content-Type: application/json
 }
 
 ### UPDATE CINEMA
-PUT http://localhost:3000/api/cinemas/1
+PUT http://localhost:3000/api/cinemas/2
 Content-Type: application/json
 
 {
-  "name": "ToDelete",
-  "address": "delete",
-  "movies": [1,2]
+  "name": "Showcase",
+  "address": "Junin 123 , Rosario, Santa Fe",
+  "movies": [2,3,5,13]
 }
 
 ### DELETE CINEMA

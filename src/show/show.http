@@ -7,7 +7,14 @@ GET http://localhost:3000/api/shows
 ### GET ONE --------------------------------------------------------------------
 GET http://localhost:3000/api/shows/5
 
+### GET SHOWTIMES WHERE DAY >= CURDATE AND cinema = cinemaId AND movie = movieId
+POST http://localhost:3000/api/shows/cinema-movie
+Content-Type: application/json
 
+{
+  "cinemaId": 2,
+  "movieId": 13
+}
 
 ### CREATE a show 1 -------------------------------------------------------------
 ### 
@@ -15,12 +22,12 @@ POST http://localhost:3000/api/shows
 Content-Type: application/json
 
 {
-  "theater": 1,
-  "movie": 16,
-  "format": 1,
+  "theater": 5,
+  "movie": 13,
+  "format": 3,
   "language": 1,
-  "dayAndTime":"2024-08-23 14:00:00",
-  "finishTime":"2024-08-23 15:00:00"
+  "dayAndTime":"2024-09-18 16:00:00",
+  "finishTime":"2024-09-18 18:00:00"
 }
 
 ### CREATE a show 2 -------------------------------------------------------------
