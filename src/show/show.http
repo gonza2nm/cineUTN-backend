@@ -8,7 +8,7 @@ GET http://localhost:3000/api/shows
 GET http://localhost:3000/api/shows/5
 
 ### GET SHOWTIMES WHERE DAY >= CURDATE AND cinema = cinemaId AND movie = movieId
-POST http://localhost:3000/api/shows/cinema-movie
+POST http://localhost:3000/api/shows/showtimes
 Content-Type: application/json
 
 {

@@ -14,7 +14,7 @@ export const showRouter = Router();
 
 showRouter.get('/', findAll);
 showRouter.get('/:id', findOne);
-showRouter.post('/cinema-movie',sanitizeShowInputToFindByCinemaAndMovie, findByCinemaAndMovie);
+showRouter.post('/showtimes',sanitizeShowInputToFindByCinemaAndMovie, findByCinemaAndMovie);
 showRouter.post('/', sanitizeShowInput,  add);
 showRouter.put('/:id', sanitizeShowInput, update);
 showRouter.delete('/:id', remove);
