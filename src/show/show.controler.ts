@@ -92,8 +92,8 @@ async function findByCinemaAndMovie(req: Request, res: Response){
     const {movieId, cinemaId} = req.body.sanitizedInput;
     if(cinemaId < 0 || 
       movieId < 0 ||
-      cinemaId === null ||
-      movieId === null
+      !cinemaId ||
+      !movieId 
     ){
       res.status(400).json({message:"There is an error in the data you sent", error: "Bad Request"})
     }else{
