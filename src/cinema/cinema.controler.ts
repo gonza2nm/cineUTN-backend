@@ -19,6 +19,20 @@ function sanitizeCinemaInput(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
+async function findAllByMovie(req: Request, res: Response) {
+  try {
+    const movieId = Number.parseInt(req.params.id);
+    const cinemas = await em.find(Cinema, {movies: {id: movieId}}, { populate: ['movies', 'movies.cinemas'] });
+    console.log(cinemas)
+    res.status(200).json({ message: 'found all cinemas', data: cinemas });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'An error occurred while querying all cinemas',
+      error: error.message,
+    });
+  }
+}
+
 async function findAll(req: Request, res: Response) {
   try {
     const cinemas = await em.find(Cinema, {}, { populate: ['theaters', 'movies'] });
@@ -110,4 +124,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeCinemaInput, findAll, findOne, add, update, remove };
+export { sanitizeCinemaInput, findAll, findOne, add, update, remove, findAllByMovie };
