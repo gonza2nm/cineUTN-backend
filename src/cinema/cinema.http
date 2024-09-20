@@ -17,12 +17,12 @@ Content-Type: application/json
 }
 
 ### UPDATE CINEMA
-PUT http://localhost:3000/api/cinemas/1
+PUT http://localhost:3000/api/cinemas/2
 Content-Type: application/json
 
 {
-  "name": "ToDelete",
-  "address": "delete",
+  "name": "Showcase",
+  "address": "Junin 501 - Alto Rosario , Rosario, Santa Fe",
   "movies": [1,2]
 }
 

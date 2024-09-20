@@ -3,6 +3,7 @@ import { Show } from "./show.entity.js"
 import { orm } from '../shared/db/orm.js'
 import { checkTimeShowInTheater } from "../utils/checkTimeShowInTheater.js"
 import { checkLanguageAndFormat } from "../utils/checkLanguageAndFormat.js"
+import { error } from "console"
 
 const em = orm.em
 
@@ -14,6 +15,19 @@ function sanitizeShowInput(req: Request, res: Response, next: NextFunction) {
     finishTime: req.body.finishTime,
     format: req.body.format,
     language: req.body.language
+  }
+
+  Object.keys(req.body.sanitizedInput).forEach((key) => {
+    if (req.body.sanitizedInput[key] === undefined) {
+      delete req.body.sanitizedInput[key]
+    }
+  })
+  next()
+}
+function sanitizeShowInputToFindByCinemaAndMovie(req: Request, res: Response, next: NextFunction) {
+  req.body.sanitizedInput = {
+    movieId: req.body.movieId,
+    cinemaId: req.body.cinemaId,
   }
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -72,7 +86,35 @@ async function add(req: Request, res: Response) {
     })
   }
 }
-
+//recibe movieId y cinemaId 
+//luego filtra las funciones que coinciden con el cine y la pelicula seleccionada
+//solo devuelve las funciones que tienen fecha y hora mayor a la actual, para evitar problemas 
+async function findByCinemaAndMovie(req: Request, res: Response){
+  try{
+    const currentDate = new Date();
+    const {movieId, cinemaId} = req.body.sanitizedInput;
+    if(cinemaId < 0 || 
+      movieId < 0 ||
+      !cinemaId ||
+      !movieId 
+    ){
+      res.status(400).json({message:"There is an error in the data you sent", error: "Bad Request"})
+    }else{
+      const shows = await em.find(Show, {
+        movie: movieId, 
+        theater: {cinema: {id: cinemaId}},
+        dayAndTime: { $gte: currentDate }
+      }, 
+        { populate: ['movie', 'theater', 'theater.cinema', 'format', 'language'] }
+      );
+      res.status(200).json({message: "Found Shows", data: shows});
+    }
+  }catch(error: any){
+   res.status(500).json({  
+      message: 'An error occurred while querying show',
+      error: error.message, });
+  }
+}
 
 async function update(req: Request, res: Response) {
   try {
@@ -102,7 +144,6 @@ async function update(req: Request, res: Response) {
   }
 }
 
-
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
@@ -121,4 +162,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeShowInput, findAll, findOne, add, update, remove }
+export { sanitizeShowInput, sanitizeShowInputToFindByCinemaAndMovie, findAll, findOne, add,findByCinemaAndMovie, update, remove }

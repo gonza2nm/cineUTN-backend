@@ -29,7 +29,7 @@ Content-Type: application/json
 GET http://localhost:3000/api/users
 
 ### GET - Obtener un usuario por ID
-GET http://localhost:3000/api/users/1
+GET http://localhost:3000/api/users/sabrina@gmail.com/1234
 
 ### PUT  Actualizar un usuario por ID
 PUT http://localhost:3000/api/users/1

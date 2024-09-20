@@ -6,7 +6,7 @@ const em = orm.em
 
 function sanitizeFormatInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    format_name: req.body.format_name
+    formatName: req.body.formatName
   }
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {

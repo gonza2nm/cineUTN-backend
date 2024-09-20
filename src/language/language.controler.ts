@@ -6,7 +6,7 @@ const em = orm.em
 
 function sanitizeLanguageInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    language_name: req.body.language_name
+    languageName: req.body.languageName
   }
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
