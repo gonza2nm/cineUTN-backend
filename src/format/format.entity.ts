@@ -7,7 +7,7 @@ import { Show } from '../show/show.entity.js';
 export class Format extends BaseEntity {
   
   @Property({ nullable: false, unique: true })
-  format_name!: string
+  formatName!: string
 
   @ManyToMany(() => Movie, (movie) => movie.formats)
   movies = new Collection<Movie>(this);

@@ -7,7 +7,7 @@ import { Show } from '../show/show.entity.js';
 export class Language extends BaseEntity {
   
   @Property({ nullable: false, unique: true })
-  language_name!: string;
+  languageName!: string;
 
   @ManyToMany(() => Movie, (movie) => movie.languages)
   movies = new Collection<Movie>(this);

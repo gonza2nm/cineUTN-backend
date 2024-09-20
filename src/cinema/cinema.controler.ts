@@ -41,7 +41,12 @@ si no se especifica devuelve solo el cine con sus salas
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const cinema = await em.findOne(Cinema, { id }, { populate: ['theaters', 'movies'] });
+    let cinema;
+    if(req.query.genres === "all"){
+      cinema = await em.findOne(Cinema, { id }, { populate: ['theaters', 'movies','movies.genres'] });
+    } else{
+      cinema = await em.findOne(Cinema, { id }, { populate: ['theaters', 'movies'] });
+    }
     if (cinema === null) {
       res.status(404).json({ message: 'cinema not found' });
     } else {

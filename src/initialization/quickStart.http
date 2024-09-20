@@ -16,28 +16,28 @@ POST http://localhost:3000/api/formats
 Content-Type: application/json
 
 {
-  "format_name": "3D"
+  "formatName": "3D"
 }
 ### create foramto 2
 POST http://localhost:3000/api/formats
 Content-Type: application/json
 
 {
-  "format_name": "4D"
+  "formatName": "4D"
 }
 ### create language 1
 POST http://localhost:3000/api/languages
 Content-Type: application/json
 
 {
-  "language_name": "Original, Subtitulada"
+  "languageName": "Original, Subtitulada"
 }
 ### create language 2
 POST http://localhost:3000/api/languages
 Content-Type: application/json
 
 {
-  "language_name": "Doblada"
+  "languageName": "Doblada"
 }
 ### genre 1
 POST http://localhost:3000/api/genres
@@ -57,7 +57,7 @@ Content-Type: application/json
   "formats": [1,2],
   "languages": [1,2],
   "genres": [1] ,
-  "imageLink": "soyUnLink"
+  "imageLink": "https://hips.hearstapps.com/hmg-prod/images/guardianes-de-la-galaxia-vol-3-chris-pratt-1549289460.jpg"
 } 
 
 ### create theather 1
@@ -74,12 +74,12 @@ POST http://localhost:3000/api/shows
 Content-Type: application/json
 
 {
-  "theater": 1,
+  "theater": 2,
   "movie": 1,
   "format": 1,
-  "language": 1,
-  "dayAndTime":"2024-08-01 14:00:00",
-  "finishTime":"2024-08-01 15:00:00"
+  "language": 2,
+  "dayAndTime":"2024-10-01 14:00:00",
+  "finishTime":"2024-10-01 15:00:00"
 }
 
 ### POST Crear un nuevo usuario
@@ -87,10 +87,10 @@ POST http://localhost:3000/api/users
 Content-Type: application/json
 
 {
-    "name": "martina",
-    "dni": "123456789",
+    "name": "admin",
+    "dni": "44524501",
     "surname": "fernandez",
-    "email": "martina.fer@gmail.com",
+    "email": "admin@gmail.com",
     "password": "password123",
     "type": "user"
 }

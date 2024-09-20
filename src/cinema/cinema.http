@@ -22,8 +22,8 @@ Content-Type: application/json
 
 {
   "name": "Showcase",
-  "address": "Junin 123 , Rosario, Santa Fe",
-  "movies": [2,3,5,13]
+  "address": "Junin 501 - Alto Rosario , Rosario, Santa Fe",
+  "movies": [1,2]
 }
 
 ### DELETE CINEMA
