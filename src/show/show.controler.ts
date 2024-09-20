@@ -104,7 +104,6 @@ async function findByCinemaAndMovie(req: Request, res: Response){
       }, 
         { populate: ['movie', 'theater', 'theater.cinema', 'format', 'language'] }
       );
-      console.log(shows);
       res.status(200).json({message: "Found Shows", data: shows});
     }
   }catch(error: any){
