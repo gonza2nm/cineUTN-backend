@@ -20,12 +20,13 @@ function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const buys = await em.find(Buy, {},{populate: ['user']}); 
+    const buys = await em.find(Buy, {}, { populate: ['user'] });
     res.status(200).json({ message: 'Found all buys', data: buys })
   } catch (error: any) {
-    res.status(500).json({ 
+    res.status(500).json({
       message: 'An error occurred while querying all buys',
-      error: error.message, })
+      error: error.message,
+    })
   }
 }
 
@@ -33,7 +34,7 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const buy = await em.findOneOrFail(Buy, { id },{populate:['user']});
+    const buy = await em.findOneOrFail(Buy, { id }, { populate: ['user'] });
     res.status(200).json({ message: 'Found buy', data: buy })
   } catch (error: any) {
     res.status(500).json({ message: 'An error occurred while querying the buy', error: error.message, })
@@ -44,16 +45,17 @@ async function findOne(req: Request, res: Response) {
 permito poner nulo el userId pero al crearlo debe tenerlo si o si*/
 async function add(req: Request, res: Response) {
   try {
-    if(req.body.sanitizedInput["user"] === undefined ){
+    if (req.body.sanitizedInput["user"] === undefined) {
       throw new Error("the buy must have an user");
-    }  
+    }
     const buy = em.create(Buy, req.body.sanitizedInput)
     await em.flush()
     res.status(201).json({ message: 'Buy created', data: buy })
   } catch (error: any) {
-    res.status(500).json({ 
-      message: 'An error occurred while adding the buy', 
-      error: error.message, })
+    res.status(500).json({
+      message: 'An error occurred while adding the buy',
+      error: error.message,
+    })
   }
 }
 
@@ -75,13 +77,12 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const buyToRemove = em.getReference(Buy, id);
     const buy = await em.findOne(Buy, { id });
     if (buy === null) {
       res.status(404).json({ message: 'Buy not found for deletion.' });
     } else {
-      await em.removeAndFlush(buyToRemove);
-      res.status(204).send({ message: 'Buy deleted' });
+      await em.removeAndFlush(buy);
+      res.status(200).send({ data: buy, message: 'Buy deleted' });
     }
   } catch (error: any) {
     res.status(500).json({

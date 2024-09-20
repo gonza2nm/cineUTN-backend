@@ -78,13 +78,13 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const ticketToRemove = await em.findOne(Ticket, { id });
-    if (!ticketToRemove) {
+    const ticket = await em.findOne(Ticket, { id });
+    if (!ticket) {
       //verifica si es null o undefined
       res.status(404).json({ message: 'ticket not found for deletion.' });
     } else {
-      await em.removeAndFlush(ticketToRemove);
-      res.status(200).json({ message: 'ticket deleted' });
+      await em.removeAndFlush(ticket);
+      res.status(200).json({ data: ticket, message: 'ticket deleted' });
     }
   } catch (error: any) {
     res.status(500).json({
