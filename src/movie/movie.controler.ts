@@ -114,4 +114,16 @@ async function remove(req: Request, res: Response) {
   }
 }
 
+/*
+ findNextMoviesReleases(dame las movies filtro -> (dame las funciones de las movies)-> filtro(fijate la funcion con menor dia /o siempre tener ordenadas las funciones de menor a mayor cuando se cargan/ y seleccionar funcion con menor dia si esta el proximos 30 dias)
+
+async function findNextMoviesReleases(req: Request, res: Response) {
+  try {
+    const movies = await em.find(Movie, { shows: { dayAndTime: { $gte: new Date } } })
+  } catch { }
+} 
+*/
+
+
+// exportar findNextMoviesReleases
 export { sanitizeMovieInput, findAll, findOne, add, update, remove };
