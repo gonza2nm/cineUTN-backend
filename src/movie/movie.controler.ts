@@ -25,7 +25,7 @@ function sanitizeMovieInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const movies = await em.find(Movie, {}, { populate: ['genres', 'formats','languages'] }); //en este tercer parametro le indicamos que relaciones queremos que cargue
+    const movies = await em.find(Movie, {}, { populate: ['genres', 'formats', 'languages'] }); //en este tercer parametro le indicamos que relaciones queremos que cargue
     res.status(200).json({ message: 'found all movies', data: movies });
   } catch (error: any) {
     res.status(500).json({
@@ -41,7 +41,7 @@ async function findOne(req: Request, res: Response) {
     const movie = await em.findOneOrFail(
       Movie,
       { id },
-      { populate: ['genres','formats','languages'] }
+      { populate: ['genres', 'formats', 'languages'] }
     );
     res.status(200).json({ message: 'movie found', data: movie });
   } catch (error: any) {
@@ -54,9 +54,9 @@ async function findOne(req: Request, res: Response) {
 //al añadir la pelicula controla que por lo menos este asignada a un formato y a un idioma
 async function add(req: Request, res: Response) {
   try {
-    if(!req.body.sanitizedInput.formats || !req.body.sanitizedInput.languages || req.body.sanitizedInput.formats.length === 0 || req.body.sanitizedInput.languages.length === 0){
-      res.status(400).json({ message: 'format or languages are undefined or null', error: "Bad Request" });  
-    }else{
+    if (!req.body.sanitizedInput.formats || !req.body.sanitizedInput.languages || req.body.sanitizedInput.formats.length === 0 || req.body.sanitizedInput.languages.length === 0) {
+      res.status(400).json({ message: 'format or languages are undefined or null', error: "Bad Request" });
+    } else {
       const movie = em.create(Movie, req.body.sanitizedInput);
       await em.flush();
       res.status(201).json({ message: 'movie created', data: movie });
@@ -98,13 +98,13 @@ async function remove(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const movieToRemove = await em.findOne(Movie, { id });
-    if (!movieToRemove) {
+    const movie = await em.findOne(Movie, { id });
+    if (!movie) {
       //verifica si es null o undefined
       res.status(404).json({ message: 'movie not found for deletion.' });
     } else {
-      await em.removeAndFlush(movieToRemove);
-      res.status(200).json({ message: 'movie deleted' });
+      await em.removeAndFlush(movie);
+      res.status(200).json({ data: movie, message: 'movie deleted' });
     }
   } catch (error: any) {
     res.status(500).json({

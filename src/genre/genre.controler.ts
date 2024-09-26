@@ -73,12 +73,12 @@ async function remove(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const genreToRemove = await em.findOne(Genre, { id })
-    if (!genreToRemove) { //verifica si es null o undefined
+    const genre = await em.findOne(Genre, { id })
+    if (!genre) { //verifica si es null o undefined
       res.status(404).json({ message: 'genre not found for deletion.' })
     } else {
-      await em.removeAndFlush(genreToRemove)
-      res.status(200).json({ message: 'genre deleted' });
+      await em.removeAndFlush(genre)
+      res.status(200).json({ data: genre, message: 'genre deleted' });
     }
   } catch (error: any) {
     res.status(500).json({ message: 'An error occurred while deleting the genre', error: error.message })

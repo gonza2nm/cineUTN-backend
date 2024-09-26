@@ -86,13 +86,12 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const theaterToRemove = em.getReference(Theater, id);
     const theater = await em.findOne(Theater, { id });
     if (theater === null) {
-      res.status(404).json({ message: 'theater not found to delete.' });
+      res.status(404).json({ message: 'thesater not found to delete.' });
     } else {
-      await em.removeAndFlush(theaterToRemove);
-      res.status(200).json({ message: 'theater deleted' });
+      await em.removeAndFlush(theater);
+      res.status(200).json({ data: theater, message: 'theater deleted' });
     }
   } catch (error: any) {
     res.status(500).json({

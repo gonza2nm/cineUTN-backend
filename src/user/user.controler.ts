@@ -96,19 +96,18 @@ async function update(req: Request, res: Response) {
   }
 }
 
-//por id para poder hacer el getReference
+//por id 
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const userToRemove = await em.getReference(User, id);
     const user = await em.findOne(User, { id });
     if (!user) {
       return res.status(404).json({
         message: 'user not found to delete.',
       });
     } else {
-      await em.removeAndFlush(userToRemove);
-      res.status(200).json({ message: 'user deleted' });
+      await em.removeAndFlush(user);
+      res.status(200).json({ data: user, message: 'user deleted' });
     }
   } catch (error: any) {
     res.status(500).json({
