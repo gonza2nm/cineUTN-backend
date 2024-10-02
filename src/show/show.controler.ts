@@ -92,25 +92,19 @@ async function add(req: Request, res: Response) {
 async function findByCinemaAndMovie(req: Request, res: Response){
   try{
     const {movieId, cinemaId} = req.body.sanitizedInput;
-    if(cinemaId < 0 || 
-      movieId < 0 ||
-      !cinemaId ||
-      !movieId 
-    ){
+    if(cinemaId < 0 || movieId < 0 || !cinemaId || !movieId ) {
       res.status(400).json({message:"There is an error in the data you sent", error: "Bad Request"})
-    }else{
+    } else {
       let currentDate = new Date()
-      const shows = await em.find(Show, {
-        movie: movieId, 
-        theater: {cinema: {id: cinemaId}},
-        dayAndTime: { $gte: currentDate}
-      }, 
+      const shows = await em.find(
+        Show, 
+        { movie: movieId, theater: {cinema: {id: cinemaId}}, dayAndTime: { $gte: currentDate} }, 
         { populate: ['movie', 'theater', 'theater.cinema', 'format', 'language'] }
       );
       res.status(200).json({message: "Found Shows", data: shows});
     }
   }catch(error: any){
-   res.status(500).json({  
+  res.status(500).json({  
       message: 'An error occurred while querying show',
       error: error.message, });
   }
