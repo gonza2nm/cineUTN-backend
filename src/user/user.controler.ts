@@ -28,7 +28,7 @@ function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
 
 async function add(req: Request, res: Response) {
   try {
-    let message = 'user created';
+    let message = 'User created';
     if (req.body.cinema !== undefined && req.body.type === 'user') {
       message +=
         ', but this user does not have permissions to associate with a cinema as a manager';
@@ -58,12 +58,10 @@ async function findAll(req: Request, res: Response) {
   }
 }
 
+/*
 async function findOne(req: Request, res: Response) {
   try {
-    //const id = parseInt(req.params.id);
-    const email = req.params.email;
-    const password = req.params.password;
-    const user = await em.findOneOrFail(User, { email, password }, { populate: ['buys'] });
+    const user = await em.findOneOrFail(User, req.body.sanitizedInput, { populate: ['buys'] });
     if (!user) {
       res.status(404).json({ message: 'user not found' });
     } else {
@@ -74,6 +72,23 @@ async function findOne(req: Request, res: Response) {
       message: 'An error occurred while querying the user',
       error: error.message,
     });
+  }
+}
+*/
+
+async function findOne(req: Request, res: Response) {
+  try {
+    const user = await em.findOneOrFail(User, req.body.sanitizedInput, { populate: ['buys'] });
+    res.status(200).json({ message: 'Found user', data: user });
+  } catch (error: any) {
+    if (error.name === "NotFoundError") {
+      res.status(404).json({ message: 'User not found', error: error.message });
+    } else {
+      res.status(500).json({
+      message: 'An error occurred while querying the user',
+      error: error.message,
+    });
+    }
   }
 }
 
