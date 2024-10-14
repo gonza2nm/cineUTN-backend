@@ -1,6 +1,8 @@
 # coverage reports
 coverage
 
+.tscondif.tsbuildinfo
+
 # API keys and secrets
 .env
 

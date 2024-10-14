@@ -50,6 +50,27 @@ async function findAll(req: Request, res: Response) {
   }
 }
 
+async function findAllByCinema(req: Request, res: Response) {
+  try {
+    const cinema_id = Number.parseInt(req.params.id);
+    const currentDate = new Date();
+    const shows = await em.find(Show, 
+      {theater:
+        {
+          cinema:{id:cinema_id}
+        },
+        dayAndTime: {$gte: currentDate}
+      },
+      { populate: ['theater', 'movie',"format","language"]  
+    });
+    res.status(200).json({ message: 'Found all shows', data: shows })
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'An error occurred while querying all shows',
+      error: error.message,
+    })
+  }
+}
 
 async function findOne(req: Request, res: Response) {
   try {
@@ -162,4 +183,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeShowInput, sanitizeShowInputToFindByCinemaAndMovie, findAll, findOne, add,findByCinemaAndMovie, update, remove }
+export { sanitizeShowInput, sanitizeShowInputToFindByCinemaAndMovie, findAll, findOne, add,findByCinemaAndMovie, findAllByCinema, update, remove }
