@@ -3,7 +3,6 @@ import { Show } from "./show.entity.js"
 import { orm } from '../shared/db/orm.js'
 import { checkTimeShowInTheater } from "../utils/checkTimeShowInTheater.js"
 import { checkLanguageAndFormat } from "../utils/checkLanguageAndFormat.js"
-import { error } from "console"
 
 const em = orm.em
 
@@ -61,8 +60,10 @@ async function findAllByCinema(req: Request, res: Response) {
         },
         dayAndTime: {$gte: currentDate}
       },
-      { populate: ['theater', 'movie',"format","language"]  
-    });
+      { populate: ['theater', 'movie',"format","language"],
+        orderBy: {dayAndTime: "ASC"}
+      }
+    );
     res.status(200).json({ message: 'Found all shows', data: shows })
   } catch (error: any) {
     res.status(500).json({
@@ -74,8 +75,13 @@ async function findAllByCinema(req: Request, res: Response) {
 
 async function findOne(req: Request, res: Response) {
   try {
-    const id = Number.parseInt(req.params.id)
-    const show = await em.findOneOrFail(Show, { id }, { populate: ['theater', 'movie'] })
+    const id = Number.parseInt(req.params.id);
+    let show;
+    if(req.query.moredetails === "yes"){
+      show = await em.findOneOrFail(Show, { id }, { populate: ['theater', 'movie','format','language', "movie.formats", "movie.languages"] })
+    } else{
+      show = await em.findOneOrFail(Show, { id }, { populate: ['theater', 'movie','format','language'] })
+    }
     res.status(200).json({ message: 'Found show', data: show })
   } catch (error: any) {
     res.status(500).json({
@@ -89,7 +95,7 @@ async function findOne(req: Request, res: Response) {
 async function add(req: Request, res: Response) {
   try {
     const { dayAndTime, theater, finishTime, movie, format, language } = req.body.sanitizedInput;
-    const overlapping = await checkTimeShowInTheater(dayAndTime, finishTime, theater);
+    const overlapping = await checkTimeShowInTheater(dayAndTime, finishTime, theater, null);
     const is_format_languages_ok = await checkLanguageAndFormat(movie, language, format);
     if (overlapping) {
       res.status(400).json({ message: "The show time overlaps with another show in the same theater" })
@@ -147,17 +153,24 @@ async function update(req: Request, res: Response) {
     } else if (!showToUpdate) {
       res.status(404).json({ message: 'Show not found for updating.' });
     } else {
-      const overlapping = await checkTimeShowInTheater(dayAndTime, finishTime, theater);
-      const is_format_languages_ok = await checkLanguageAndFormat(movie, language, format);
-      if (overlapping) {
-        res.status(400).json({ message: "The show time overlaps with another show in the same theater" })
-      } else if (!is_format_languages_ok) {
-        res.status(400).json({ message: 'the language or the format do not exist in that movie' })
-      }
-      else {
-        const show = em.create(Show, req.body.sanitizedInput)
-        await em.flush()
-        res.status(200).json({ message: 'Show updated', data: show })
+      if(showToUpdate.id != undefined){
+        const overlapping = await checkTimeShowInTheater(dayAndTime, finishTime, theater, showToUpdate.id);
+        const is_format_languages_ok = await checkLanguageAndFormat(movie, language, format);
+        if (overlapping) {
+          res.status(400).json({ message: "The show time overlaps with another show in the same theater" })
+        } else if (!is_format_languages_ok) {
+          res.status(400).json({ message: 'the language or the format do not exist in that movie' })
+        }
+        else {
+          showToUpdate.dayAndTime = dayAndTime;
+          showToUpdate.theater = theater;
+          showToUpdate.finishTime = finishTime;
+          showToUpdate.movie = movie;
+          showToUpdate.format = format;
+          showToUpdate.language = language;
+          await em.flush()
+          res.status(200).json({ message: 'Show updated', data: showToUpdate })
+        }
       }
     }
   } catch (error: any) {
