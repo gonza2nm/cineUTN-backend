@@ -60,6 +60,13 @@ Content-Type: application/json
   "imageLink": "https://a.ltrbxd.com/resized/film-poster/9/3/6/7/6/93676-guardians-of-the-galaxy-0-1000-0-1500-crop.jpg?v=3cc8cb967f"
 } 
 
+### UPDATE CINEMA para meter la pelicula
+PUT http://localhost:3000/api/cinemas/1
+Content-Type: application/json
+
+{
+  "movies": [1]
+}
 ### create theather 1
 POST http://localhost:3000/api/theaters
 Content-Type: application/json
@@ -78,8 +85,8 @@ Content-Type: application/json
   "movie": 1,
   "format": 1,
   "language": 1,
-  "dayAndTime":"2024-09-29 14:00:00",
-  "finishTime":"2024-09-29 15:00:00"
+  "dayAndTime":"2024-11-02 14:00:00",
+  "finishTime":"2024-11-02 15:00:00"
 }
 
 ### POST Crear un nuevo usuario
