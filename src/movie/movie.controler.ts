@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Movie } from './movie.entity.js';
 import { orm } from '../shared/db/orm.js';
-import { error } from 'console';
+import { Genre } from '../genre/genre.entity.js';
 
 const em = orm.em;
 
@@ -11,6 +11,7 @@ function sanitizeMovieInput(req: Request, res: Response, next: NextFunction) {
     description: req.body.description,
     imageLink: req.body.imageLink,
     formats: req.body.formats,
+    cinemas: req.body.cinemas,
     languages: req.body.languages,
     genres: req.body.genres,
   }; //cuidado! antes mostraba los generos vacios pero fue porque no los habia agregado en este sanitize input
@@ -25,7 +26,7 @@ function sanitizeMovieInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const movies = await em.find(Movie, {}, { populate: ['genres', 'formats', 'languages'] }); //en este tercer parametro le indicamos que relaciones queremos que cargue
+    const movies = await em.find(Movie, {}, { populate: ['genres', 'cinemas', 'formats', 'languages'] }); //en este tercer parametro le indicamos que relaciones queremos que cargue
     res.status(200).json({ message: 'found all movies', data: movies });
   } catch (error: any) {
     res.status(500).json({
@@ -41,7 +42,7 @@ async function findOne(req: Request, res: Response) {
     const movie = await em.findOneOrFail(
       Movie,
       { id },
-      { populate: ['genres', 'formats', 'languages'] }
+      { populate: ['genres', 'cinemas', 'formats', 'languages'] }
     );
     res.status(200).json({ message: 'movie found', data: movie });
   } catch (error: any) {
@@ -68,7 +69,7 @@ async function add(req: Request, res: Response) {
     });
   }
 }
-
+/*
 async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
@@ -83,18 +84,39 @@ async function update(req: Request, res: Response) {
     });
   }
 }
-/*
-async function remove(req: Request, res: Response) {
+*/
+async function update(req: Request, res: Response) {
   try {
-    const id = Number.parseInt(req.params.id)
-    const movieToRemove = em.getReference(Movie, id)
-    await em.removeAndFlush(movieToRemove)
-    res.status(200).send({ message: 'movie deleted' })
+    const id = Number.parseInt(req.params.id);
+    const movieToUpdate = await em.findOneOrFail(Movie, { id });
+
+    // Para manejar relaciones debemos usar los id y obtener sus referencias.
+    if (req.body.sanitizedInput.genres) {
+      // Usamos em.getReference para asignar las referencias de los genero
+      movieToUpdate.genres.set(req.body.sanitizedInput.genres.map((genre: { id: number }) => em.getReference(Genre, genre.id)));
+    }
+
+    // Asignar otros campos
+    em.assign(movieToUpdate, {
+      name: req.body.sanitizedInput.name,
+      description: req.body.sanitizedInput.description,
+      imageLink: req.body.sanitizedInput.imageLink,
+      // Asegúrate de agregar otros campos que quieras actualizar
+      formats: req.body.sanitizedInput.formats,
+      cinemas: req.body.sanitizedInput.cinemas,
+      languages: req.body.sanitizedInput.languages,
+    });
+
+    await em.flush();
+    res.status(200).json({ message: 'Movie updated', data: movieToUpdate });
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({
+      message: 'An error occurred while updating the movie',
+      error: error.message,
+    });
   }
 }
-*/
+
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
