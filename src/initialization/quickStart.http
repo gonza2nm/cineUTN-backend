@@ -16,21 +16,21 @@ POST http://localhost:3000/api/formats
 Content-Type: application/json
 
 {
-  "formatName": "3D"
+  "formatName": "2D"
 }
 ### create foramto 2
 POST http://localhost:3000/api/formats
 Content-Type: application/json
 
 {
-  "formatName": "4D"
+  "formatName": "3D"
 }
 ### create language 1
 POST http://localhost:3000/api/languages
 Content-Type: application/json
 
 {
-  "languageName": "Original, Subtitulada"
+  "languageName": "Original"
 }
 ### create language 2
 POST http://localhost:3000/api/languages
