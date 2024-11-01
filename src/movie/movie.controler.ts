@@ -3,6 +3,8 @@ import { Movie } from './movie.entity.js';
 import { orm } from '../shared/db/orm.js';
 import { Genre } from '../genre/genre.entity.js';
 import { Format } from '../format/format.entity.js';
+import { Language } from '../language/language.entity.js';
+import { Cinema } from '../cinema/cinema.entity.js';
 
 const em = orm.em;
 
@@ -98,8 +100,15 @@ async function update(req: Request, res: Response) {
     }
 
     if (req.body.sanitizedInput.formats) {
-      // Usamos em.getReference para asignar las referencias de los genero
       movieToUpdate.formats.set(req.body.sanitizedInput.formats.map((format: { id: number }) => em.getReference(Format, format.id)));
+    }
+
+    if (req.body.sanitizedInput.languages) {
+      movieToUpdate.languages.set(req.body.sanitizedInput.languages.map((language: { id: number }) => em.getReference(Language, language.id)));
+    }
+
+    if (req.body.sanitizedInput.cinemas) {
+      movieToUpdate.cinemas.set(req.body.sanitizedInput.cinemas.map((cinema: { id: number }) => em.getReference(Cinema, cinema.id)));
     }
 
     // Asignar otros campos
@@ -107,9 +116,6 @@ async function update(req: Request, res: Response) {
       name: req.body.sanitizedInput.name,
       description: req.body.sanitizedInput.description,
       imageLink: req.body.sanitizedInput.imageLink,
-      // Pasar estos AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-      cinemas: req.body.sanitizedInput.cinemas,
-      languages: req.body.sanitizedInput.languages,
     });
 
     await em.flush();
