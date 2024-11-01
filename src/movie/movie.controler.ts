@@ -107,7 +107,7 @@ async function update(req: Request, res: Response) {
       name: req.body.sanitizedInput.name,
       description: req.body.sanitizedInput.description,
       imageLink: req.body.sanitizedInput.imageLink,
-      // Pasar estos
+      // Pasar estos AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
       cinemas: req.body.sanitizedInput.cinemas,
       languages: req.body.sanitizedInput.languages,
     });
