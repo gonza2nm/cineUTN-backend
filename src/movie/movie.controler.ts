@@ -56,6 +56,7 @@ async function findOne(req: Request, res: Response) {
   }
 }
 //al añadir la pelicula controla que por lo menos este asignada a un formato y a un idioma
+/*
 async function add(req: Request, res: Response) {
   try {
     if (!req.body.sanitizedInput.formats || !req.body.sanitizedInput.languages || req.body.sanitizedInput.formats.length === 0 || req.body.sanitizedInput.languages.length === 0) {
@@ -72,6 +73,41 @@ async function add(req: Request, res: Response) {
     });
   }
 }
+*/
+async function add(req: Request, res: Response) { //LE PONGO MAS RESTRICCIONES PARA QUE NO PUEDA CARGARLA SIN GENEROS, ETC O SI LE DEJO AL USUARIA CARGARLA SIN RELACIONES?
+  try {
+    if (!req.body.sanitizedInput.formats || !req.body.sanitizedInput.languages || req.body.sanitizedInput.formats.length === 0 || req.body.sanitizedInput.languages.length === 0) {
+      res.status(400).json({ message: 'format or languages are undefined or null', error: "Bad Request" });
+    } else {
+      // Para manejar relaciones debemos usar los id y obtener sus referencias.
+      if (req.body.sanitizedInput.genres) {
+        // Usamos em.getReference para asignar las referencias de los genero
+        req.body.sanitizedInput.genres.map((genre: { id: number }) => em.getReference(Genre, genre.id));
+      }
+
+      if (req.body.sanitizedInput.formats) {
+        req.body.sanitizedInput.formats.map((format: { id: number }) => em.getReference(Format, format.id));
+      }
+
+      if (req.body.sanitizedInput.languages) {
+        req.body.sanitizedInput.languages.map((language: { id: number }) => em.getReference(Language, language.id));
+      }
+
+      if (req.body.sanitizedInput.cinemas) {
+        req.body.sanitizedInput.cinemas.map((cinema: { id: number }) => em.getReference(Cinema, cinema.id));
+      }
+      const movie = em.create(Movie, req.body.sanitizedInput);
+      await em.flush();
+      res.status(201).json({ message: 'movie created', data: movie });
+    }
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'An error occurred while adding the movie',
+      error: error.message,
+    });
+  }
+}
+
 /*
 async function update(req: Request, res: Response) {
   try {
