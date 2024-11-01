@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { Movie } from './movie.entity.js';
 import { orm } from '../shared/db/orm.js';
 import { Genre } from '../genre/genre.entity.js';
+import { Format } from '../format/format.entity.js';
 
 const em = orm.em;
 
@@ -96,13 +97,17 @@ async function update(req: Request, res: Response) {
       movieToUpdate.genres.set(req.body.sanitizedInput.genres.map((genre: { id: number }) => em.getReference(Genre, genre.id)));
     }
 
+    if (req.body.sanitizedInput.formats) {
+      // Usamos em.getReference para asignar las referencias de los genero
+      movieToUpdate.formats.set(req.body.sanitizedInput.formats.map((format: { id: number }) => em.getReference(Format, format.id)));
+    }
+
     // Asignar otros campos
     em.assign(movieToUpdate, {
       name: req.body.sanitizedInput.name,
       description: req.body.sanitizedInput.description,
       imageLink: req.body.sanitizedInput.imageLink,
-      // Asegúrate de agregar otros campos que quieras actualizar
-      formats: req.body.sanitizedInput.formats,
+      // Pasar estos
       cinemas: req.body.sanitizedInput.cinemas,
       languages: req.body.sanitizedInput.languages,
     });
