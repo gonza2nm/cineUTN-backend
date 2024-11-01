@@ -78,16 +78,22 @@ async function findOne(req: Request, res: Response) {
 
 async function findOne(req: Request, res: Response) {
   try {
-    const user = await em.findOneOrFail(User, req.body.sanitizedInput, { populate: ['buys'] });
+    const email = req.body.email;
+    const password = req.body.password;
+    const user = await em.findOneOrFail(
+      User,
+      { email, password },
+      { populate: ['buys'] }
+    );
     res.status(200).json({ message: 'Found user', data: user });
   } catch (error: any) {
-    if (error.name === "NotFoundError") {
+    if (error.name === 'NotFoundError') {
       res.status(404).json({ message: 'User not found', error: error.message });
     } else {
       res.status(500).json({
-      message: 'An error occurred while querying the user',
-      error: error.message,
-    });
+        message: 'An error occurred while querying the user',
+        error: error.message,
+      });
     }
   }
 }
@@ -114,7 +120,7 @@ async function update(req: Request, res: Response) {
   }
 }
 
-//por id 
+//por id
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);

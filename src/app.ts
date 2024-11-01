@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: (origin, callback) => {
-      const ACCEPTED_ORIGINS = ['http://localhost:4200','https://cineutn.vercel.app'];
+      const ACCEPTED_ORIGINS = ['http://localhost:4200','http://localhost:3001','https://cineutn.vercel.app'];
       if (!origin) {
         return callback(null, false);
       } else if (ACCEPTED_ORIGINS.includes(origin)) {
