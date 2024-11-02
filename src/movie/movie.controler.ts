@@ -17,6 +17,7 @@ function sanitizeMovieInput(req: Request, res: Response, next: NextFunction) {
     cinemas: req.body.cinemas,
     languages: req.body.languages,
     genres: req.body.genres,
+    shows: req.body.shows,
   }; //cuidado! antes mostraba los generos vacios pero fue porque no los habia agregado en este sanitize input
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -167,13 +168,19 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const movie = await em.findOne(Movie, { id });
+    const movie = await em.findOne(Movie, { id }, { populate: ['shows'] });
     if (!movie) {
       //verifica si es null o undefined
       res.status(404).json({ message: 'movie not found for deletion.' });
     } else {
-      await em.removeAndFlush(movie);
-      res.status(200).json({ data: movie, message: 'movie deleted' });
+      //verifica si hay funciones asociadas a la pelicula
+      if (movie.shows.length === 0) {
+        await em.removeAndFlush(movie);
+        res.status(200).json({ data: movie, message: 'movie deleted' });
+      } else {
+        console.log(movie.shows)
+        res.status(409).json({ message: 'cannot delete this movie because it still has associated shows' });
+      }
     }
   } catch (error: any) {
     res.status(500).json({
