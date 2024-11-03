@@ -16,21 +16,21 @@ POST http://localhost:3000/api/formats
 Content-Type: application/json
 
 {
-  "formatName": "3D"
+  "formatName": "2D"
 }
 ### create foramto 2
 POST http://localhost:3000/api/formats
 Content-Type: application/json
 
 {
-  "formatName": "4D"
+  "formatName": "3D"
 }
 ### create language 1
 POST http://localhost:3000/api/languages
 Content-Type: application/json
 
 {
-  "languageName": "Original, Subtitulada"
+  "languageName": "Original"
 }
 ### create language 2
 POST http://localhost:3000/api/languages
@@ -60,6 +60,13 @@ Content-Type: application/json
   "imageLink": "https://a.ltrbxd.com/resized/film-poster/9/3/6/7/6/93676-guardians-of-the-galaxy-0-1000-0-1500-crop.jpg?v=3cc8cb967f"
 } 
 
+### UPDATE CINEMA para meter la pelicula
+PUT http://localhost:3000/api/cinemas/1
+Content-Type: application/json
+
+{
+  "movies": [1]
+}
 ### create theather 1
 POST http://localhost:3000/api/theaters
 Content-Type: application/json
@@ -74,12 +81,12 @@ POST http://localhost:3000/api/shows
 Content-Type: application/json
 
 {
-  "theater": 2,
+  "theater": 1,
   "movie": 1,
   "format": 1,
-  "language": 2,
-  "dayAndTime":"2024-10-01 14:00:00",
-  "finishTime":"2024-10-01 15:00:00"
+  "language": 1,
+  "dayAndTime":"2024-11-02 14:00:00",
+  "finishTime":"2024-11-02 15:00:00"
 }
 
 ### POST Crear un nuevo usuario
