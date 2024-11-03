@@ -9,7 +9,7 @@ POST http://localhost:3000/api/languages
 Content-Type: application/json
 
 {
-  "language_name": "Subtitulada"
+  "languageName": "Subtitulada"
 }
 
 ### crear un nuevo language
@@ -17,7 +17,7 @@ POST http://localhost:3000/api/languages
 Content-Type: application/json
 
 {
-  "language_name": "Doblada"
+  "languageName": "Doblada"
 }
 
 ### borrar un language
