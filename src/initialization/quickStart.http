@@ -30,7 +30,7 @@ POST http://localhost:3000/api/languages
 Content-Type: application/json
 
 {
-  "languageName": "Original"
+  "languageName": "Subtitulada"
 }
 ### create language 2
 POST http://localhost:3000/api/languages
