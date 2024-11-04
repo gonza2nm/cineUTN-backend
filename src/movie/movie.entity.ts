@@ -18,7 +18,7 @@ export class Movie extends BaseEntity {
   @Property({ nullable: false }) //no es unique porque varias peliculas pueden tener el mismo nombre
   name!: string;
 
-  @Property({ nullable: false })
+  @Property({ type: 'text', nullable: false })
   description!: string;
 
   @Property({ nullable: false })
@@ -27,16 +27,16 @@ export class Movie extends BaseEntity {
   @ManyToMany(() => Genre, (genre) => genre.movies)
   genres = new Collection<Genre>(this);
 
-  @OneToMany(() => Show, (show) => show.movie,{cascade:[Cascade.PERSIST, Cascade.MERGE]})
+  @OneToMany(() => Show, (show) => show.movie, { cascade: [Cascade.PERSIST, Cascade.MERGE] })
   shows = new Collection<Show>(this);
 
   @ManyToMany(() => Cinema, (cinema) => cinema.movies)
   cinemas = new Collection<Cinema>(this);
 
-  @ManyToMany(() => Format, (format) => format.movies, { owner: true }) 
+  @ManyToMany(() => Format, (format) => format.movies, { owner: true })
   formats = new Collection<Format>(this);
 
-  @ManyToMany(() => Language, (language) => language.movies, { owner: true }) 
+  @ManyToMany(() => Language, (language) => language.movies, { owner: true })
   languages = new Collection<Language>(this);
 
 }
