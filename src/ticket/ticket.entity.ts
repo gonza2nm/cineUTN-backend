@@ -11,5 +11,5 @@ export class Ticket extends BaseEntity {
   show!: Rel<Show>;
 
   @ManyToOne(() => Buy, { nullable: false })
-  buy!: Buy;
+  buy!: Rel<Buy>;
 }

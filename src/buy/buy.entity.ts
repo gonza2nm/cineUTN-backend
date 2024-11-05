@@ -12,6 +12,9 @@ export class Buy extends BaseEntity {
   @Property({ nullable: false })
   total!: number;
 
+  @Property({ nullable: false })
+  status!: string;
+
   @Property({ type: DateTimeType })
   fechaHora = new Date();
 
@@ -21,6 +24,7 @@ export class Buy extends BaseEntity {
 
   //Relacion con la entidad entrada
   @OneToMany(() => Ticket, (ticket) => ticket.buy)
+  // @OneToMany(() => Ticket, ticket => ticket.buy, { cascade: ['remove'] })
   tickets = new Collection<Ticket>(this)
 
   //Relacion con la entidad productos

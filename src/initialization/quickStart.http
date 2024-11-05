@@ -114,3 +114,16 @@ Content-Type: application/json
   "show": 1,
   "buy": 1
 }
+
+### CREATE a show 2 ----------------------------------------------------------------------
+POST http://localhost:3000/api/shows
+Content-Type: application/json
+
+{
+  "theater": 2,
+  "movie": 7,
+  "format": 1,
+  "language": 2,
+  "dayAndTime":"2024-11-05 23:30:00",
+  "finishTime":"2024-11-05 23:50:00"
+}

@@ -5,7 +5,7 @@ import {
   findOne,
   add,
   update,
-  remove,
+  remove
 } from './buy.controler.js';
 
 export const buyRouter = Router();

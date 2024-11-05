@@ -30,6 +30,20 @@ async function findAll(req: Request, res: Response) {
   }
 }
 
+
+async function findAllTicketbyPurchase(req: Request, res: Response) {
+  try {
+    const tickets = await em.find(Ticket, req.body.sanitizedInput, { populate: ['show', 'show.movie', 'show.theater', 'show.format', 'show.language'] });
+    res.status(200).json({ message: 'found all tickets', data: tickets });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'An error occurred while finding all the tickets',
+      error: error.message,
+    });
+  }
+}
+
+
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
@@ -94,4 +108,21 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeTicketInput, findAll, findOne, add, update, remove };
+async function remove2(req: Request, res: Response) {
+  try {
+    const tickets = await em.find(Ticket, req.body.sanitizedInput);
+    if(tickets.length === 0) {
+      res.status(404).json({ message: 'Tickets not found for deletion.' });
+    } else {
+      await em.removeAndFlush(tickets);
+      res.status(200).json({ data: tickets, message: 'All tickets deleted' });
+    }
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'An error occurred while deleting all the tickets',
+      error: error.message,
+    });
+  }
+}
+
+export { sanitizeTicketInput, findAll, findOne, add, update, remove, findAllTicketbyPurchase, remove2 };

@@ -13,7 +13,7 @@ function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
     email: req.body.email,
     password: req.body.password,
     type: req.body.type,
-    cinema: req.body.cinema,
+    cinema: req.body.cinema
   };
   if (req.body.sanitizedInput['type'] !== 'manager') {
     delete req.body.sanitizedInput['cinema'];
