@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { User } from './user.entity.js';
 import { orm } from '../shared/db/orm.js';
+import { Cinema } from '../cinema/cinema.entity.js';
 
 //findOne an update reciben dni y remove el id por la implementacion de getreference
 const em = orm.em;
@@ -14,6 +15,7 @@ function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
     password: req.body.password,
     type: req.body.type,
     cinema: req.body.cinema,
+    buys: req.body.buys
   };
   if (req.body.sanitizedInput['type'] !== 'manager') {
     delete req.body.sanitizedInput['cinema'];
@@ -33,8 +35,15 @@ async function add(req: Request, res: Response) {
       message +=
         ', but this user does not have permissions to associate with a cinema as a manager';
     } else if (req.body.type === 'manager' && req.body.cinema === undefined) {
+      console.log(req.body)
       throw new Error('A manager must be associated with a cinema');
     }
+
+    if (req.body.type === 'manager') {
+      req.body.sanitizedInput.cinema = em.getReference(Cinema, req.body.sanitizedInput.cinema.id)
+    }
+
+
     const user = em.create(User, req.body.sanitizedInput);
     await em.flush();
     res.status(201).json({ message: message, data: user });
@@ -98,6 +107,56 @@ async function findOne(req: Request, res: Response) {
   }
 }
 
+async function findAllManagers(req: Request, res: Response) {
+  try {
+    const users = await em.find(User, { type: 'manager' });
+    res.status(200).json({ message: 'found all managers', data: users });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'An error occurred while finding all the managers',
+      error: error.message,
+    });
+  }
+}
+async function findOneManager(req: Request, res: Response) {
+  try {
+    const id = Number.parseInt(req.params.id);
+    const user = await em.findOneOrFail(User, { id, type: 'manager' }, { populate: ['cinema'] });
+    res.status(200).json({ message: 'manager found', data: user });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'An error occurred while finding the manager',
+      error: error.message,
+    });
+  }
+}
+/*
+async function findOneManager(req: Request, res: Response) {
+  try {
+    const id = Number.parseInt(req.params.id);
+    console.log('Searching for manager with ID:', id); // Log para depuración
+    const user = await em.findOneOrFail(User, { id }, { populate: ['cinema'] });
+
+    // Aquí podemos verificar si el usuario realmente es un manager si es necesario
+    if (user.type !== 'manager') {
+      return res.status(404).json({ message: 'User is not a manager' });
+    }
+
+    res.status(200).json({ message: 'Manager found', data: user });
+  } catch (error: any) {
+    console.error('Error finding manager:', error); // Log para depuración
+    if (error.name === 'NotFoundError') {
+      res.status(404).json({ message: 'Manager not found' });
+    } else {
+      res.status(500).json({
+        message: 'An error occurred while finding the manager',
+        error: error.message,
+      });
+    }
+  }
+}
+*/
+
 async function update(req: Request, res: Response) {
   try {
     const id = parseInt(req.params.id);
@@ -105,12 +164,16 @@ async function update(req: Request, res: Response) {
     if (userToUpdate === null) {
       res.status(404).json({ message: 'user not found to update' });
     } else {
-      em.assign(userToUpdate, req.body.sanitizedInput);
-      await em.flush();
-      res.status(200).json({
-        message: 'user updated',
-        data: userToUpdate,
-      });
+      if (userToUpdate.type === 'manager' && !userToUpdate.cinema) {
+        res.status(400).json({ message: 'The manager must be assinged to only one cinema.', error: "Bad Request" });
+      } else {
+        em.assign(userToUpdate, req.body.sanitizedInput);
+        await em.flush();
+        res.status(200).json({
+          message: 'user updated',
+          data: userToUpdate,
+        });
+      }
     }
   } catch (error: any) {
     res.status(500).json({
@@ -141,4 +204,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeUserInput, findAll, findOne, add, update, remove };
+export { sanitizeUserInput, findAll, findAllManagers, findOne, findOneManager, add, update, remove };
