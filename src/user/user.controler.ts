@@ -35,7 +35,6 @@ async function add(req: Request, res: Response) {
       message +=
         ', but this user does not have permissions to associate with a cinema as a manager';
     } else if (req.body.type === 'manager' && req.body.cinema === undefined) {
-      console.log(req.body)
       throw new Error('A manager must be associated with a cinema');
     }
 
