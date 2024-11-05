@@ -75,7 +75,7 @@ async function add(req: Request, res: Response) {
   }
 }
 */
-async function add(req: Request, res: Response) { //LE PONGO MAS RESTRICCIONES PARA QUE NO PUEDA CARGARLA SIN GENEROS, ETC O SI LE DEJO AL USUARIA CARGARLA SIN RELACIONES?
+async function add(req: Request, res: Response) {
   try {
     if (!req.body.sanitizedInput.formats || !req.body.sanitizedInput.languages || req.body.sanitizedInput.formats.length === 0 || req.body.sanitizedInput.languages.length === 0) {
       res.status(400).json({ message: 'format or languages are undefined or null', error: "Bad Request" });
