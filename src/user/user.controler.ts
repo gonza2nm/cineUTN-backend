@@ -189,11 +189,11 @@ async function remove(req: Request, res: Response) {
     const user = await em.findOne(User, { id });
     if (!user) {
       return res.status(404).json({
-        message: 'user not found to delete.',
+        message: 'User not found to delete.',
       });
     } else {
       await em.removeAndFlush(user);
-      res.status(200).json({ data: user, message: 'user deleted' });
+      res.status(200).json({ data: user, message: 'User deleted' });
     }
   } catch (error: any) {
     res.status(500).json({

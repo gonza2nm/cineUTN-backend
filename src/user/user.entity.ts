@@ -27,6 +27,6 @@ export class User extends BaseEntity{
   @ManyToOne(() => Cinema,{nullable:true})
   cinema!: Rel<Cinema>
 
-  @OneToMany(() => Buy, (buy) => buy.user, { cascade: [Cascade.PERSIST, Cascade.MERGE]})
+  @OneToMany(() => Buy, (buy) => buy.user, { cascade: [Cascade.PERSIST, Cascade.MERGE, Cascade.REMOVE]})
   buys = new Collection<Buy>(this);
 }
