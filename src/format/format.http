@@ -9,7 +9,7 @@ POST http://localhost:3000/api/formats
 Content-Type: application/json
 
 {
-  "format_name": "3D"
+  "formatName": "2D"
 }
 
 ### crear un nuevo format
@@ -17,7 +17,7 @@ POST http://localhost:3000/api/formats
 Content-Type: application/json
 
 {
-  "format_name": "4D"
+  "formatName": "3D"
 }
 
 ### borrar un format

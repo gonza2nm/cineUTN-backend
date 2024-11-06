@@ -22,7 +22,7 @@ Content-Type: application/json
 
 {
   "name": "Showcase",
-  "address": "Junin 501 - Alto Rosario , Rosario, Santa Fe",
+  "address": "Junin 501, Rosario, Santa Fe",
   "movies": [1,2]
 }
 
