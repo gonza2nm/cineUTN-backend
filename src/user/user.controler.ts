@@ -82,19 +82,23 @@ async function findOne(req: Request, res: Response) {
     const password = req.body.password;
     const user = await em.findOneOrFail(
       User,
-      { email, password },
+      { email},
       { populate: ['buys'] }
     );
-    res.status(200).json({ message: 'Found user', data: user });
-  } catch (error: any) {
-    if (error.name === 'NotFoundError') {
-      res.status(404).json({ message: 'User not found', error: error.message });
-    } else {
-      res.status(500).json({
-        message: 'An error occurred while querying the user',
-        error: error.message,
-      });
+    if(!user){
+      res.status(404).json({ message: 'User not found', error: "Not Found" });
+    }else{
+      if(user.password === password){
+        res.status(200).json({ message: 'Found user', data: user });
+      }else{
+        res.status(401).json({ message: "Email o contraseña incorrecta", error: "Credenciales incorrectas" });  
+      }
     }
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'An error occurred while querying the user',
+      error: error.message,
+    });
   }
 }
 
