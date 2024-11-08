@@ -131,6 +131,6 @@ Content-Type: application/json
   "movie": 7,
   "format": 1,
   "language": 2,
-  "dayAndTime":"2024-11-06 23:30:00",
-  "finishTime":"2024-11-06 23:50:00"
+  "dayAndTime":"2024-11-09 23:30:00",
+  "finishTime":"2024-11-09 23:50:00"
 }

@@ -34,6 +34,20 @@ async function findAll(req: Request, res: Response) {
 }
 
 
+
+async function findAllpurchasebyUser(req: Request, res: Response) {
+  try {
+    const buys = await em.find(Buy, req.body.sanitizedInput, { populate: ['user']});
+    res.status(200).json({ message: 'found all tickets', data: buys });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'An error occurred while finding all the tickets',
+      error: error.message,
+    });
+  }
+}
+
+
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
@@ -97,4 +111,4 @@ async function remove(req: Request, res: Response) {
 
 
 
-export { sanitizeBuyInput, findAll, findOne, add, update, remove}
+export { sanitizeBuyInput, findAll, findOne, add, update, remove, findAllpurchasebyUser}

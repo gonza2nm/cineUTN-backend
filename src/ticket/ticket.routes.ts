@@ -6,8 +6,8 @@ export const ticketRouter = Router();
 
 ticketRouter.get('/', findAll)
 ticketRouter.get('/:id', findOne)
-ticketRouter.post('/', sanitizeTicketInput, add)
 ticketRouter.post('/byBuy',sanitizeTicketInput, findAllTicketbyPurchase)
+ticketRouter.post('/', sanitizeTicketInput, add)
 ticketRouter.put('/:id', sanitizeTicketInput, update)
 ticketRouter.patch('/:id', sanitizeTicketInput, update)
 ticketRouter.delete('/:id', remove)
