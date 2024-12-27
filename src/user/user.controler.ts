@@ -3,11 +3,10 @@ import { User } from './user.entity.js';
 import { orm } from '../shared/db/orm.js';
 import { Cinema } from '../cinema/cinema.entity.js';
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv"
 
 //findOne an update reciben dni y remove el id por la implementacion de getreference
 const em = orm.em;
-dotenv.config();
+
 //aca hago la comprobacion para limpiar el input de que si no es manager no puede asociarse a un cine
 function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
@@ -96,30 +95,29 @@ async function findOne(req: Request, res: Response) {
     const password = req.body.password;
     const user = await em.findOneOrFail(
       User,
-      { email},
+      { email },
       { populate: ['buys'] }
     );
-    if(!user){
+    if (!user) {
       res.status(404).json({ message: 'User not found', error: "Not Found" });
-    }else{
-      if(user.password === password){
-        const token = 
-          jwt.sign({id: user.id, role: user.type, dni: user.dni, email: user.email}, 
-            process.env.JWT_SECRET as string, 
-            {expiresIn : process.env.JWT_EXPIRESIN}
-          );
-          /*
-            averiguar
-          res.cookie("token", token,{
-            httpOnly: true,
-            secure : false,
-            sameSite: 'lax',
-            maxAge : 1000 * 60 * 60
-          })
-          */
-          res.status(200).json({ message: 'Found user', data: user ,token});
-      }else{
-        res.status(401).json({ message: "Email o contraseña incorrecta", error: "Credenciales incorrectas" });  
+    } else {
+      if (user.password === password) {
+        const token = jwt.sign(
+          { id: user.id, role: user.type },
+          process.env.JWT_SECRET as string,
+          { expiresIn: process.env.JWT_EXPIRESIN }
+        );
+        // enviamos el token jwt en una cookie
+        res.cookie("authToken", token, {
+          httpOnly: true,
+          secure: false,
+          sameSite: 'lax',
+          maxAge: 1000 * 60 * 60
+        })
+
+        res.status(200).json({ message: 'Found user', data: user, });
+      } else {
+        res.status(401).json({ message: "Email o contraseña incorrecta", error: "Credenciales incorrectas" });
       }
     }
   } catch (error: any) {
