@@ -102,21 +102,20 @@ async function findOne(req: Request, res: Response) {
       res.status(404).json({ message: 'User not found', error: "Not Found" });
     } else {
       if (user.password === password) {
-        const token =
-          jwt.sign({ id: user.id, role: user.type, dni: user.dni, email: user.email },
-            process.env.JWT_SECRET as string,
-            { expiresIn: process.env.JWT_EXPIRESIN }
-          );
-        /*
-          averiguar
-        res.cookie("token", token,{
+        const token = jwt.sign(
+          { id: user.id, role: user.type },
+          process.env.JWT_SECRET as string,
+          { expiresIn: process.env.JWT_EXPIRESIN }
+        );
+        // enviamos el token jwt en una cookie
+        res.cookie("authToken", token, {
           httpOnly: true,
-          secure : false,
+          secure: false,
           sameSite: 'lax',
-          maxAge : 1000 * 60 * 60
+          maxAge: 1000 * 60 * 60
         })
-        */
-        res.status(200).json({ message: 'Found user', data: user, token });
+
+        res.status(200).json({ message: 'Found user', data: user, });
       } else {
         res.status(401).json({ message: "Email o contraseña incorrecta", error: "Credenciales incorrectas" });
       }
