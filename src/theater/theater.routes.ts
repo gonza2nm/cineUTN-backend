@@ -7,11 +7,12 @@ import {
   update,
   remove,
 } from './theater.controler.js';
+import { authMiddleware } from '../utils/authMiddleware.js';
 
 export const theaterRouter = Router();
 
 theaterRouter.get('/', findAll);
 theaterRouter.get('/:id', findOne);
-theaterRouter.post('/', sanitizeTheaterInput, add);
-theaterRouter.put('/:id', sanitizeTheaterInput, update);
-theaterRouter.delete('/:id', remove);
+theaterRouter.post('/', authMiddleware(['manager']), sanitizeTheaterInput, add);
+theaterRouter.put('/:id', authMiddleware(['manager']), sanitizeTheaterInput, update);
+theaterRouter.delete('/:id', authMiddleware(['manager']), remove);

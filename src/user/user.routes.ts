@@ -9,6 +9,7 @@ import {
   findOneManager,
   findAllManagers,
 } from './user.controler.js';
+import { authMiddleware } from '../utils/authMiddleware.js';
 
 export const userRouter = Router();
 
@@ -16,13 +17,13 @@ export const userRouter = Router();
 userRouter.post('/login', sanitizeUserInput, findOne);
 userRouter.post('/register', sanitizeUserInput, add);
 
-userRouter.get('/managers', findAllManagers);
-userRouter.get('/managers/:id', sanitizeUserInput, findOneManager);
+userRouter.get('/managers', authMiddleware(['manager']), findAllManagers);
+userRouter.get('/managers/:id', authMiddleware(['manager']), sanitizeUserInput, findOneManager);
 
-userRouter.get('/', findAll);
-userRouter.put('/:id', sanitizeUserInput, update);
-userRouter.patch('/:id', sanitizeUserInput, update);
-userRouter.delete('/:id', remove);
+userRouter.get('/', authMiddleware(['manager']), findAll);
+userRouter.put('/:id', authMiddleware(), sanitizeUserInput, update);
+userRouter.patch('/:id', authMiddleware(), sanitizeUserInput, update);
+userRouter.delete('/:id', authMiddleware(), remove);
 
 
 
