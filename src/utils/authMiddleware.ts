@@ -8,7 +8,6 @@ const authMiddleware = (roles: string[] = []) => {
       // Verifica si hay un token en las cookies
       const token = req.cookies.authToken;
       if (!token) {
-        console.log('no token')
         return res.status(401).json({ message: 'No token provided', });
       }
 
@@ -18,16 +17,12 @@ const authMiddleware = (roles: string[] = []) => {
       // Esta parte se encarga de los roles:
       // Verifica si el rol está permitido
       if (roles.length > 0 && !roles.includes(decoded.role)) {
-        console.log('rol no permitido')
         return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
       }
-
-      console.log('si pase bien por auth')
       // Continua con la siguiente función
       next();
 
     } catch (error) { //maneja otro errores
-      console.log('error token invalido o expirado')
       return res.status(401).json({ message: 'Invalid or expired token', error });
     }
   };
