@@ -15,6 +15,6 @@ export const cinemaRouter = Router();
 cinemaRouter.get('/', findAll);
 cinemaRouter.get('/movie/:id', findAllByMovie);
 cinemaRouter.get('/:id', findOne);
-cinemaRouter.post('/', sanitizeCinemaInput, add);
+cinemaRouter.post('/', authMiddleware(['manager']), sanitizeCinemaInput, add);
 cinemaRouter.put('/:id', authMiddleware(['manager']), sanitizeCinemaInput, update);
-cinemaRouter.delete('/:id', remove);
+cinemaRouter.delete('/:id', authMiddleware(['manager']), remove);
