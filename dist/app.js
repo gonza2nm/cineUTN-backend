@@ -14,9 +14,11 @@ import { ticketRouter } from './ticket/ticket.routes.js';
 import { formatRouter } from './format/format.routes.js';
 import { languageRouter } from './language/language.routes.js';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 dotenv.config(); // carga las variables de entorno definidas en .env
 const app = express();
 app.use(express.json());
+app.use(cookieParser()); //para poder manejar las cookies en el back
 app.use(cors({
     origin: ['http://localhost:4200', "http://localhost:3001", 'https://cineutn.vercel.app'],
     credentials: true

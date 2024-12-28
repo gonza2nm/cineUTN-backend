@@ -10,13 +10,14 @@ import {
   remove,
   findAllByCinema,
 } from './show.controler.js';
+import { authMiddleware } from '../utils/authMiddleware.js';
 
 export const showRouter = Router();
 
 showRouter.get('/', findAll);
 showRouter.get('/:id', findOne);
 showRouter.get('/bycinema/:id', findAllByCinema);
-showRouter.post('/showtimes',sanitizeShowInputToFindByCinemaAndMovie, findByCinemaAndMovie);
-showRouter.post('/', sanitizeShowInput,  add);
-showRouter.put('/:id', sanitizeShowInput, update);
-showRouter.delete('/:id', remove);
+showRouter.post('/showtimes', authMiddleware(['manager']), sanitizeShowInputToFindByCinemaAndMovie, findByCinemaAndMovie);
+showRouter.post('/', authMiddleware(['manager']), sanitizeShowInput, add);
+showRouter.put('/:id', authMiddleware(['manager']), sanitizeShowInput, update);
+showRouter.delete('/:id', authMiddleware(['manager']), remove);
