@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import express from 'express';
+import dotenv from 'dotenv';
 import { orm, syncSchema } from './shared/db/orm.js';
 import { RequestContext } from '@mikro-orm/core';
 import { genreRouter } from './genre/genre.routes.js';
@@ -13,19 +14,14 @@ import { ticketRouter } from './ticket/ticket.routes.js';
 import { formatRouter } from './format/format.routes.js';
 import { languageRouter } from './language/language.routes.js';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
+dotenv.config(); // carga las variables de entorno definidas en .env
 const app = express();
 app.use(express.json());
+app.use(cookieParser()); //para poder manejar las cookies en el back
 app.use(cors({
-    origin: (origin, callback) => {
-        const ACCEPTED_ORIGINS = ['http://localhost:4200', 'http://localhost:3001', 'https://cineutn.vercel.app'];
-        if (!origin) {
-            return callback(null, false);
-        }
-        else if (ACCEPTED_ORIGINS.includes(origin)) {
-            return callback(null, true);
-        }
-        return callback(new Error('not allowed by cors'));
-    },
+    origin: ['http://localhost:4200', "http://localhost:3001", 'https://cineutn.vercel.app'],
+    credentials: true
 }));
 app.use((req, res, next) => {
     RequestContext.create(orm.em, next);
