@@ -19,10 +19,8 @@ const authMiddleware = (roles: string[] = []) => {
       if (roles.length > 0 && !roles.includes(decoded.role)) {
         return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
       }
-      // Continua con la siguiente función
       next();
-
-    } catch (error) { //maneja otro errores
+    } catch (error) { 
       return res.status(401).json({ message: 'Invalid or expired token', error });
     }
   };
