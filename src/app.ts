@@ -47,7 +47,7 @@ app.use((_, res) => {
   return res.status(404).send({ message: 'Resource not found' });
 });
 
-//await syncSchema(); //never in production
+await syncSchema(); //never in production
 
 app.listen(3000, () => {
   console.log('Server running on http://localhost:3000/');
