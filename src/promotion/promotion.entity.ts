@@ -1,6 +1,7 @@
 import { Collection, DateTimeType, Entity, ManyToMany, Property } from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.entity.js";
 import { Cinema } from "../cinema/cinema.entity.js";
+import { Snack } from "../Snack/snack.entity.js";
 
 @Entity()
 export class Promotion extends BaseEntity{
@@ -23,7 +24,9 @@ export class Promotion extends BaseEntity{
   @Property({nullable: false})
   discount!: number;
 
-  @ManyToMany( () => Cinema, (cinema) => cinema.promotions)
+  @ManyToMany(() => Cinema, (cinema) => cinema.promotions)
   cinemas = new Collection<Cinema>(this);
 
+  @ManyToMany(() => Snack, (snack)=> snack.promotions)
+  snacks = new Collection<Snack>(this)
 }
