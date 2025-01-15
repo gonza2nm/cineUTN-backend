@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { orm } from '../shared/db/orm.js';
 import { Event } from './event.entity.js';
+import { Cinema } from '../cinema/cinema.entity.js';
+import { checkOverlappingEventsWithCinemas } from '../utils/checkEventOverlap.js';
 
 const em = orm.em;
 
@@ -38,7 +40,7 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const event = await em.findOneOrFail(Event, { id },)
+    const event = await em.findOneOrFail(Event, { id }, { populate: ['cinemas'] })
     res.status(200).json({ message: 'found event', data: event })
   } catch (error: any) {
     res.status(500).json({ message: 'An error occurred while finding the event', error: error.message })
@@ -47,9 +49,35 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    const event = em.create(Event, req.body.sanitizedInput)
-    await em.flush()
-    res.status(201).json({ message: 'event created', data: event })
+    // Para manejar relaciones usamos los id y obtenemos sus referencias.
+    if (req.body.sanitizedInput.cinemas) {
+      // Usamos em.getReference para asignar las referencias de los cinemas
+      req.body.sanitizedInput.cinemas.map((cinema: { id: number }) => em.getReference(Cinema, cinema.id));
+    }
+
+    // para calcular si hay overlapping
+    const { startDate, finishDate, cinemas } = req.body.sanitizedInput;
+    const overlappingEventCinemas = await checkOverlappingEventsWithCinemas(startDate, finishDate, cinemas);
+
+    if (overlappingEventCinemas.length > 0) {
+      // Extraemos IDs de los cines con superposición y filtramos valores undefined (ya que aca devuelve objetos cinemas solo con id y sin datos)
+      const overlappingCinemaIds = overlappingEventCinemas
+        .map((cinema) => cinema.id)
+        .filter((id): id is number => id !== undefined);
+      // Buscar los datos de los cines coon esos IDs
+      const overlappingCinemasWithNames = await em.find(Cinema, { id: { $in: overlappingCinemaIds } });
+
+      // Extraermos los nombres de los cines
+      const cinemaNames = overlappingCinemasWithNames.map((cinema) => cinema.name);
+      return res.status(400).json({
+        message: "The event time overlaps with another event in the following cinemas:" + cinemaNames
+      });
+
+    } else {
+      const event = em.create(Event, req.body.sanitizedInput)
+      await em.flush()
+      res.status(201).json({ message: 'event created', data: event })
+    }
   } catch (error: any) {
     res.status(500).json({ message: 'An error occurred while adding the event', error: error.message })
   }
@@ -59,9 +87,34 @@ async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
     const eventToUpdate = await em.findOneOrFail(Event, { id })
-    em.assign(eventToUpdate, req.body.sanitizedInput)
-    await em.flush()
-    res.status(200).json({ message: 'event updated', data: eventToUpdate })
+
+    // Si req.body.sanitizedInput incluye `cinemas`, lo convertimos a referencias
+    if (req.body.sanitizedInput.cinemas) {
+      req.body.sanitizedInput.cinemas = req.body.sanitizedInput.cinemas.map((cinema: { id: number }) => em.getReference(Cinema, cinema.id));
+    }
+    // para calcular si hay overlapping
+    const { startDate, finishDate, cinemas } = req.body.sanitizedInput;
+    const overlappingEventCinemas = await checkOverlappingEventsWithCinemas(startDate, finishDate, cinemas, id);
+
+    if (overlappingEventCinemas.length > 0) {
+      // Extraemos IDs de los cines con superposición y filtramos valores undefined (ya que aca devuelve objetos cinemas solo con id y sin datos)
+      const overlappingCinemaIds = overlappingEventCinemas
+        .map((cinema) => cinema.id)
+        .filter((id): id is number => id !== undefined);
+      // Buscar los datos de los cines coon esos IDs
+      const overlappingCinemasWithNames = await em.find(Cinema, { id: { $in: overlappingCinemaIds } });
+
+      // Extraermos los nombres de los cines
+      const cinemaNames = overlappingCinemasWithNames.map((cinema) => cinema.name);
+      return res.status(400).json({
+        message: "The event time overlaps with another event in the following cinemas:" + cinemaNames
+      });
+
+    } else {
+      em.assign(eventToUpdate, req.body.sanitizedInput)
+      await em.flush()
+      res.status(200).json({ message: 'event updated', data: eventToUpdate })
+    }
   } catch (error: any) {
     res.status(500).json({ message: 'An error occurred while updating the event', error: error.message })
   }
