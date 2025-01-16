@@ -1,7 +1,8 @@
-import { Cascade, Collection, DateTimeType, Entity, ManyToOne, OneToMany, Property, Rel } from '@mikro-orm/core';
+import { Cascade, Collection, DateTimeType, Entity, ManyToMany, ManyToOne, OneToMany, Property, Rel } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.entity.js'
 import { User } from '../user/user.entity.js';
 import { Ticket } from '../ticket/ticket.entity.js';
+import { Snack } from '../Snack/snack.entity.js';
 
 @Entity()
 export class Buy extends BaseEntity {
@@ -27,9 +28,7 @@ export class Buy extends BaseEntity {
   // @OneToMany(() => Ticket, ticket => ticket.buy, { cascade: ['remove'] })
   tickets = new Collection<Ticket>(this)
 
-  //Relacion con la entidad productos
-  /*
-  @ManyToMany(() => Product, (product) => product.buy)
-  products = new Collection<Producto>(this)
-  */
+  @ManyToMany(() => Snack, (snack) => snack.buys)
+  snacks = new Collection<Snack>(this)
+  
 }
