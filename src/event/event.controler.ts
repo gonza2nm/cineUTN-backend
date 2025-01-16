@@ -135,6 +135,19 @@ async function remove(req: Request, res: Response) {
   }
 }
 
+async function findEventsByCinema(req: Request, res: Response) {
+  try {
+    const cinemaId = Number.parseInt(req.params.cinemaId)
+    const events = await em.find(Event, { cinemas: { id: cinemaId } }, { populate: ['cinemas'] });
+    res.status(200).json({ message: 'found all events', data: events });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'An error occurred while querying all events',
+      error: error.message,
+    });
+  }
+}
 
 
-export { sanitizeEventInput, findAll, findOne, add, update, remove }
+
+export { sanitizeEventInput, findAll, findOne, add, update, remove, findEventsByCinema }
