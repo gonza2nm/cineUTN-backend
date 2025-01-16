@@ -27,3 +27,7 @@ Content-Type: application/json
 
 ### borrar un event
 DELETE http://localhost:3000/api/events/1
+
+### Buscar eventos que tenga tal id de cine
+GET http://localhost:3000/api/events/cinema/1
+
