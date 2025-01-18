@@ -16,6 +16,7 @@ import { languageRouter } from './language/language.routes.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { eventRouter } from './event/event.routes.js';
+import { snackRouter } from './Snack/snack.routes.js';
 
 dotenv.config() // carga las variables de entorno definidas en .env
 
@@ -44,6 +45,7 @@ app.use('/api/tickets', ticketRouter);
 app.use('/api/formats', formatRouter);
 app.use('/api/languages', languageRouter);
 app.use('/api/events', eventRouter);
+app.use('/api/snacks', snackRouter);
 
 app.use((_, res) => {
   return res.status(404).send({ message: 'Resource not found' });
