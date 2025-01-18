@@ -6,6 +6,6 @@ export const snackRouter = Router();
 
 snackRouter.get("/", findAll);
 snackRouter.get("/:id", findOne);
-snackRouter.post("/", /*authMiddleware(['manager']),*/sanitizeSanckInput, add);
-snackRouter.put("/:id", /*authMiddleware(['manager']),*/sanitizeSanckInput, update );
-snackRouter.delete("/:id",/*authMiddleware(['manager']),*/ remove );
+snackRouter.post("/", authMiddleware(['manager']),sanitizeSanckInput, add);
+snackRouter.put("/:id", authMiddleware(['manager']),sanitizeSanckInput, update );
+snackRouter.delete("/:id",authMiddleware(['manager']), remove );

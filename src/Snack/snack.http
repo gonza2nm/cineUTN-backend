@@ -11,5 +11,19 @@ Content-Type: application/json
 {
   "name": "Random",
   "description": "Random",
-  "urlPhoto": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQQjqqgOs24G6v2xIrHr1lvSG-eLozc0LXMBZg83rJWewwlPl2bylG1UbZUOZZcj2AB-d5_Vz16_piSuY3XPicWszrG8HHYguo_3RY2_g",
+  "urlPhoto": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQQjqqgOs24G6v2xIrHr1lvSG-eLozc0LXMBZg83rJWewwlPl2bylG1UbZUOZZcj2AB-d5_Vz16_piSuY3XPicWszrG8HHYguo_3RY2_g"
 }
+
+### agregar un snack
+PUT http://localhost:3000/api/snacks/3
+Content-Type: application/json
+
+{
+  "name": "Coca Cola 2",
+  "description": "Descripcion actualizada",
+  "urlPhoto": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQQjqqgOs24G6v2xIrHr1lvSG-eLozc0LXMBZg83rJWewwlPl2bylG1UbZUOZZcj2AB-d5_Vz16_piSuY3XPicWszrG8HHYguo_3RY2_g",
+  "buys":[2]
+}
+
+### Eliminar un snack
+DELETE  http://localhost:3000/api/snacks/3
