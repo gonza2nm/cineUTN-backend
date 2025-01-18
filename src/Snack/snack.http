@@ -1,0 +1,15 @@
+### obtener todos los snacks
+GET http://localhost:3000/api/snacks
+
+### obtener un snack
+GET http://localhost:3000/api/snacks/1
+
+### agregar un snack
+POST http://localhost:3000/api/snacks
+Content-Type: application/json
+
+{
+  "name": "Random",
+  "description": "Random",
+  "urlPhoto": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQQjqqgOs24G6v2xIrHr1lvSG-eLozc0LXMBZg83rJWewwlPl2bylG1UbZUOZZcj2AB-d5_Vz16_piSuY3XPicWszrG8HHYguo_3RY2_g",
+}
