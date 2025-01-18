@@ -1,14 +1,15 @@
 import { Router } from "express";
-import { add, findAll, findOne, remove, sanitizeTicketInput, update, findAllTicketbyPurchase, remove2} from "./ticket.controler.js";
+import { add, findAll, findOne, remove, sanitizeTicketInput, update, findAllTicketbyPurchase, removeAllTicketsByPurchase} from "./ticket.controler.js";
 
 export const ticketRouter = Router();
 
 
 ticketRouter.get('/', findAll)
+ticketRouter.get('/byBuy/:id', findAllTicketbyPurchase)
 ticketRouter.get('/:id', findOne)
-ticketRouter.post('/byBuy',sanitizeTicketInput, findAllTicketbyPurchase)
+
 ticketRouter.post('/', sanitizeTicketInput, add)
 ticketRouter.put('/:id', sanitizeTicketInput, update)
 ticketRouter.patch('/:id', sanitizeTicketInput, update)
 ticketRouter.delete('/:id', remove)
-ticketRouter.post('/remove2', sanitizeTicketInput, remove2)
+ticketRouter.delete('/byBuy/:id', removeAllTicketsByPurchase)
