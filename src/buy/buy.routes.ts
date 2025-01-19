@@ -16,8 +16,8 @@ export const buyRouter = Router();
 
 buyRouter.get('/', authMiddleware(["manager"]), findAll);
 buyRouter.get('/:id', authMiddleware(["user", "manager"]), findOne);
-buyRouter.get('/:id/qr', authMiddleware(["user", "manager"]), generateQRCodeForBuy)
-buyRouter.post('/validate-qr', authMiddleware(["manager"]), validateQRCode)
+buyRouter.get('/generateQr/:id', authMiddleware(["user", "manager"]), generateQRCodeForBuy)
+buyRouter.post('/validateQr', authMiddleware(["manager"]), validateQRCode)
 buyRouter.post('/byUser', authMiddleware(["user", "manager"]), sanitizeBuyInput, findAllpurchasebyUser)
 buyRouter.post('/', authMiddleware(["user", "manager"]), sanitizeBuyInput, add);
 buyRouter.put('/:id', authMiddleware(["manager"]), sanitizeBuyInput, update); //REVISAR
