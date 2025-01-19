@@ -1,0 +1,33 @@
+### obtener todos los events
+GET http://localhost:3000/api/events 
+
+### obtener un event
+GET http://localhost:3000/api/events/1
+
+### crear un nuevo event
+
+POST http://localhost:3000/api/events
+Content-Type: application/json
+
+{
+  "name": "Halloween 2025",
+  "description": "hola",
+  "startDate": "2025-10-01 00:00:00",
+  "finishDate": "2025-11-07 00:00:00",
+  "cinemas": [1,2]
+}
+
+### modificar un event (PUT -> recurso completo e idempotente)
+PUT http://localhost:3000/api/events/1
+Content-Type: application/json
+
+{
+  "description": "modificado"
+}
+
+### borrar un event
+DELETE http://localhost:3000/api/events/1
+
+### Buscar eventos que tenga tal id de cine
+GET http://localhost:3000/api/events/cinema/1
+

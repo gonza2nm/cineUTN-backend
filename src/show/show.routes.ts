@@ -16,8 +16,8 @@ export const showRouter = Router();
 
 showRouter.get('/', findAll);
 showRouter.get('/:id', findOne);
-showRouter.get('/bycinema/:id', findAllByCinema);
-showRouter.post('/showtimes', authMiddleware(['manager']), sanitizeShowInputToFindByCinemaAndMovie, findByCinemaAndMovie);
+showRouter.get('/bycinema/:id',authMiddleware(["user",'manager']), findAllByCinema);
+showRouter.post('/showtimes', authMiddleware(["manager","user"]), sanitizeShowInputToFindByCinemaAndMovie, findByCinemaAndMovie);
 showRouter.post('/', authMiddleware(['manager']), sanitizeShowInput, add);
 showRouter.put('/:id', authMiddleware(['manager']), sanitizeShowInput, update);
 showRouter.delete('/:id', authMiddleware(['manager']), remove);
