@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from "express"
 import { Buy } from "./buy.entity.js"
 import { orm } from '../shared/db/orm.js'
+import jwt from 'jsonwebtoken';
+import QRCode from 'qrcode';
+
 
 const em = orm.em
 
@@ -19,6 +22,17 @@ function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
   next()
 }
 
+function generateSignedToken(buyId: number): string {
+  const buyDataQR = { //datos que voy a encriptar
+    buyId,
+    timestamp: Date.now(),
+  };
+
+  return jwt.sign(
+    buyDataQR,
+    process.env.JWT_SECRETQR as string,
+    { expiresIn: process.env.JWT_EXPIRESINQR });
+}
 
 
 async function findAll(req: Request, res: Response) {
@@ -37,7 +51,7 @@ async function findAll(req: Request, res: Response) {
 
 async function findAllpurchasebyUser(req: Request, res: Response) {
   try {
-    const buys = await em.find(Buy, req.body.sanitizedInput, { populate: ['user']});
+    const buys = await em.find(Buy, req.body.sanitizedInput, { populate: ['user'] });
     res.status(200).json({ message: 'found all tickets', data: buys });
   } catch (error: any) {
     res.status(500).json({
@@ -55,6 +69,67 @@ async function findOne(req: Request, res: Response) {
     res.status(200).json({ message: 'Found buy', data: buy })
   } catch (error: any) {
     res.status(500).json({ message: 'An error occurred while querying the buy', error: error.message, })
+  }
+}
+
+async function generateQRCodeForBuy(req: Request, res: Response) {
+  try {
+    const buyId = Number(req.params.id);
+
+    // Busco la compra en la base de datos
+    const buy = await em.findOne(Buy, { id: buyId });
+    if (!buy) {
+      return res.status(404).json({ message: 'Buy not found' });
+    }
+
+    // Genero el token JWT firmado
+    const signedToken = generateSignedToken(buyId);
+
+    // Creo el código QR usando el token firmado
+    const qrCodeUrl = await QRCode.toDataURL(signedToken);
+
+    return res.status(200).json({
+      message: 'QR code generated successfully',
+      qrCodeUrl,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      message: 'An error occurred while generating the QR',
+      error: error.message,
+    });
+  }
+}
+
+async function validateQRCode(req: Request, res: Response) {
+  const token = req.body.token;
+
+  try {
+    const JWT_SECRETQR = process.env.JWT_SECRETQR
+
+    if (!JWT_SECRETQR) {//para que no moleste mas abajo por ser undefied
+      return res.status(500).json({ message: "QR secret key is not configured in the environment." });
+    }
+    // Verificar el token con la clave secreta
+    const decoded: any = jwt.verify(token, JWT_SECRETQR); // `decoded` contiene el `buyId` y el timestamp
+
+    const buyId = decoded.buyId;
+
+    // Buscar la compra en la base de datos
+    const buy = await em.findOne(Buy, { id: buyId });
+    if (!buy) {
+      return res.status(404).json({ message: 'Buy not found.' });
+    }
+
+    // Verificar si la compra está cancelada
+    if (buy.status === 'cancelled') {
+      return res.status(400).json({ message: 'The buy has been cancelled.' });
+    }
+
+    // Si todo está bien, el QR es válido
+    return res.status(200).json({ message: 'QR is valid.', data: buy });
+
+  } catch (error: any) {
+    return res.status(400).json({ message: 'Invalid or expired token.', error: error.message });
   }
 }
 
@@ -111,4 +186,5 @@ async function remove(req: Request, res: Response) {
 
 
 
-export { sanitizeBuyInput, findAll, findOne, add, update, remove, findAllpurchasebyUser}
+
+export { sanitizeBuyInput, findAll, findOne, add, update, remove, findAllpurchasebyUser, generateQRCodeForBuy, validateQRCode }
