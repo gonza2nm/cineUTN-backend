@@ -30,8 +30,8 @@ function generateSignedToken(buyId: number): string {
 
   return jwt.sign(
     buyDataQR,
-    process.env.JWT_SECRETQR as string,
-    { expiresIn: process.env.JWT_EXPIRESINQR });
+    process.env.JWT_SECRET as string,
+    { expiresIn: process.env.JWT_EXPIRESIN });
 }
 
 
@@ -104,13 +104,13 @@ async function validateQRCode(req: Request, res: Response) {
   const token = req.body.token;
 
   try {
-    const JWT_SECRETQR = process.env.JWT_SECRETQR
+    const JWT_SECRET = process.env.JWT_SECRET
 
-    if (!JWT_SECRETQR) {//para que no moleste mas abajo por ser undefied
+    if (!JWT_SECRET) {//para que no moleste mas abajo por ser undefied
       return res.status(500).json({ message: "QR secret key is not configured in the environment." });
     }
     // Verificar el token con la clave secreta
-    const decoded: any = jwt.verify(token, JWT_SECRETQR); // `decoded` contiene el `buyId` y el timestamp
+    const decoded: any = jwt.verify(token, JWT_SECRET); // `decoded` contiene el `buyId` y el timestamp
 
     const buyId = decoded.buyId;
 
