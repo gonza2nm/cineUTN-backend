@@ -16,5 +16,5 @@ buyRouter.get('/', authMiddleware(["manager"]), findAll);
 buyRouter.get('/:id', authMiddleware(["user", "manager"]), findOne);
 buyRouter.post('/byUser', authMiddleware(["user", "manager"]),sanitizeBuyInput, findAllpurchasebyUser)
 buyRouter.post('/',authMiddleware(["user", "manager"]), sanitizeBuyInput,  add);
-buyRouter.put('/:id',authMiddleware(["manager"]), sanitizeBuyInput, update); //REVISAR
+buyRouter.patch('/:id',authMiddleware(["user", "manager"]), sanitizeBuyInput, update); //REVISAR
 buyRouter.delete('/:id',authMiddleware(["user", "manager"]), remove);
