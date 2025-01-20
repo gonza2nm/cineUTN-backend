@@ -225,4 +225,18 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeUserInput, findAll, findAllManagers, findOne, findOneManager, add, update, remove };
+async function authCheck(req: Request, res: Response){
+  const token = req.cookies.authToken;
+  try{
+    if(!token){
+      res.status(401).json({authenticated: false, message: "Not Authenticated"});
+    }else{
+      const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+      res.status(200).json({authenticated:true, data: decoded});  
+    }
+  }catch(error: any){
+    res.status(401).json({ authenticated: false, message: 'Token expired or invalid' });
+  }
+}
+
+export { sanitizeUserInput, findAll, findAllManagers, findOne, findOneManager, add, update, remove, authCheck };
