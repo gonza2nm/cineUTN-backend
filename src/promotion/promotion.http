@@ -1,0 +1,39 @@
+### obtener todas las promociones
+GET http://localhost:3000/api/promotions
+
+### Obtener promociones por el cine
+GET http://localhost:3000/api/promotions/bycinema/1
+
+### obtener una promocion
+GET http://localhost:3000/api/promotions/FXZYJ4J3
+
+### agregar una promocion
+POST http://localhost:3000/api/promotions
+Content-Type: application/json
+
+{
+  "name": "Promo Verano",
+  "description": "Descuento del 25% en todos los cines durante el mes de enero.",
+  "promotionStartDate": "2025-01-01 00:00:00",
+  "promotionFinishDate": "2025-01-31 23:59:59",
+  "discount": 25,
+  "snacks":[1,2],
+  "cinemas": [1]
+}
+
+### agregar un snack
+PUT http://localhost:3000/api/promotions/FXZYJ4J3
+Content-Type: application/json
+
+{
+  "name": "Promo Invierno",
+  "description": "Descuento del 20% en todos los cines durante el mes de julio.",
+  "promotionStartDate": "2025-07-01 00:00:00",
+  "promotionFinishDate": "2025-07-31 23:59:59",
+  "discount": 20,
+  "snacks":[1,2],
+  "cinemas": [1,2]
+}
+
+### Eliminar un snack
+DELETE  http://localhost:3000/api/promotions/42KXUUC7
