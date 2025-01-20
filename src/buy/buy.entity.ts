@@ -2,7 +2,7 @@ import { Cascade, Collection, DateTimeType, Entity, ManyToMany, ManyToOne, OneTo
 import { BaseEntity } from '../shared/db/baseEntity.entity.js'
 import { User } from '../user/user.entity.js';
 import { Ticket } from '../ticket/ticket.entity.js';
-import { Snack } from '../Snack/snack.entity.js';
+import { Snack } from '../snack/snack.entity.js';
 
 @Entity()
 export class Buy extends BaseEntity {
