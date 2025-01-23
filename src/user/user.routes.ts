@@ -8,14 +8,20 @@ import {
   remove,
   findOneManager,
   findAllManagers,
-  authCheck
+  authCheck,
+  logout,
+  login,
+  getData
 } from './user.controler.js';
 import { authMiddleware } from '../utils/authMiddleware.js';
 
 export const userRouter = Router();
 
 // No cambiar el orden de las rutas
-userRouter.post('/login', sanitizeUserInput, findOne);
+userRouter.post('/login', sanitizeUserInput, login);
+userRouter.post('/logout', authMiddleware(['user','manager']), logout);
+userRouter.get('/getdata', authMiddleware(['user',"manager"]), getData);
+userRouter.get('/:id', sanitizeUserInput, findOne);
 userRouter.post('/register', sanitizeUserInput, add);
 
 userRouter.get('/managers', authMiddleware(['manager']), findAllManagers);
