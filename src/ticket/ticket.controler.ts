@@ -5,16 +5,19 @@ import { Ticket } from './ticket.entity.js';
 const em = orm.em;
 
 function sanitizeTicketInput(req: Request, res: Response, next: NextFunction) {
-  req.body.sanitizedInput = {
+  console.log('Datos recibidos:', req.body);
+  req.body.sanitizedTicketInput = {
     show: req.body.show,
     buy: req.body.buy
   };
 
-  Object.keys(req.body.sanitizedInput).forEach((key) => {
-    if (req.body.sanitizedInput[key] === undefined) {
-      delete req.body.sanitizedInput[key];
+  Object.keys(req.body.sanitizedTicketInput).forEach((key) => {
+    if (req.body.sanitizedTicketInput[key] === undefined) {
+      delete req.body.sanitizedTicketInput[key];
     }
   });
+
+  console.log('Datos del ticket', req.body.sanitizedTicketInput)
   next();
 }
 
@@ -64,7 +67,7 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    const ticket = em.create(Ticket, req.body.sanitizedInput);
+    const ticket = em.create(Ticket, req.body.sanitizedTicketInput);
     await em.flush();
     res.status(201).json({ message: 'ticket created', data: ticket });
   } catch (error: any) {
@@ -79,7 +82,7 @@ async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
     const ticketToUpdate = await em.findOneOrFail(Ticket, { id });
-    em.assign(ticketToUpdate, req.body.sanitizedInput);
+    em.assign(ticketToUpdate, req.body.sanitizedTicketInput);
     await em.flush();
     res.status(200).json({ message: 'ticket updated', data: ticketToUpdate });
   } catch (error: any) {
