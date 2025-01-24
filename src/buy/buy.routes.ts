@@ -20,5 +20,5 @@ buyRouter.get('/generateQr/:id', authMiddleware(["user", "manager"]), generateQR
 buyRouter.post('/validateQr', authMiddleware(["manager"]), validateQRCode) //post para poder enviar datos en el body de la solicitud
 buyRouter.post('/byUser', authMiddleware(["user", "manager"]), sanitizeBuyInput, findAllpurchasebyUser)
 buyRouter.post('/', authMiddleware(["user", "manager"]), sanitizeBuyInput, add);
-buyRouter.put('/:id', authMiddleware(["manager"]), sanitizeBuyInput, update); //REVISAR
+buyRouter.patch('/:id', authMiddleware(["user", "manager"]), sanitizeBuyInput, update); //REVISAR
 buyRouter.delete('/:id', authMiddleware(["user", "manager"]), remove);

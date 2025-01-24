@@ -127,10 +127,10 @@ POST http://localhost:3000/api/shows
 Content-Type: application/json
 
 {
-  "theater": 2,
-  "movie": 7,
+  "theater": 1,
+  "movie": 1,
   "format": 1,
   "language": 2,
-  "dayAndTime":"2024-11-09 23:30:00",
-  "finishTime":"2024-11-09 23:50:00"
+  "dayAndTime":"2025-01-18 23:30:00",
+  "finishTime":"2025-01-18 23:50:00"
 }

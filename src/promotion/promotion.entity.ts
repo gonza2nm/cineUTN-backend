@@ -1,12 +1,11 @@
-import { Collection, DateTimeType, Entity, ManyToMany, Property } from "@mikro-orm/core";
-import { BaseEntity } from "../shared/db/baseEntity.entity.js";
+import { Collection, DateTimeType, Entity, ManyToMany, PrimaryKey, Property } from "@mikro-orm/core";
 import { Cinema } from "../cinema/cinema.entity.js";
-import { Snack } from "../Snack/snack.entity.js";
+import { Snack } from "../snack/snack.entity.js";
 
 @Entity()
-export class Promotion extends BaseEntity{
+export class Promotion{
 
-  @Property({nullable: false})
+  @PrimaryKey({nullable: false, unique: true})
   code!: string;
 
   @Property({nullable: false})
@@ -28,5 +27,5 @@ export class Promotion extends BaseEntity{
   cinemas = new Collection<Cinema>(this);
 
   @ManyToMany(() => Snack, (snack)=> snack.promotions)
-  snacks = new Collection<Snack>(this)
+  snacks = new Collection<Snack>(this);
 }

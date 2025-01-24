@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { orm } from "../shared/db/orm.js";
 import { Snack } from "./snack.entity.js";
-import { error } from "console";
 
 const em = orm.em;
 
@@ -89,7 +88,7 @@ async function remove(req: Request, res: Response){
     if(snackToDelete){
       await em.removeAndFlush(snackToDelete)
       res.status(200).json({
-        message: "Sanck deleted",
+        message: "Snack deleted",
         data: snackToDelete
       });
     }else{
