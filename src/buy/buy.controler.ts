@@ -2,17 +2,18 @@ import { Request, Response, NextFunction } from "express"
 import { Buy } from "./buy.entity.js"
 import { orm } from '../shared/db/orm.js'
 import { Ticket } from "../ticket/ticket.entity.js";
+import { Snack } from "../snack/snack.entity.js";
 
 const em = orm.em
 
 function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
-  console.log('Datos recibidos en el buy:', req.body);
   const cantElements = req.body.cantElements;
+  const snacks = req.body.snacks;
   req.body.sanitizedBuyInput = {
     description: req.body.description,
     user: req.body.user,
     total: req.body.total,
-    status: req.body.status
+    status: req.body.status,
   }
   Object.keys(req.body.sanitizedBuyInput).forEach((key) => {
     if (req.body.sanitizedBuyInput[key] === undefined) {
@@ -21,7 +22,7 @@ function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
   })
 
   req.body.cantElements = cantElements;
-  console.log('Datos del buy', req.body.sanitizedBuyInput)
+  req.body.snacks = snacks;
   next()
 }
 
@@ -41,11 +42,13 @@ async function findAll(req: Request, res: Response) {
 
 async function findAllpurchasebyUser(req: Request, res: Response) {
   try {
-    const buys = await em.find(Buy, req.body.sanitizedBuyInput, { populate: ['user']});
-    res.status(200).json({ message: 'found all tickets', data: buys });
+    const id = Number.parseInt(req.params.id);
+    await updateExpirateBuys();
+    const buys = await em.find(Buy, {user: id}, { populate: ['user']});
+    res.status(200).json({ message: 'found all buys', data: buys });
   } catch (error: any) {
     res.status(500).json({
-      message: 'An error occurred while finding all the tickets',
+      message: 'An error occurred while finding all the buys',
       error: error.message,
     });
   }
@@ -55,7 +58,7 @@ async function findAllpurchasebyUser(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const buy = await em.findOneOrFail(Buy, { id }, { populate: ['user', 'tickets'] });
+    const buy = await em.findOneOrFail(Buy, { id }, { populate: ['user', 'tickets', 'snacks'] });
     res.status(200).json({ message: 'Found buy', data: buy })
   } catch (error: any) {
     res.status(500).json({ message: 'An error occurred while querying the buy', error: error.message, })
@@ -80,11 +83,8 @@ async function add(req: Request, res: Response) {
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------
-async function addPruchase(req: Request, res: Response) {   
-  console.log('Estos son los datos de buy', req.body.sanitizedBuyInput)
-  console.log('Datos son los datos del ticket', req.body.sanitizedTicketInput);
 
+async function addPurchase(req: Request, res: Response) {   
   await em.begin();
 
   try {
@@ -92,13 +92,19 @@ async function addPruchase(req: Request, res: Response) {
       throw new Error("the buy must have an user");
     }
     const buy = em.create(Buy, req.body.sanitizedBuyInput);
+    buy.status = 'Válida';
     await em.flush();
 
     const buyId = buy.id;
     req.body.sanitizedTicketInput.buy = buyId;
 
-    console.log('Verifico que ticket tenag todo:', req.body.sanitizedTicketInput)
-    console.log('Verifico la propiedad descripcion:', req.body.sanitizedBuyInput.description)
+    if(req.body.snacks) {
+      for (const snackData of req.body.snacks) {
+        const snack = await em.findOneOrFail(Snack, { id: snackData.id});
+        buy.snacks.add(snack);
+      }
+      await em.flush();
+    }
 
     for (let index = 0; index < req.body.cantElements; index++) {
       if (req.body.sanitizedBuyInput.description === 'Compra de entradas') {
@@ -108,16 +114,15 @@ async function addPruchase(req: Request, res: Response) {
         throw new Error('No es una compra de entradas');
       }
     }
-    await em.commit(); // Confirmar la transacción
+    await em.commit(); 
     res.status(200).json({message: 'Buy and Tickets created', data: buy});
   } catch (error) {
-    await em.rollback(); // Revertir la transacción en caso de error
+    await em.rollback();
     console.error('Error en la transacción:', error);
     res.status(500).send('Error al crear la compra y las entradas');
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------
 
 
 async function update(req: Request, res: Response) {
@@ -153,5 +158,24 @@ async function remove(req: Request, res: Response) {
 }
 
 
+async function updateExpirateBuys() {
+  const today = new Date();
+  const buysToExpire = await em.find(Buy, {
+    status: 'Válido', 
+    tickets: {
+      show: {
+        dayAndTime: {$lt: today}
+      } 
+    }
+  });
 
-export { sanitizeBuyInput, findAll, findOne, add, update, remove, findAllpurchasebyUser , addPruchase}
+  for (const buy of buysToExpire) {
+    buy.status = 'Expirada';
+  }
+
+  await em.flush();
+}
+
+
+
+export { sanitizeBuyInput, findAll, findOne, add, update, remove, findAllpurchasebyUser , addPurchase}

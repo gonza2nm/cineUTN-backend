@@ -5,7 +5,6 @@ import { Ticket } from './ticket.entity.js';
 const em = orm.em;
 
 function sanitizeTicketInput(req: Request, res: Response, next: NextFunction) {
-  console.log('Datos recibidos:', req.body);
   req.body.sanitizedTicketInput = {
     show: req.body.show,
     buy: req.body.buy
@@ -17,7 +16,6 @@ function sanitizeTicketInput(req: Request, res: Response, next: NextFunction) {
     }
   });
 
-  console.log('Datos del ticket', req.body.sanitizedTicketInput)
   next();
 }
 

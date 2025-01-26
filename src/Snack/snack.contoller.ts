@@ -9,6 +9,7 @@ function sanitizeSanckInput(req: Request, res: Response, next: NextFunction){
     name: req.body.name,
     description: req.body.description,
     urlPhoto: req.body.urlPhoto,
+    price: req.body.price,
     promotions: req.body.promotions,
     buys: req.body.buys
   };
@@ -18,6 +19,8 @@ function sanitizeSanckInput(req: Request, res: Response, next: NextFunction){
       delete req.body.sanitizedInput[key];
     }
   });
+
+  console.log('Datos del snack', req.body.sanitizedInput)
   next();
 }
 async function findAll(req: Request, res: Response){
@@ -44,6 +47,7 @@ async function findOne(req: Request, res: Response){
     res.status(500).json({ message: 'An error occurred while finding the snack', error: error.message })
   }
 }
+
 async function add(req: Request, res: Response){
   try{
     const snack = em.create(Snack, req.body.sanitizedInput)
