@@ -34,7 +34,7 @@ async function sendReminderEmails() {
           }
         }
       }
-    }, { populate: ['tickets', 'tickets.show', 'tickets.show.movie', 'tickets.show.theater'] }
+    }, { populate: ['user', 'tickets', 'tickets.show', 'tickets.show.movie', 'tickets.show.theater'] }
     );
 
 
@@ -66,14 +66,15 @@ async function sendReminderEmails() {
 
 export function startCronTimeJobs() {
   cron.schedule('0 9 * * *', sendReminderEmails); //ejecutamos esto todos los dias a las 9
+  /*
+  // para pruebas:
+  cron.schedule('* * * * *', sendReminderEmails); // Ejecuta cada minuto
+  */
 }
 
 /*
 asi funciona cron:
 *| * * * * * 
 s| m h d M ds -> seg(opcional), min, hora, Mes, dia de la semana
-
-para pruebas:
-cron.schedule('* * * * *', sendReminderEmails); // Ejecuta cada minuto
 
 */
