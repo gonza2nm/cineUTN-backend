@@ -18,6 +18,7 @@ import cookieParser from 'cookie-parser';
 import { eventRouter } from './event/event.routes.js';
 import { snackRouter } from './snack/snack.routes.js';
 import { promotionRouter } from './promotion/promotion.routes.js';
+import { startCronTimeJobs } from './utils/timeReminders.js';
 dotenv.config(); // carga las variables de entorno definidas en .env
 const app = express();
 app.use(express.json());
@@ -46,6 +47,7 @@ app.use((_, res) => {
     return res.status(404).send({ message: 'Resource not found' });
 });
 await syncSchema(); //never in production
+startCronTimeJobs(); //empieza todo lo relacionado a cron (cosas por tiempo, ej: email)
 app.listen(3000, () => {
     console.log('Server running on http://localhost:3000/');
 });
