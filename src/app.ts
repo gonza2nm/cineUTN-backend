@@ -18,6 +18,7 @@ import cookieParser from 'cookie-parser';
 import { eventRouter } from './event/event.routes.js';
 import { snackRouter } from './snack/snack.routes.js';
 import { promotionRouter } from './promotion/promotion.routes.js';
+import { startCronTimeJobs } from './utils/timeReminders.js';
 
 dotenv.config() // carga las variables de entorno definidas en .env
 
@@ -55,6 +56,8 @@ app.use((_, res) => {
 });
 
 await syncSchema(); //never in production
+
+startCronTimeJobs(); //empieza todo lo relacionado a cron (cosas por tiempo, ej: email)
 
 app.listen(3000, () => {
   console.log('Server running on http://localhost:3000/');
