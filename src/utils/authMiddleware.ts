@@ -1,13 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-interface CustomRequest extends Request{
-  user?: {id: number; role: string};
-}
-
 // Middleware combinado para autenticación y autorización
 const authMiddleware = (roles: string[] = []) => {
-  return (req: CustomRequest, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     try {
       // Verifica si hay un token en las cookies
       const token = req.cookies.authToken;
@@ -18,12 +14,10 @@ const authMiddleware = (roles: string[] = []) => {
       // Verifica si el token es correcto
       const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number; role: string };
 
-      // Esta parte se encarga de los roles:
       // Verifica si el rol está permitido
       if (roles.length > 0 && !roles.includes(decoded.role)) {
         return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
       }
-      req.user = {id: decoded.id, role: decoded.role};
       next();
     } catch (error) { 
       return res.status(401).json({ message: 'Invalid or expired token', error });
@@ -31,4 +25,4 @@ const authMiddleware = (roles: string[] = []) => {
   };
 };
 
-export { authMiddleware, CustomRequest };
+export { authMiddleware};

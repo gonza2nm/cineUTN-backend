@@ -3,7 +3,6 @@ import { User } from './user.entity.js';
 import { orm } from '../shared/db/orm.js';
 import { Cinema } from '../cinema/cinema.entity.js';
 import jwt from "jsonwebtoken";
-import { CustomRequest } from '../utils/authMiddleware.js';
 
 //findOne an update reciben dni y remove el id por la implementacion de getreference
 const em = orm.em;
@@ -78,31 +77,6 @@ async function findOne(req: Request, res: Response) {
       res.status(404).json({ message: 'user not found' });
     } else {
       res.status(200).json({ message: 'found user', data: user });
-    }
-  } catch (error: any) {
-    res.status(500).json({
-      message: 'An error occurred while querying the user',
-      error: error.message,
-    });
-  }
-}
-
-async function getData(req: CustomRequest, res: Response) {
-  try {
-    if (!req.user || !req.user.id) {
-      res.status(400).json({ message: "User information is missing" });
-    }else{
-      const userId = req.user.id
-      const user = await em.findOneOrFail(
-        User,
-        { id: userId },
-        { populate: ['buys'] }
-      );
-      if (!user) {
-        res.status(404).json({ message: 'User not found', error: "Not Found" });
-      } else {
-        res.status(200).json({ message: 'Found user', data: user, });
-      }
     }
   } catch (error: any) {
     res.status(500).json({
@@ -221,10 +195,11 @@ async function login (req: Request, res: Response){
 
 async function logout(req: Request, res: Response) {
   try {
-    res.clearCookie('authToken', {
+    res.cookie('authToken', {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
+      maxAge: -1000 * 60
     });
     res.status(200).json({ message: 'Logout exitoso' });
   } catch (error: any) {
@@ -235,18 +210,31 @@ async function logout(req: Request, res: Response) {
   }
 }
 
-async function authCheck(req: Request, res: Response){
-  const token = req.cookies.authToken;
-  try{
-    if(!token){
-      res.status(401).json({authenticated: false, message: "Not Authenticated"});
-    }else{
-      const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-      res.status(200).json({authenticated:true, data: decoded});  
-    }
-  }catch(error: any){
-    res.status(401).json({ authenticated: false, message: 'Token expired or invalid' });
+async function verifyToken(req: Request, res: Response) {
+  try {
+      const token = req.cookies.authToken;
+      if (!token) {
+        return res.status(401).json({ message: 'No token provided', });
+      }
+      const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number; role: string };
+
+      const user = await em.findOneOrFail(
+        User,
+        { id: decoded.id },
+        { populate: ['buys'] }
+      );
+      if (!user) {
+        res.status(404).json({ message: 'User not found', error: "Not Found" });
+      } else {
+        res.status(200).json({ message: 'Found user', data: user, });
+      }
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'An error occurred while querying the user',
+      error: error.message,
+    });
   }
 }
 
-export { sanitizeUserInput, findAll, findAllManagers, getData, findOneManager, add, update, remove, authCheck, login, logout, findOne };
+
+export { sanitizeUserInput, findAll, findAllManagers, verifyToken, findOneManager, add, update, remove , login, logout, findOne };
