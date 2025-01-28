@@ -3,6 +3,7 @@ import { Buy } from "./buy.entity.js"
 import { orm } from '../shared/db/orm.js'
 import jwt from 'jsonwebtoken';
 import QRCode from 'qrcode';
+import { generateQRCode } from "../utils/qrCodeGenerator.js";
 
 
 const em = orm.em
@@ -21,19 +22,6 @@ function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
   })
   next()
 }
-
-function generateSignedToken(buyId: number): string {
-  const buyDataQR = { //datos que voy a encriptar
-    buyId,
-    timestamp: Date.now(),
-  };
-
-  return jwt.sign(
-    buyDataQR,
-    process.env.JWT_SECRET as string,
-    { expiresIn: process.env.JWT_EXPIRESIN });
-}
-
 
 async function findAll(req: Request, res: Response) {
   try {
@@ -82,11 +70,8 @@ async function generateQRCodeForBuy(req: Request, res: Response) {
       return res.status(404).json({ message: 'Buy not found' });
     }
 
-    // Genero el token JWT firmado
-    const signedToken = generateSignedToken(buyId);
-
-    // Creo el código QR usando el token firmado
-    const qrCodeUrl = await QRCode.toDataURL(signedToken);
+    // Creo el código QR 
+    const qrCodeUrl = await generateQRCode(buyId);
 
     return res.status(200).json({
       message: 'QR code generated successfully',
@@ -110,18 +95,18 @@ async function validateQRCode(req: Request, res: Response) {
       return res.status(500).json({ message: "QR secret key is not configured in the environment." });
     }
     // Verificar el token con la clave secreta
-    const decoded: any = jwt.verify(token, JWT_SECRET); // `decoded` contiene el `buyId` y el timestamp
+    const decoded: any = jwt.verify(token, JWT_SECRET); // `decoded` contiene el `buyId`
 
     const buyId = decoded.buyId;
 
     // Buscar la compra en la base de datos
-    const buy = await em.findOne(Buy, { id: buyId }, { populate: ['tickets', 'tickets.show', 'tickets.show.movie', 'tickets.show.theater'] }); //estos tickets.XXX son para popular esas relacione tambien
+    const buy = await em.findOne(Buy, { id: buyId }, { populate: ['tickets', 'tickets.show', 'tickets.show.movie', 'tickets.show.theater'] }); //estos tickets.XXX son para popular esas relaciones tambien
     if (!buy) {
       return res.status(404).json({ message: 'Buy not found.' });
     }
 
     // Verificar si la compra está cancelada
-    if (buy.status === 'canelado') {
+    if (buy.status === 'cancelado') {
       return res.status(400).json({ message: 'The buy has been cancelled.' });
     }
 
