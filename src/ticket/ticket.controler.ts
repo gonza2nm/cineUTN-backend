@@ -5,16 +5,17 @@ import { Ticket } from './ticket.entity.js';
 const em = orm.em;
 
 function sanitizeTicketInput(req: Request, res: Response, next: NextFunction) {
-  req.body.sanitizedInput = {
+  req.body.sanitizedTicketInput = {
     show: req.body.show,
     buy: req.body.buy
   };
 
-  Object.keys(req.body.sanitizedInput).forEach((key) => {
-    if (req.body.sanitizedInput[key] === undefined) {
-      delete req.body.sanitizedInput[key];
+  Object.keys(req.body.sanitizedTicketInput).forEach((key) => {
+    if (req.body.sanitizedTicketInput[key] === undefined) {
+      delete req.body.sanitizedTicketInput[key];
     }
   });
+
   next();
 }
 
@@ -33,11 +34,12 @@ async function findAll(req: Request, res: Response) {
 
 async function findAllTicketbyPurchase(req: Request, res: Response) {
   try {
-    const tickets = await em.find(Ticket, req.body.sanitizedInput, { populate: ['show', 'show.movie', 'show.theater', 'show.format', 'show.language'] });
-    res.status(200).json({ message: 'found all tickets', data: tickets });
+    const id = Number.parseInt(req.params.id);
+    const tickets = await em.find(Ticket, { buy: id }, { populate: ['show', 'show.movie', 'show.theater', 'show.format', 'show.language', 'buy']});
+    res.status(200).json({ message: 'ticket found', data: tickets });
   } catch (error: any) {
     res.status(500).json({
-      message: 'An error occurred while finding all the tickets',
+      message: 'An error occurred while finding the ticket',
       error: error.message,
     });
   }
@@ -63,7 +65,7 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    const ticket = em.create(Ticket, req.body.sanitizedInput);
+    const ticket = em.create(Ticket, req.body.sanitizedTicketInput);
     await em.flush();
     res.status(201).json({ message: 'ticket created', data: ticket });
   } catch (error: any) {
@@ -78,7 +80,7 @@ async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
     const ticketToUpdate = await em.findOneOrFail(Ticket, { id });
-    em.assign(ticketToUpdate, req.body.sanitizedInput);
+    em.assign(ticketToUpdate, req.body.sanitizedTicketInput);
     await em.flush();
     res.status(200).json({ message: 'ticket updated', data: ticketToUpdate });
   } catch (error: any) {
@@ -108,9 +110,10 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-async function remove2(req: Request, res: Response) {
+async function removeAllTicketsByPurchase(req: Request, res: Response) {
   try {
-    const tickets = await em.find(Ticket, req.body.sanitizedInput);
+    const id = Number.parseInt(req.params.id);
+    const tickets = await em.find(Ticket, { buy: id });
     if(tickets.length === 0) {
       res.status(404).json({ message: 'Tickets not found for deletion.' });
     } else {
@@ -119,10 +122,12 @@ async function remove2(req: Request, res: Response) {
     }
   } catch (error: any) {
     res.status(500).json({
-      message: 'An error occurred while deleting all the tickets',
+      message: 'An error occurred while finding the ticket',
       error: error.message,
     });
   }
+  
 }
 
-export { sanitizeTicketInput, findAll, findOne, add, update, remove, findAllTicketbyPurchase, remove2 };
+
+export { sanitizeTicketInput, findAll, findOne, add, update, remove, findAllTicketbyPurchase, removeAllTicketsByPurchase };

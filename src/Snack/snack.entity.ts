@@ -15,6 +15,9 @@ export class Snack extends BaseEntity{
   @Property({nullable: false})
   urlPhoto!: string;
 
+  @Property({nullable: false})
+  price!: number;
+
   @ManyToMany(() => Promotion, (promotion)=> promotion.snacks, {owner: true})
   promotions = new Collection<Promotion>(this);
 
