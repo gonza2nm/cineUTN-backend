@@ -195,11 +195,11 @@ async function login (req: Request, res: Response){
 
 async function logout(req: Request, res: Response) {
   try {
-    res.cookie('authToken', {
+    res.cookie('authToken','', {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
-      maxAge: -1000 * 60
+      maxAge: 0
     });
     res.status(200).json({ message: 'Logout exitoso' });
   } catch (error: any) {
