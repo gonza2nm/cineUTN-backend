@@ -3,6 +3,7 @@ import { BaseEntity } from '../shared/db/baseEntity.entity.js'
 import { User } from '../user/user.entity.js';
 import { Ticket } from '../ticket/ticket.entity.js';
 import { Snack } from '../snack/snack.entity.js';
+import { Promotion } from '../promotion/promotion.entity.js';
 
 @Entity()
 export class Buy extends BaseEntity {
@@ -30,5 +31,8 @@ export class Buy extends BaseEntity {
 
   @ManyToMany(() => Snack, (snack) => snack.buys)
   snacks = new Collection<Snack>(this)
+
+  @ManyToMany(() => Promotion, (promotion) => promotion.buys)
+  promotions = new Collection<Promotion>(this)
   
 }

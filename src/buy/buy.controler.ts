@@ -5,6 +5,7 @@ import { Ticket } from "../ticket/ticket.entity.js";
 import { Snack } from "../snack/snack.entity.js";
 import jwt from 'jsonwebtoken';
 import QRCode from 'qrcode';
+import { Promotion } from "../promotion/promotion.entity.js";
 
 
 const em = orm.em
@@ -12,6 +13,7 @@ const em = orm.em
 function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
   const cantElements = req.body.cantElements;
   const snacks = req.body.snacks;
+  const promos = req.body.promotions;
   req.body.sanitizedBuyInput = {
     description: req.body.description,
     user: req.body.user,
@@ -26,6 +28,7 @@ function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
 
   req.body.cantElements = cantElements;
   req.body.snacks = snacks;
+  req.body.promotions = promos
   next()
 }
 
@@ -74,7 +77,7 @@ async function findAllpurchasebyUser(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const buy = await em.findOneOrFail(Buy, { id }, { populate: ['user', 'tickets', 'snacks'] });
+    const buy = await em.findOneOrFail(Buy, { id }, { populate: ['user', 'tickets', 'snacks', 'promotions'] });
     res.status(200).json({ message: 'Found buy', data: buy })
   } catch (error: any) {
     res.status(500).json({ message: 'An error occurred while querying the buy', error: error.message, })
@@ -179,6 +182,14 @@ async function addPurchase(req: Request, res: Response) {
       for (const snackData of req.body.snacks) {
         const snack = await em.findOneOrFail(Snack, { id: snackData.id});
         buy.snacks.add(snack);
+      }
+      await em.flush();
+    }
+
+    if(req.body.promotions) {
+      for (const promoData of req.body.promotions) {
+        const promo = await em.findOneOrFail(Promotion, { code: promoData.code});
+        buy.promotions.add(promo);
       }
       await em.flush();
     }

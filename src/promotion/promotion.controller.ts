@@ -28,21 +28,6 @@ function sanitizePromotionInput(req: Request, res: Response, next: NextFunction)
   next();
 }
 
-const validateDates = (req: Request, res: Response, next:NextFunction) => {
-  const { promotionStartDate, promotionFinishDate } = req.body;
-
-  const start = new Date(promotionStartDate);
-  const end = new Date(promotionFinishDate);
-
-  if (end < start) {
-    return res.status(400).json({
-      message: 'La fecha de fin no puede ser anterior a la fecha de inicio.',
-    });
-  }
-
-  next();
-};
-
 async function findAll(req: Request, res: Response){
   try {
     const promotions = await em.find(Promotion, {});
@@ -118,10 +103,10 @@ async function add(req: Request, res: Response){
       }
     }
 
-    const start = new Date(req.body.sanitizedInput.promotionStartDate);
-    const end = new Date(req.body.sanitizedInput.promotionFinishDate);
-    const today = new Date()
-    
+    const start = new Date(req.body.sanitizedInput.promotionStartDate + 'T00:00:00-03:00');
+    const end = new Date(req.body.sanitizedInput.promotionFinishDate + 'T00:00:00-03:00');
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
     if(start < today || end < today) {
       return res.status(400).json({
@@ -163,9 +148,10 @@ async function update(req: Request, res: Response){
           snackToUpdate.snacks.set(req.body.sanitizedInput.snacks.map((cinema: { id: number }) => em.getReference(Snack, cinema.id)));
       }
 
-    const start = new Date(req.body.sanitizedInput.promotionStartDate);
-    const end = new Date(req.body.sanitizedInput.promotionFinishDate);
+    const start = new Date(req.body.sanitizedInput.promotionStartDate + 'T00:00:00-03:00');
+    const end = new Date(req.body.sanitizedInput.promotionFinishDate + 'T00:00:00-03:00');
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
     
     if(start < today || end < today) {
       return res.status(400).json({
@@ -178,7 +164,7 @@ async function update(req: Request, res: Response){
         message: 'La fecha de fin no puede ser anterior a la fecha de inicio.',
       });
     }
-      //--------
+      
     em.assign(snackToUpdate, {
       name: req.body.name,
       description: req.body.description,
