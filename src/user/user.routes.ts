@@ -10,7 +10,7 @@ import {
   findAllManagers,
   logout,
   login,
-  verifyToken
+  verifyTokenAndFindData
 } from './user.controler.js';
 import { authMiddleware } from '../utils/authMiddleware.js';
 
@@ -19,7 +19,7 @@ export const userRouter = Router();
 // No cambiar el orden de las rutas
 userRouter.post('/login', sanitizeUserInput, login);
 userRouter.post('/logout', authMiddleware(['user','manager']), logout);
-userRouter.get('/verify-token', verifyToken);
+userRouter.get('/verify-token-find-data', verifyTokenAndFindData);
 userRouter.post('/register', sanitizeUserInput, add);
 
 userRouter.get('/managers', authMiddleware(['manager']), findAllManagers);
