@@ -70,7 +70,7 @@ async function add(req: Request, res: Response) {
       // Extraermos los nombres de los cines
       const cinemaNames = overlappingCinemasWithNames.map((cinema) => cinema.name);
       return res.status(400).json({
-        message: "The event time overlaps with another event in the following cinemas:" + cinemaNames
+        message: "El tiempo de este evento se solapa con el de otro en los cines: " + cinemaNames
       });
 
     } else {
@@ -107,7 +107,7 @@ async function update(req: Request, res: Response) {
       // Extraermos los nombres de los cines
       const cinemaNames = overlappingCinemasWithNames.map((cinema) => cinema.name);
       return res.status(400).json({
-        message: "The event time overlaps with another event in the following cinemas:" + cinemaNames
+        message: "El tiempo de este evento se solapa con el de otro en los cines: " + cinemaNames
       });
 
     } else {
