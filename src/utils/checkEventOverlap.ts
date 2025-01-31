@@ -20,8 +20,13 @@ export async function checkOverlappingEventsWithCinemas(
     for (const cinema of cinemas) {
       let overlappingEvents = await em.find(Event, {
         cinemas: cinema.id, // Busca eventos que tengan asociado un cine con el id del cine actual, busca eventos del cine actual 
-        startDate: { $lt: newFinishDate }, // Busca eventos que terminen después de la fecha de inicio propuesta
-        finishDate: { $gt: newStartDate },  // Busca eventos que empiecen antes de la fecha de fin propuesta
+        $or: [
+          { startDate: { $lt: newFinishDate }, finishDate: { $gt: newStartDate } }, // Evento dentro o superpuesto
+          { startDate: { $eq: newStartDate } }, // Evento que empieza el mismo día
+          { finishDate: { $eq: newFinishDate } }, // Evento que termina el mismo día
+          { startDate: { $eq: newFinishDate } },
+          { finishDate: { $eq: newStartDate } }
+        ],
       });
 
       //exluir el evento actual si es un update (para que haga overlap el mismo evento que quiero hacerle update)
