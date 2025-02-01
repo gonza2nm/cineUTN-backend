@@ -112,7 +112,7 @@ async function validateQRCode(req: Request, res: Response) {
     const buyId = decoded.buyId;
 
     // Buscar la compra en la base de datos
-    const buy = await em.findOne(Buy, { id: buyId }, { populate: ['tickets', 'tickets.show', 'tickets.show.movie', 'tickets.show.theater', 'snacks'] }); //estos tickets.XXX son para popular esas relaciones tambien
+    const buy = await em.findOne(Buy, { id: buyId }, { populate: ['tickets', 'tickets.show', 'tickets.show.movie', 'tickets.show.theater', 'tickets.show.theater.cinema', 'snacks'] }); //estos tickets.XXX son para popular esas relaciones tambien
     if (!buy) {
       return res.status(404).json({ message: 'Buy not found.' });
     }
