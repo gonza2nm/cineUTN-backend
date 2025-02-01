@@ -5,20 +5,17 @@ import { Show } from '../show/show.entity.js';
 //false si no se encuentra una funcion entre eso horario
 export async function checkTimeShowInTheater(
   dayAndTime: string,
-  finishTime: string,
+  finishTime: Date,
   theaterId: string,
   showtimeId: number | null
 ): Promise<Boolean> {
   const em = orm.em;
   const newtheaterId = Number(theaterId);
   const newShowStartDate = new Date(`${dayAndTime}`);
-  const newShowEndDate = new Date(`${finishTime}`);
-  console.log(newShowStartDate);
-  console.log(newShowEndDate);
   try {
     const overlappingShows = await em.find(Show, {
       theater: newtheaterId,
-      dayAndTime: { $lt: newShowEndDate },
+      dayAndTime: { $lt: finishTime },
       finishTime: { $gt: newShowStartDate },
     });
 
