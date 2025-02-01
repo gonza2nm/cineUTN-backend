@@ -22,7 +22,7 @@ function sanitizeCinemaInput(req: Request, res: Response, next: NextFunction) {
 async function findAllByMovie(req: Request, res: Response) {
   try {
     const movieId = Number.parseInt(req.params.id);
-    const cinemas = await em.find(Cinema, {movies: {id: movieId}}, { populate: ['movies', 'movies.cinemas'] });
+    const cinemas = await em.find(Cinema, { movies: { id: movieId } }, { populate: ['movies', 'movies.cinemas'] });
     console.log(cinemas)
     res.status(200).json({ message: 'found all cinemas', data: cinemas });
   } catch (error: any) {
@@ -56,9 +56,9 @@ async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
     let cinema;
-    if(req.query.genres === "all"){
-      cinema = await em.findOne(Cinema, { id }, { populate: ['theaters', 'movies','movies.genres'] });
-    } else{
+    if (req.query.genres === "all") {
+      cinema = await em.findOne(Cinema, { id }, { populate: ['theaters', 'movies', 'movies.genres'] });
+    } else {
       cinema = await em.findOne(Cinema, { id }, { populate: ['theaters', 'movies'] });
     }
     if (cinema === null) {
@@ -109,12 +109,16 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const cinema = await em.findOne(Cinema, { id }, { populate: ['theaters'] });
+    const cinema = await em.findOne(Cinema, { id }, { populate: ['theaters', 'events'] });
     if (cinema === null) {
       res.status(404).json({ message: 'cinema not found to delete.' });
     } else {
-      await em.removeAndFlush(cinema);
-      res.status(200).json({ data: cinema, message: 'cinema deleted' });
+      if (cinema.events.length === 0) {
+        await em.removeAndFlush(cinema);
+        res.status(200).json({ data: cinema, message: 'cinema deleted' });
+      } else {
+        res.status(409).json({ message: 'No puede eliminarse este cine si todavia tiene eventos asociados.' });
+      }
     }
   } catch (error: any) {
     res.status(500).json({

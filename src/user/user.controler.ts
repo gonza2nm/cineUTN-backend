@@ -68,57 +68,15 @@ async function findAll(req: Request, res: Response) {
   }
 }
 
-/*
+
 async function findOne(req: Request, res: Response) {
   try {
-    const user = await em.findOneOrFail(User, req.body.sanitizedInput, { populate: ['buys'] });
+    const userId = Number.parseInt(req.body.sanitizedInput.id)
+    const user = await em.findOneOrFail(User, {id: userId}, { populate: ['buys'] });
     if (!user) {
       res.status(404).json({ message: 'user not found' });
     } else {
       res.status(200).json({ message: 'found user', data: user });
-    }
-  } catch (error: any) {
-    res.status(500).json({
-      message: 'An error occurred while querying the user',
-      error: error.message,
-    });
-  }
-}
-*/
-
-
-//login
-
-async function findOne(req: Request, res: Response) {
-  try {
-    const email = req.body.email;
-    const password = req.body.password;
-    const user = await em.findOneOrFail(
-      User,
-      { email },
-      { populate: ['buys'] }
-    );
-    if (!user) {
-      res.status(404).json({ message: 'User not found', error: "Not Found" });
-    } else {
-      if (user.password === password) {
-        const token = jwt.sign(
-          { id: user.id, role: user.type },
-          process.env.JWT_SECRET as string,
-          { expiresIn: process.env.JWT_EXPIRESIN }
-        );
-        // enviamos el token jwt en una cookie
-        res.cookie("authToken", token, {
-          httpOnly: true,
-          secure: false,
-          sameSite: 'lax',
-          maxAge: 1000 * 60 * 60
-        })
-
-        res.status(200).json({ message: 'Found user', data: user, });
-      } else {
-        res.status(401).json({ message: "Email o contraseña incorrecta", error: "Credenciales incorrectas" });
-      }
     }
   } catch (error: any) {
     res.status(500).json({
@@ -151,32 +109,6 @@ async function findOneManager(req: Request, res: Response) {
     });
   }
 }
-/*
-async function findOneManager(req: Request, res: Response) {
-  try {
-    const id = Number.parseInt(req.params.id);
-    console.log('Searching for manager with ID:', id); // Log para depuración
-    const user = await em.findOneOrFail(User, { id }, { populate: ['cinema'] });
-
-    // Aquí podemos verificar si el usuario realmente es un manager si es necesario
-    if (user.type !== 'manager') {
-      return res.status(404).json({ message: 'User is not a manager' });
-    }
-
-    res.status(200).json({ message: 'Manager found', data: user });
-  } catch (error: any) {
-    console.error('Error finding manager:', error); // Log para depuración
-    if (error.name === 'NotFoundError') {
-      res.status(404).json({ message: 'Manager not found' });
-    } else {
-      res.status(500).json({
-        message: 'An error occurred while finding the manager',
-        error: error.message,
-      });
-    }
-  }
-}
-*/
 
 async function update(req: Request, res: Response) {
   try {
@@ -225,18 +157,100 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-async function authCheck(req: Request, res: Response){
-  const token = req.cookies.authToken;
-  try{
-    if(!token){
-      res.status(401).json({authenticated: false, message: "Not Authenticated"});
-    }else{
-      const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-      res.status(200).json({authenticated:true, data: decoded});  
+async function login (req: Request, res: Response){
+  try {
+    const email = req.body.email;
+    const password = req.body.password;
+    const user = await em.findOneOrFail(
+      User,
+      { email },
+    );
+    if (!user) {
+      res.status(404).json({ message: 'User not found', error: "Not Found" });
+    } else {
+      if (user.password === password) {
+        const token = jwt.sign(
+          { id: user.id, role: user.type },
+          process.env.JWT_SECRET as string,
+          { expiresIn: process.env.JWT_EXPIRESIN }
+        );
+        res.cookie("authToken", token, {
+          httpOnly: true,
+          secure: false,
+          sameSite: 'lax',
+          maxAge: 1000 * 60 * 60
+        })
+        res.status(200).json({ message: 'Found user', data: user, });
+      } else {
+        res.status(401).json({ message: "Email o contraseña incorrecta", error: "Credenciales incorrectas" });
+      }
     }
-  }catch(error: any){
-    res.status(401).json({ authenticated: false, message: 'Token expired or invalid' });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'An error occurred while trying to log in',
+      error: error.message,
+    });
   }
 }
 
-export { sanitizeUserInput, findAll, findAllManagers, findOne, findOneManager, add, update, remove, authCheck };
+async function logout(req: Request, res: Response) {
+  try {
+    res.cookie('authToken','', {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 0
+    });
+    res.status(200).json({ message: 'Logout exitoso' });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'Error al realizar el logout',
+      error: error.message,
+    });
+  }
+}
+
+async function verifyTokenAndFindData(req: Request, res: Response) {
+  try {
+      const token = req.cookies.authToken;
+      if (!token) {
+        return res.status(401).json({ message: 'No token provided', });
+      }
+      const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number; role: string };
+
+      const user = await em.findOneOrFail(
+        User,
+        { id: decoded.id },
+        { populate: ['buys'] }
+      );
+      if (!user) {
+        res.status(404).json({ message: 'User not found', error: "Not Found" });
+      } else {
+        res.status(200).json({ message: 'Found user', data: user, });
+      }
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'An error occurred while querying the user',
+      error: error.message,
+    });
+  }
+}
+
+async function verifyToken(req: Request, res: Response) {
+  try {
+    const token = req.cookies.authToken;
+    if (!token) {
+      return res.status(401).json({ message: 'No token provided', });
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number; role: string };
+    res.status(200).json({id: decoded.id, role: decoded.role});
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'An error occurred while querying the user',
+      error: error.message,
+    });
+  }
+}
+
+
+export { sanitizeUserInput, findAll, findAllManagers, verifyToken, verifyTokenAndFindData, findOneManager, add, update, remove , login, logout, findOne };

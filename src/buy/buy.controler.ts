@@ -6,6 +6,7 @@ import { Snack } from "../snack/snack.entity.js";
 import jwt from 'jsonwebtoken';
 import QRCode from 'qrcode';
 import { Promotion } from "../promotion/promotion.entity.js";
+import { generateQRCode } from "../utils/qrCodeGenerator.js";
 
 
 const em = orm.em
@@ -32,19 +33,6 @@ function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
   next()
 }
 
-function generateSignedToken(buyId: number): string {
-  const buyDataQR = { //datos que voy a encriptar
-    buyId,
-    timestamp: Date.now(),
-  };
-
-  return jwt.sign(
-    buyDataQR,
-    process.env.JWT_SECRET as string,
-    { expiresIn: process.env.JWT_EXPIRESIN });
-}
-
-
 async function findAll(req: Request, res: Response) {
   try {
     const buys = await em.find(Buy, {}, { populate: ['user', 'tickets'] });
@@ -62,7 +50,7 @@ async function findAllpurchasebyUser(req: Request, res: Response) {
     const id = Number.parseInt(req.params.id);
     await updateExpirateBuys();
 
-    const buys = await em.find(Buy, {user: id}, { populate: ['user']});
+    const buys = await em.find(Buy, { user: id }, { populate: ['user'] });
     res.status(200).json({ message: 'found all buys', data: buys });
 
   } catch (error: any) {
@@ -94,11 +82,8 @@ async function generateQRCodeForBuy(req: Request, res: Response) {
       return res.status(404).json({ message: 'Buy not found' });
     }
 
-    // Genero el token JWT firmado
-    const signedToken = generateSignedToken(buyId);
-
-    // Creo el código QR usando el token firmado
-    const qrCodeUrl = await QRCode.toDataURL(signedToken);
+    // Creo el código QR 
+    const qrCodeUrl = await generateQRCode(buyId);
 
     return res.status(200).json({
       message: 'QR code generated successfully',
@@ -121,19 +106,22 @@ async function validateQRCode(req: Request, res: Response) {
     if (!JWT_SECRET) {//para que no moleste mas abajo por ser undefied
       return res.status(500).json({ message: "QR secret key is not configured in the environment." });
     }
+    //  actualizamos compras expiradas antes de validar el QR
+    await updateExpirateBuys();
+
     // Verificar el token con la clave secreta
-    const decoded: any = jwt.verify(token, JWT_SECRET); // `decoded` contiene el `buyId` y el timestamp
+    const decoded: any = jwt.verify(token, JWT_SECRET); // `decoded` contiene el `buyId`
 
     const buyId = decoded.buyId;
 
     // Buscar la compra en la base de datos
-    const buy = await em.findOne(Buy, { id: buyId }, { populate: ['tickets', 'tickets.show', 'tickets.show.movie', 'tickets.show.theater'] }); //estos tickets.XXX son para popular esas relacione tambien
+    const buy = await em.findOne(Buy, { id: buyId }, { populate: ['tickets', 'tickets.show', 'tickets.show.movie', 'tickets.show.theater', 'snacks'] }); //estos tickets.XXX son para popular esas relaciones tambien
     if (!buy) {
       return res.status(404).json({ message: 'Buy not found.' });
     }
 
     // Verificar si la compra está cancelada
-    if (buy.status === 'canelado') {
+    if (buy.status === 'cancelado') {
       return res.status(400).json({ message: 'The buy has been cancelled.' });
     }
 
@@ -164,7 +152,7 @@ async function add(req: Request, res: Response) {
 }
 
 
-async function addPurchase(req: Request, res: Response) {   
+async function addPurchase(req: Request, res: Response) {
   await em.begin();
 
   try {
@@ -178,9 +166,9 @@ async function addPurchase(req: Request, res: Response) {
     const buyId = buy.id;
     req.body.sanitizedTicketInput.buy = buyId;
 
-    if(req.body.snacks) {
+    if (req.body.snacks) {
       for (const snackData of req.body.snacks) {
-        const snack = await em.findOneOrFail(Snack, { id: snackData.id});
+        const snack = await em.findOneOrFail(Snack, { id: snackData.id });
         buy.snacks.add(snack);
       }
       await em.flush();
@@ -202,8 +190,8 @@ async function addPurchase(req: Request, res: Response) {
         throw new Error('No es una compra de entradas');
       }
     }
-    await em.commit(); 
-    res.status(200).json({message: 'Buy and Tickets created', data: buy});
+    await em.commit();
+    res.status(200).json({ message: 'Buy and Tickets created', data: buy });
   } catch (error) {
     await em.rollback();
     console.error('Error en la transacción:', error);
@@ -249,11 +237,11 @@ async function remove(req: Request, res: Response) {
 async function updateExpirateBuys() {
   const today = new Date();
   const buysToExpire = await em.find(Buy, {
-    status: 'Válido', 
+    status: 'Válida',
     tickets: {
       show: {
-        dayAndTime: {$lt: today}
-      } 
+        finishTime: { $lt: today }
+      }
     }
   });
 
@@ -266,4 +254,4 @@ async function updateExpirateBuys() {
 
 
 
-export { sanitizeBuyInput, findAll, findOne, add, update, remove, findAllpurchasebyUser , addPurchase,  generateQRCodeForBuy, validateQRCode}
+export { sanitizeBuyInput, findAll, findOne, add, update, remove, findAllpurchasebyUser, addPurchase, generateQRCodeForBuy, validateQRCode }

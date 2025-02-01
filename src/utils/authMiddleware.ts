@@ -14,7 +14,6 @@ const authMiddleware = (roles: string[] = []) => {
       // Verifica si el token es correcto
       const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number; role: string };
 
-      // Esta parte se encarga de los roles:
       // Verifica si el rol está permitido
       if (roles.length > 0 && !roles.includes(decoded.role)) {
         return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
@@ -26,4 +25,4 @@ const authMiddleware = (roles: string[] = []) => {
   };
 };
 
-export { authMiddleware };
+export { authMiddleware};
