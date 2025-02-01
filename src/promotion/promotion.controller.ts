@@ -15,7 +15,7 @@ function sanitizePromotionInput(req: Request, res: Response, next: NextFunction)
     description: req.body.description,
     promotionStartDate: req.body.promotionStartDate,
     promotionFinishDate: req.body.promotionFinishDate,
-    discount: req.body.discount,
+    price: req.body.price,
     cinemas: req.body.cinemas,
     snacks : req.body.snacks
   };
@@ -89,7 +89,7 @@ async function add(req: Request, res: Response){
   try{
     const generarCodigoUnico = customAlphabet(alfabeto, 8);
     const code = generarCodigoUnico();
-    //----------------------
+    
 
     if (req.body.sanitizedInput.cinemas.length === 0 || req.body.sanitizedInput.snacks.length === 0) {
       res.status(400).json({ message: 'The promotion requires at least one snack or one cinema.', error: "Bad Request" });
@@ -170,7 +170,7 @@ async function update(req: Request, res: Response){
       description: req.body.description,
       promotionStartDate: req.body.promotionStartDate,
       promotionFinishDate: req.body.promotionFinishDate,
-      discount: req.body.discount,
+      price: req.body.price,
     });
     await em.flush();
     res.status(200).json({

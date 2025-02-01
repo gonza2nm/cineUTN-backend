@@ -22,7 +22,7 @@ export class Promotion{
   promotionFinishDate = new Date();
 
   @Property({nullable: false})
-  discount!: number;
+  price!: number;
 
   @ManyToMany(() => Cinema, (cinema) => cinema.promotions)
   cinemas = new Collection<Cinema>(this);
