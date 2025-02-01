@@ -30,7 +30,6 @@ Content-Type: application/json
   "format": 1,
   "language": 1,
   "dayAndTime":"2024-10-17 12:00:00",
-  "finishTime":"2024-10-17 13:00:00"
 }
 
 ### CREATE a show 2 -------------------------------------------------------------
@@ -42,7 +41,6 @@ Content-Type: application/json
   "theater": 1,
   "movie": 1,
   "dayAndTime":"2024-08-01 13:00:00",
-  "finishTime":"2024-08-01 13:30:00"
 }
 
 
@@ -53,7 +51,6 @@ Content-Type: application/json
 
 {
   "dayAndTime":"2024-07-30 21:00:00",
-  "finishTime":"2024-07-30 22:45:00"
 }
 
 ### DELETE a show 2 -------------------------------------------------------------
