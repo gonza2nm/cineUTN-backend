@@ -24,6 +24,9 @@ export class Movie extends BaseEntity {
   @Property({ nullable: false })
   imageLink!: string;
 
+  @Property({nullable: false})
+  duration!: number;
+
   @ManyToMany(() => Genre, (genre) => genre.movies)
   genres = new Collection<Genre>(this);
 

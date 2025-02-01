@@ -10,32 +10,24 @@ import { Language } from '../language/language.entity.js';
 export class Show extends BaseEntity {
 
   //formato: yyyy-mm-dd hh:mm:ss 
-  //ejemplo 20 de junio del 2024 a las 21:00 = 2024-06-20 21:00:00
-  //dia y inicio de la funcion
   @Property({ type: DateTimeType, nullable: false })
   dayAndTime!: Date;
 
-  //dia y fin de la funcion
   @Property({ type: DateTimeType, nullable: false })
   finishTime!: Date;
 
-  //Relacion con theater (salas)
   @ManyToOne(() => Theater, { nullable: false })
   theater!: Rel<Theater>
 
-  //Relacion con pelicula
   @ManyToOne(() => Movie, { nullable: true})
   movie!: Rel<Movie>
 
-  //Relacion con entrada
   @OneToMany(() => Ticket, (ticket) => ticket.show)
   tickets = new Collection<Ticket>(this);
 
-  //Relacion con formato
   @ManyToOne(() => Format, { nullable: false })
   format!: Rel<Format>
 
-  //Relacion con idioma
   @ManyToOne(() => Language, { nullable: false })
   language!: Rel<Language>
 

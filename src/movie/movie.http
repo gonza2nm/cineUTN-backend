@@ -5,8 +5,6 @@ GET http://localhost:3000/api/movies
 GET http://localhost:3000/api/movies/16
 
 ### crear un movie
-### antes de crear verificar que haya genero con id 1
-
 POST http://localhost:3000/api/movies
 Content-Type: application/json
 
@@ -14,6 +12,7 @@ Content-Type: application/json
   "name": "Guardianes De La Galaxia",
   "imageLink":"https://a.ltrbxd.com/resized/film-poster/9/3/6/7/6/93676-guardians-of-the-galaxy-0-1000-0-1500-crop.jpg?v=3cc8cb967f",
   "description": "El temerario aventurero Peter Quill, tras robar una misteriosa esfera codiciada por Ronan, un poderoso villano cuyas ambiciones amenazan a todo el universo, se convierte en la presa más codiciada por todos los cazarrecompensas de la galaxia.",
+  "duration": 115,
   "formats": [1,2],
   "languages": [1,2],
   "genres": [1] 
@@ -28,6 +27,7 @@ Content-Type: application/json
   "name": "Guardians Of The Galaxy",
   "imageLink":"https://a.ltrbxd.com/resized/film-poster/9/3/6/7/6/93676-guardians-of-the-galaxy-0-1000-0-1500-crop.jpg?v=3cc8cb967f",
   "description": "The reckless adventurer Peter Quill, after stealing a mysterious sphere coveted by Ronan, a powerful villain whose ambitions threaten the entire universe, becomes the most coveted prey for all bounty hunters in the galaxy.",
+  "duration": 100,
   "formats":[1,2],
   "languages": [1],
   "genres": [1,4] 

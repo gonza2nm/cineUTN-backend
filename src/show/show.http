@@ -20,40 +20,28 @@ Content-Type: application/json
 }
 
 ### CREATE a show 1 -------------------------------------------------------------
-### 
 POST http://localhost:3000/api/shows
 Content-Type: application/json
 
 {
   "theater": 1,
-  "movie": 1,
+  "movie": 10,
   "format": 1,
   "language": 1,
-  "dayAndTime":"2024-10-17 12:00:00",
-  "finishTime":"2024-10-17 13:00:00"
+  "dayAndTime":"2025-02-02 12:00:00"
 }
-
-### CREATE a show 2 -------------------------------------------------------------
-### 
-POST http://localhost:3000/api/shows
-Content-Type: application/json
-
-{
-  "theater": 1,
-  "movie": 1,
-  "dayAndTime":"2024-08-01 13:00:00",
-  "finishTime":"2024-08-01 13:30:00"
-}
-
 
 ### UPDATE a show 1 -------------------------------------------------------------
 ### Solo se modifica el horario de la funcion
-PUT http://localhost:3000/api/shows/2
+PUT http://localhost:3000/api/shows/13
 Content-Type: application/json
 
 {
-  "dayAndTime":"2024-07-30 21:00:00",
-  "finishTime":"2024-07-30 22:45:00"
+  "theater": 1,
+  "movie": 10,
+  "format": 1,
+  "language": 1,
+  "dayAndTime":"2025-02-02 21:00:00"
 }
 
 ### DELETE a show 2 -------------------------------------------------------------
