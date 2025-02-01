@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Theater } from './theater.entity.js';
 import { orm } from '../shared/db/orm.js';
+import { Cinema } from '../cinema/cinema.entity.js';
 
 const em = orm.em;
 
@@ -48,7 +49,11 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
+    // obtenemos la referencia del cine para que no trate de hacer un insert
+    req.body.sanitizedInput.cinema = em.getReference(Cinema, req.body.sanitizedInput.cinema.id);
+
     const theater = em.create(Theater, req.body.sanitizedInput);
+
     await em.flush();
     res.status(201).json({ message: 'theater created', data: theater });
   } catch (error: any) {
@@ -70,6 +75,9 @@ async function update(req: Request, res: Response) {
       if (numChairs !== undefined) {
         theaterToUpdate.numChairs = numChairs;
       }
+      // obtenemos la referencia del cine para que no trate de hacer un insert
+      req.body.sanitizedInput.cinema = em.getReference(Cinema, req.body.sanitizedInput.cinema.id);
+
       await em.flush();
       res
         .status(200)
