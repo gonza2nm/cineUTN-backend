@@ -16,7 +16,7 @@ import { languageRouter } from './language/language.routes.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { eventRouter } from './event/event.routes.js';
-import { snackRouter } from './snack.temp/snack.routes.js';
+import { snackRouter } from './snack/snack.routes.js';
 import { promotionRouter } from './promotion/promotion.routes.js';
 import { startCronTimeJobs } from './utils/timeReminders.js';
 

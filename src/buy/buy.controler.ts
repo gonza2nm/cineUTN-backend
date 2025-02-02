@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express"
 import { Buy } from "./buy.entity.js"
 import { orm } from '../shared/db/orm.js'
 import { Ticket } from "../ticket/ticket.entity.js";
-import { Snack } from "../snack.temp/snack.entity.js";
+import { Snack } from "../snack/snack.entity.js";
 import jwt from 'jsonwebtoken';
 import QRCode from 'qrcode';
 import { Promotion } from "../promotion/promotion.entity.js";

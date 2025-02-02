@@ -4,7 +4,7 @@ import { Promotion } from "./promotion.entity.js";
 import { customAlphabet, nanoid } from "nanoid";
 import { Cinema } from "../cinema/cinema.entity.js";
 import { populate } from "dotenv";
-import { Snack } from "../snack.temp/snack.entity.js";
+import { Snack } from "../snack/snack.entity.js";
 
 const em = orm.em;
 const alfabeto = "ABCDEFGHRTJKPQWZMUXVY123456789"
