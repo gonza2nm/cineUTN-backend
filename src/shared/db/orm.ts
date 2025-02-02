@@ -5,7 +5,6 @@ import dotenv from 'dotenv';
 dotenv.config() //lo llamamos de vuelta porque si usamos solo el de app.ts llega undefined antes
 
 // Poduccion:
-console.log(process.env.MYSQL_PUBLIC_URL, 'hola');
 export const orm = await MikroORM.init({
   entities: ['dist/**/*.entity.js'], //le dice que las entidades son todos los archivos que tengan .entity
   entitiesTs: ['src/**/*.entity.ts'],
