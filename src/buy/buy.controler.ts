@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express"
 import { Buy } from "./buy.entity.js"
 import { orm } from '../shared/db/orm.js'
 import { Ticket } from "../ticket/ticket.entity.js";
-import { Snack } from "../snack/snack.entity.js";
+import { Snack } from "../snack.temp/snack.entity.js";
 import jwt from 'jsonwebtoken';
 import QRCode from 'qrcode';
 import { Promotion } from "../promotion/promotion.entity.js";
@@ -174,9 +174,9 @@ async function addPurchase(req: Request, res: Response) {
       await em.flush();
     }
 
-    if(req.body.promotions) {
+    if (req.body.promotions) {
       for (const promoData of req.body.promotions) {
-        const promo = await em.findOneOrFail(Promotion, { code: promoData.code});
+        const promo = await em.findOneOrFail(Promotion, { code: promoData.code });
         buy.promotions.add(promo);
       }
       await em.flush();

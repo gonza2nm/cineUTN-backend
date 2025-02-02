@@ -16,7 +16,7 @@ import { languageRouter } from './language/language.routes.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { eventRouter } from './event/event.routes.js';
-import { snackRouter } from './snack/snack.routes.js';
+import { snackRouter } from './snack.temp/snack.routes.js';
 import { promotionRouter } from './promotion/promotion.routes.js';
 import { startCronTimeJobs } from './utils/timeReminders.js';
 
@@ -27,7 +27,7 @@ app.use(express.json());
 app.use(cookieParser()); //para poder manejar las cookies en el back
 app.use(
   cors({
-    origin: ['http://localhost:4200', "http://localhost:3001", 'https://cineutn.vercel.app',"https://cineutn-fd.vercel.app"],
+    origin: ['http://localhost:4200', "http://localhost:3001", 'https://cineutn.vercel.app', "https://cineutn-fd.vercel.app"],
     credentials: true
   })
 );
