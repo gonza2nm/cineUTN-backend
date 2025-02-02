@@ -99,17 +99,19 @@ async function add(req: Request, res: Response) {
     if(!_movie){
         res.status(400).json({message: "the movie of the show do not exist"});
     }else{
-      const finishTime = new Date(`${dayAndTime}`);
-      finishTime.setMinutes(finishTime.getMinutes() + _movie.duration);
+      const startTime = new Date(`${dayAndTime}`);
+      const finishTime = new Date(startTime);
+      finishTime.setMinutes(finishTime.getMinutes() + _movie.duration); 
       const overlapping = await checkTimeShowInTheater(dayAndTime, finishTime, theater, null);
       const is_format_languages_ok = await checkLanguageAndFormat(movie, language, format);
+      
       if (overlapping) {
         res.status(400).json({ message: "The show time overlaps with another show in the same theater" })
       } else if (!is_format_languages_ok) {
         res.status(400).json({ message: 'the language or the format do not exist in that movie' })
       } else {
-        const show = em.create(Show, {...req.body.sanitizedInput, finishTime: finishTime})
-        await em.flush()
+        const show = em.create(Show, {...req.body.sanitizedInput, finishTime: finishTime, })
+        await em.persistAndFlush(show);
         res.status(201).json({ message: 'Show created', data: show })
       }
     }
@@ -158,24 +160,25 @@ async function update(req: Request, res: Response) {
       if(!_movie){
         res.status(400).json({message: "the movie of the show do not exist"});
       }else{
-        const finishTime = new Date(`${dayAndTime}`);
-        finishTime.setMinutes(finishTime.getMinutes() + _movie.duration);
+        const startTime = new Date(`${dayAndTime}`);
+        const finishTime = new Date(startTime);
+        finishTime.setMinutes(finishTime.getMinutes() + _movie.duration); 
         if(showToUpdate.id != undefined){
         const overlapping = await checkTimeShowInTheater(dayAndTime, finishTime, theater, showToUpdate.id);
         const is_format_languages_ok = await checkLanguageAndFormat(movie, language, format);
         if (overlapping) {
           res.status(400).json({ message: "The show time overlaps with another show in the same theater" })
-        } else if (!is_format_languages_ok) {
+        } else if (!is_format_languages_ok) {4
           res.status(400).json({ message: 'the language or the format do not exist in that movie' })
         }
         else {
-          showToUpdate.dayAndTime = dayAndTime;
+          showToUpdate.dayAndTime = startTime;
           showToUpdate.theater = theater;
           showToUpdate.finishTime = finishTime;
           showToUpdate.movie = movie;
           showToUpdate.format = format;
           showToUpdate.language = language;
-          await em.flush()
+          await em.persistAndFlush(showToUpdate);
           res.status(200).json({ message: 'Show updated', data: showToUpdate })
         }
       }

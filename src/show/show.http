@@ -5,7 +5,7 @@ GET http://localhost:3000/api/shows
 
 
 ### GET ONE --------------------------------------------------------------------
-GET http://localhost:3000/api/shows/5
+GET http://localhost:3000/api/shows/16
 
 ###
 GET http://localhost:3000/api/shows/bycinema/1
@@ -33,7 +33,7 @@ Content-Type: application/json
 
 ### UPDATE a show 1 -------------------------------------------------------------
 ### Solo se modifica el horario de la funcion
-PUT http://localhost:3000/api/shows/13
+PUT http://localhost:3000/api/shows/15
 Content-Type: application/json
 
 {
