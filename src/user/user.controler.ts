@@ -3,6 +3,7 @@ import { User } from './user.entity.js';
 import { orm } from '../shared/db/orm.js';
 import { Cinema } from '../cinema/cinema.entity.js';
 import jwt from "jsonwebtoken";
+import { comparePassword, hashPassword } from '../utils/hashFunctions.js';
 
 //findOne an update reciben dni y remove el id por la implementacion de getreference
 const em = orm.em;
@@ -41,11 +42,10 @@ async function add(req: Request, res: Response) {
     }
 
     if (req.body.type === 'manager') {
-      req.body.sanitizedInput.cinema = em.getReference(Cinema, req.body.sanitizedInput.cinema.id)
+      req.body.sanitizedInput.cinema = em.getReference(Cinema, req.body.sanitizedInput.cinema)
     }
-
-
-    const user = em.create(User, req.body.sanitizedInput);
+    const hashedPassword = await hashPassword(req.body.sanitizedInput.password);
+    const user = em.create(User, {...req.body.sanitizedInput, password: hashedPassword});
     await em.flush();
     res.status(201).json({ message: message, data: user });
   } catch (error: any) {
@@ -120,7 +120,8 @@ async function update(req: Request, res: Response) {
       if (userToUpdate.type === 'manager' && !userToUpdate.cinema) {
         res.status(400).json({ message: 'The manager must be assinged to only one cinema.', error: "Bad Request" });
       } else {
-        em.assign(userToUpdate, req.body.sanitizedInput);
+        const hashedPassword = await hashPassword(req.body.sanitizedInput.password);
+        em.assign(userToUpdate, {...req.body.sanitizedInput, password: hashedPassword});
         await em.flush();
         res.status(200).json({
           message: 'user updated',
@@ -168,7 +169,8 @@ async function login (req: Request, res: Response){
     if (!user) {
       res.status(404).json({ message: 'User not found', error: "Not Found" });
     } else {
-      if (user.password === password) {
+      const isPasswordCorrect = await comparePassword(password, user.password);
+      if (isPasswordCorrect){
         const token = jwt.sign(
           { id: user.id, role: user.type },
           process.env.JWT_SECRET as string,
