@@ -169,8 +169,8 @@ async function login (req: Request, res: Response){
     if (!user) {
       res.status(404).json({ message: 'User not found', error: "Not Found" });
     } else {
-      //const isPasswordCorrect = await comparePassword(password, user.password);
-      if (/*isPasswordCorrect*/ password === req.body.sanitizedInput.password){
+      const isPasswordCorrect = await comparePassword(password, user.password);
+      if (isPasswordCorrect){
         const token = jwt.sign(
           { id: user.id, role: user.type },
           process.env.JWT_SECRET as string,
@@ -180,7 +180,8 @@ async function login (req: Request, res: Response){
           httpOnly: true,
           secure: true,
           sameSite: 'none',
-          maxAge: 1000 * 60 * 60
+          maxAge: 1000 * 60 * 60,
+          partitioned: true
         })
         res.status(200).json({ message: 'Found user', data: user, });
       } else {
@@ -201,7 +202,8 @@ async function logout(req: Request, res: Response) {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      maxAge: 0
+      maxAge: 0,
+      partitioned: true
     });
     res.status(200).json({ message: 'Logout exitoso' });
   } catch (error: any) {
