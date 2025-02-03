@@ -179,7 +179,7 @@ async function login (req: Request, res: Response){
         res.cookie("authToken", token, {
           httpOnly: true,
           secure: true,
-          sameSite: 'lax',
+          sameSite: 'none',
           maxAge: 1000 * 60 * 60
         })
         res.status(200).json({ message: 'Found user', data: user, });
@@ -200,7 +200,7 @@ async function logout(req: Request, res: Response) {
     res.cookie('authToken','', {
       httpOnly: true,
       secure: true,
-      sameSite: 'lax',
+      sameSite: 'none',
       maxAge: 0
     });
     res.status(200).json({ message: 'Logout exitoso' });
