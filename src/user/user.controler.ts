@@ -45,7 +45,7 @@ async function add(req: Request, res: Response) {
       req.body.sanitizedInput.cinema = em.getReference(Cinema, req.body.sanitizedInput.cinema)
     }
     const hashedPassword = await hashPassword(req.body.sanitizedInput.password);
-    const user = em.create(User, {...req.body.sanitizedInput, password: hashedPassword});
+    const user = em.create(User, { ...req.body.sanitizedInput, password: hashedPassword });
     await em.flush();
     res.status(201).json({ message: message, data: user });
   } catch (error: any) {
@@ -72,7 +72,7 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const userId = Number.parseInt(req.body.sanitizedInput.id)
-    const user = await em.findOneOrFail(User, {id: userId}, { populate: ['buys'] });
+    const user = await em.findOneOrFail(User, { id: userId }, { populate: ['buys'] });
     if (!user) {
       res.status(404).json({ message: 'user not found' });
     } else {
@@ -121,7 +121,7 @@ async function update(req: Request, res: Response) {
         res.status(400).json({ message: 'The manager must be assinged to only one cinema.', error: "Bad Request" });
       } else {
         const hashedPassword = await hashPassword(req.body.sanitizedInput.password);
-        em.assign(userToUpdate, {...req.body.sanitizedInput, password: hashedPassword});
+        em.assign(userToUpdate, { ...req.body.sanitizedInput, password: hashedPassword });
         await em.flush();
         res.status(200).json({
           message: 'user updated',
@@ -158,7 +158,7 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-async function login (req: Request, res: Response){
+async function login(req: Request, res: Response) {
   try {
     const email = req.body.email;
     const password = req.body.password;
@@ -170,12 +170,14 @@ async function login (req: Request, res: Response){
       res.status(404).json({ message: 'User not found', error: "Not Found" });
     } else {
       const isPasswordCorrect = await comparePassword(password, user.password);
-      if (isPasswordCorrect){
+      if (isPasswordCorrect) {
         const token = jwt.sign(
           { id: user.id, role: user.type },
           process.env.JWT_SECRET as string,
           { expiresIn: process.env.JWT_EXPIRESIN }
         );
+        //produccion
+        // /*
         res.cookie("authToken", token, {
           httpOnly: true,
           secure: true,
@@ -183,6 +185,16 @@ async function login (req: Request, res: Response){
           maxAge: 1000 * 60 * 60,
           partitioned: true
         })
+        // */
+        //desarrollo
+        /*
+        res.cookie("authToken", token, {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'lax',
+          maxAge: 1000 * 60 * 60,
+        })
+        */
         res.status(200).json({ message: 'Found user', data: user, });
       } else {
         res.status(401).json({ message: "Email o contraseña incorrecta", error: "Credenciales incorrectas" });
@@ -198,13 +210,25 @@ async function login (req: Request, res: Response){
 
 async function logout(req: Request, res: Response) {
   try {
-    res.cookie('authToken','', {
+    //produccion
+    // /*
+    res.cookie('authToken', '', {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
       maxAge: 0,
       partitioned: true
     });
+    // */
+    //desarrollo
+    /*
+    res.cookie('authToken', '', {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 0,
+    });
+    */
     res.status(200).json({ message: 'Logout exitoso' });
   } catch (error: any) {
     res.status(500).json({
@@ -216,22 +240,22 @@ async function logout(req: Request, res: Response) {
 
 async function verifyTokenAndFindData(req: Request, res: Response) {
   try {
-      const token = req.cookies.authToken;
-      if (!token) {
-        return res.status(401).json({ message: 'No token provided', });
-      }
-      const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number; role: string };
+    const token = req.cookies.authToken;
+    if (!token) {
+      return res.status(401).json({ message: 'No token provided', });
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number; role: string };
 
-      const user = await em.findOneOrFail(
-        User,
-        { id: decoded.id },
-        { populate: ['buys'] }
-      );
-      if (!user) {
-        res.status(404).json({ message: 'User not found', error: "Not Found" });
-      } else {
-        res.status(200).json({ message: 'Found user', data: user, });
-      }
+    const user = await em.findOneOrFail(
+      User,
+      { id: decoded.id },
+      { populate: ['buys'] }
+    );
+    if (!user) {
+      res.status(404).json({ message: 'User not found', error: "Not Found" });
+    } else {
+      res.status(200).json({ message: 'Found user', data: user, });
+    }
   } catch (error: any) {
     res.status(500).json({
       message: 'An error occurred while querying the user',
@@ -247,7 +271,7 @@ async function verifyToken(req: Request, res: Response) {
       return res.status(401).json({ message: 'No token provided', });
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number; role: string };
-    res.status(200).json({id: decoded.id, role: decoded.role});
+    res.status(200).json({ id: decoded.id, role: decoded.role });
   } catch (error: any) {
     res.status(500).json({
       message: 'An error occurred while querying the user',
@@ -257,4 +281,4 @@ async function verifyToken(req: Request, res: Response) {
 }
 
 
-export { sanitizeUserInput, findAll, findAllManagers, verifyToken, verifyTokenAndFindData, findOneManager, add, update, remove , login, logout, findOne };
+export { sanitizeUserInput, findAll, findAllManagers, verifyToken, verifyTokenAndFindData, findOneManager, add, update, remove, login, logout, findOne };
