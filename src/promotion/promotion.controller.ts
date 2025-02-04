@@ -30,7 +30,7 @@ function sanitizePromotionInput(req: Request, res: Response, next: NextFunction)
 
 async function findAll(req: Request, res: Response) {
   try {
-    const promotions = await em.find(Promotion, {});
+    const promotions = await em.find(Promotion, {}, {populate: ["snacks","cinemas"]});
     res.status(200).json({ message: 'found all promotions', data: promotions });
   } catch (error: any) {
     res.status(500).json({
