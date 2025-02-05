@@ -3,6 +3,7 @@ import { Show } from "./show.entity.js"
 import { orm } from '../shared/db/orm.js'
 import { checkTimeShowInTheater } from "../utils/checkTimeShowInTheater.js"
 import { checkLanguageAndFormat } from "../utils/checkLanguageAndFormat.js"
+import { Seat } from "../seat/seat.entity.js"
 
 const em = orm.em
 
@@ -104,6 +105,31 @@ async function add(req: Request, res: Response) {
     } else {
       const show = em.create(Show, req.body.sanitizedInput)
       await em.flush()
+      await em.populate(show, ['theater']);
+
+      //--------------------------------------------------------------------
+
+      const rows = show.theater.cantRows;
+      const cols = show.theater.cantCols;
+
+      const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'];
+      const seats = [];
+
+      for (let fila = 0; fila < rows; fila++) {
+        for (let col = 0; col < cols; col++) {
+          seats.push(em.create(Seat, {
+            seatNumber: `${letras[fila]}${col + 1}`,
+            status: 'Disponible',
+            show: show
+          }))
+        }
+      }
+    
+      await em.persistAndFlush(seats);
+
+
+      //--------------------------------------------------------------------
+
       res.status(201).json({ message: 'Show created', data: show })
     }
   } catch (error: any) {
