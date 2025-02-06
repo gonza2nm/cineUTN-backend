@@ -7,14 +7,17 @@ import jwt from 'jsonwebtoken';
 import QRCode from 'qrcode';
 import { Promotion } from "../promotion/promotion.entity.js";
 import { generateQRCode } from "../utils/qrCodeGenerator.js";
+import { Seat } from "../seat/seat.entity.js";
+import { SnackBuy } from "../intermediate-tables/snack-buy.entity.js";
+import { PromotionBuy } from "../intermediate-tables/promotion-buy.entity.js";
 
 
 const em = orm.em
 
 function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
-  const cantElements = req.body.cantElements;
   const snacks = req.body.snacks;
   const promos = req.body.promotions;
+  const seats = req.body.seats;
   req.body.sanitizedBuyInput = {
     description: req.body.description,
     user: req.body.user,
@@ -26,10 +29,10 @@ function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
       delete req.body.sanitizedBuyInput[key]
     }
   })
-
-  req.body.cantElements = cantElements;
+  
   req.body.snacks = snacks;
-  req.body.promotions = promos
+  req.body.promotions = promos;
+  req.body.seats = seats
   next()
 }
 
@@ -65,7 +68,7 @@ async function findAllpurchasebyUser(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
-    const buy = await em.findOneOrFail(Buy, { id }, { populate: ['user', 'tickets', 'snacks', 'promotions'] });
+    const buy = await em.findOneOrFail(Buy, { id }, { populate: ['tickets.show.movie', 'tickets.show.format', 'tickets.show.language', 'tickets.seat', 'snacksBuy.snack', 'promotionsBuy.promotion'] });
     res.status(200).json({ message: 'Found buy', data: buy })
   } catch (error: any) {
     res.status(500).json({ message: 'An error occurred while querying the buy', error: error.message, })
@@ -115,7 +118,8 @@ async function validateQRCode(req: Request, res: Response) {
     const buyId = decoded.buyId;
 
     // Buscar la compra en la base de datos
-    const buy = await em.findOne(Buy, { id: buyId }, { populate: ['tickets', 'tickets.show', 'tickets.show.movie', 'tickets.show.theater', 'tickets.show.theater.cinema', 'snacks'] }); //estos tickets.XXX son para popular esas relaciones tambien
+    const buy = await em.findOne(Buy, { id: buyId }, { populate: ['tickets', 'tickets.show', 'tickets.show.movie', 'tickets.show.theater', 'tickets.show.theater.cinema'] }); //estos tickets.XXX son para popular esas relaciones tambien
+    //Santi, borré la relacion con snack porque me daba error por las nuevas relaciones que hice. Despues revisalo.
     if (!buy) {
       return res.status(404).json({ message: 'Buy not found.' });
     }
@@ -153,47 +157,75 @@ async function add(req: Request, res: Response) {
 
 
 async function addPurchase(req: Request, res: Response) {
-  await em.begin();
-
   try {
-    if (req.body.sanitizedBuyInput["user"] === undefined) {
-      throw new Error("the buy must have an user");
-    }
-    const buy = em.create(Buy, req.body.sanitizedBuyInput);
-    buy.status = 'Válida';
-    await em.flush();
+    const buy  = await em.transactional(async (em) => {
 
-    const buyId = buy.id;
-    req.body.sanitizedTicketInput.buy = buyId;
-
-    if (req.body.snacks) {
-      for (const snackData of req.body.snacks) {
-        const snack = await em.findOneOrFail(Snack, { id: snackData.id });
-        buy.snacks.add(snack);
+      if (req.body.sanitizedBuyInput["user"] === undefined) {
+        throw new Error("the buy must have an user");
       }
+      const buy = em.create(Buy, req.body.sanitizedBuyInput);
+      buy.status = 'Válida';
       await em.flush();
-    }
 
-    if (req.body.promotions) {
-      for (const promoData of req.body.promotions) {
-        const promo = await em.findOneOrFail(Promotion, { code: promoData.code });
-        buy.promotions.add(promo);
-      }
-      await em.flush();
-    }
+      const buyId = buy.id;
+      req.body.sanitizedTicketInput.buy = buyId;
 
-    for (let index = 0; index < req.body.cantElements; index++) {
+      const tickets = [];
+
       if (req.body.sanitizedBuyInput.description === 'Compra de entradas') {
-        const ticket = em.create(Ticket, req.body.sanitizedTicketInput);
-        await em.persistAndFlush(ticket);
+
+        for (const seat of req.body.seats) {
+          
+          //Crea los tickets 
+          const ticket = em.create(Ticket, req.body.sanitizedTicketInput);
+          ticket.seat = seat
+          tickets.push(ticket)
+
+          //Actualiza el estado del asiento
+          const seattoupdate = await em.findOneOrFail(Seat, {id: seat.id})
+          seattoupdate.status = 'Ocupado';
+        }
+
+        await em.persistAndFlush(tickets);
+
       } else {
-        throw new Error('No es una compra de entradas');
+        throw new Error('Hubo un error al hacer la compra.');
       }
-    }
-    await em.commit();
+
+      if (req.body.snacks) {
+        for (const snackData of req.body.snacks) {
+          const snackRef = em.getReference(Snack, snackData.id);
+          const snackBuy = em.create(SnackBuy, {
+            buy: buy, 
+            snack: snackRef,
+            quantity: snackData.cant
+          });
+
+          em.persist(snackBuy);
+        }
+      }
+
+      if (req.body.promotions) {
+        for (const promotionData of req.body.promotions) {
+          const promotionRef = em.getReference(Promotion, promotionData.code);
+          const promotionBuy = em.create(PromotionBuy, {
+            buy: buy, 
+            promotion: promotionRef,
+            quantity: promotionData.cant
+          });
+
+          em.persist(promotionBuy);
+        }
+      }
+
+
+      await em.flush();
+      return buy;
+    })
+
     res.status(200).json({ message: 'Buy and Tickets created', data: buy });
+
   } catch (error) {
-    await em.rollback();
     console.error('Error en la transacción:', error);
     res.status(500).send('Error al crear la compra y las entradas');
   }

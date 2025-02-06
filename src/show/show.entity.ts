@@ -1,10 +1,11 @@
-import { Collection, Entity, ManyToOne, OneToMany, Property, Rel, DateTimeType} from '@mikro-orm/core';
+import { Collection, Entity, ManyToOne, OneToMany, Property, Rel, DateTimeType, Cascade} from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.entity.js'
 import { Theater } from '../theater/theater.entity.js';
 import { Movie } from '../movie/movie.entity.js';
 import { Ticket } from '../ticket/ticket.entity.js';
 import { Format } from '../format/format.entity.js';
 import { Language } from '../language/language.entity.js';
+import { Seat } from '../seat/seat.entity.js';
 
 @Entity()
 export class Show extends BaseEntity {
@@ -30,5 +31,9 @@ export class Show extends BaseEntity {
 
   @ManyToOne(() => Language, { nullable: false })
   language!: Rel<Language>
+
+  //Relacion con asientos
+  @OneToMany(() => Seat, (seat) => seat.show, { cascade: [Cascade.REMOVE] })
+  seats = new Collection<Seat>(this);
 
 }

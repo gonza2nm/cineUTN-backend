@@ -3,6 +3,7 @@ import { Show } from "./show.entity.js"
 import { orm } from '../shared/db/orm.js'
 import { checkTimeShowInTheater } from "../utils/checkTimeShowInTheater.js"
 import { checkLanguageAndFormat } from "../utils/checkLanguageAndFormat.js"
+import { Seat } from "../seat/seat.entity.js"
 import { Movie } from "../movie/movie.entity.js"
 
 const em = orm.em
@@ -94,6 +95,7 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
+    
     const { dayAndTime, theater, movie, format, language } = req.body.sanitizedInput;
     const _movie = await em.findOne(Movie,{id: movie});
     if(!_movie){
@@ -112,9 +114,10 @@ async function add(req: Request, res: Response) {
       } else {
         const show = em.create(Show, {...req.body.sanitizedInput, finishTime: finishTime, })
         await em.persistAndFlush(show);
+        addSeats(show)
         res.status(201).json({ message: 'Show created', data: show })
-      }
-    }
+      }}
+
   } catch (error: any) {
     res.status(500).json({
       message: 'An error occurred while adding the show',
@@ -204,6 +207,34 @@ async function remove(req: Request, res: Response) {
       message: 'An error occurred while deleting the show',
       error: error.message,
     });
+  }
+}
+
+
+async function addSeats(show: Show) {
+
+  try {
+    await em.populate(show, ['theater']);
+    const rows = show.theater.cantRows;
+    const cols = show.theater.cantCols;
+    console.log(`Rows: ${rows}, Cols: ${cols}`);
+
+    const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
+    const seats = [];
+
+    for (let fila = 0; fila < rows; fila++) {
+      for (let col = 0; col < cols; col++) {
+        seats.push(em.create(Seat, {
+          seatNumber: `${letras[fila]}${col + 1}`,
+          status: 'Disponible',
+          show: show
+        }))
+      }
+    }  
+    await em.persistAndFlush(seats);
+  
+  } catch (error) {
+    console.error("Error creating seats:", error);
   }
 }
 

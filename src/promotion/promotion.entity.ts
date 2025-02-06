@@ -1,7 +1,8 @@
-import { Collection, DateTimeType, Entity, ManyToMany, PrimaryKey, Property } from "@mikro-orm/core";
+import { Collection, DateTimeType, Entity, ManyToMany, OneToMany, PrimaryKey, Property } from "@mikro-orm/core";
 import { Cinema } from "../cinema/cinema.entity.js";
 import { Snack } from "../snack/snack.entity.js";
 import { Buy } from "../buy/buy.entity.js";
+import { PromotionBuy } from "../intermediate-tables/promotion-buy.entity.js";
 
 @Entity()
 export class Promotion {
@@ -30,6 +31,6 @@ export class Promotion {
   @ManyToMany(() => Snack, (snack) => snack.promotions)
   snacks = new Collection<Snack>(this);
 
-  @ManyToMany(() => Buy, (buy) => buy.promotions, { owner: true })
-  buys = new Collection<Promotion>(this);
+  @OneToMany(() => PromotionBuy, (cp) => cp.promotion)
+  promotionsBuy = new Collection<PromotionBuy>(this);
 }

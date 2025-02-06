@@ -4,6 +4,8 @@ import { User } from '../user/user.entity.js';
 import { Ticket } from '../ticket/ticket.entity.js';
 import { Snack } from '../snack/snack.entity.js';
 import { Promotion } from '../promotion/promotion.entity.js';
+import { SnackBuy } from '../intermediate-tables/snack-buy.entity.js';
+import { PromotionBuy } from '../intermediate-tables/promotion-buy.entity.js';
 
 @Entity()
 export class Buy extends BaseEntity {
@@ -29,10 +31,10 @@ export class Buy extends BaseEntity {
   // @OneToMany(() => Ticket, ticket => ticket.buy, { cascade: ['remove'] })
   tickets = new Collection<Ticket>(this)
 
-  @ManyToMany(() => Snack, (snack) => snack.buys)
-  snacks = new Collection<Snack>(this)
+  @OneToMany(() => SnackBuy, (cp) => cp.buy)
+  snacksBuy = new Collection<SnackBuy>(this);
 
-  @ManyToMany(() => Promotion, (promotion) => promotion.buys)
-  promotions = new Collection<Promotion>(this)
+  @OneToMany(() => PromotionBuy, (cp) => cp.buy)
+  promotionsBuy = new Collection<PromotionBuy>(this);
 
 }

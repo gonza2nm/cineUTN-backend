@@ -4,13 +4,13 @@ POST http://localhost:3000/api/users/register
 Content-Type: application/json
 
 {
-    "name": "Gonzalo",
+    "name": "manager",
     "dni": "0987654",
-    "surname": "Mansilla",
-    "email": "gonzalo@gmail.com",
-    "password": "gonzalo123",
+    "surname": "root",
+    "email": "manager1@gmail.com",
+    "password": "manager1",
     "type": "manager",
-    "cinema":3
+    "cinema":1
 }
 ### POST Crear un nuevo usuario 2
 POST http://localhost:3000/api/users/register
