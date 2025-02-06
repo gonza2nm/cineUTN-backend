@@ -1,18 +1,19 @@
 ### POST Crear un nuevo usuario
 
-POST http://localhost:3000/api/users
+POST http://localhost:3000/api/users/register
 Content-Type: application/json
 
 {
-    "name": "martina",
-    "dni": "123456789",
-    "surname": "fernandez",
-    "email": "martina.fer@gmail.com",
-    "password": "password123",
-    "type": "user"
+    "name": "manager",
+    "dni": "0987654",
+    "surname": "root",
+    "email": "manager1@gmail.com",
+    "password": "manager1",
+    "type": "manager",
+    "cinema":1
 }
 ### POST Crear un nuevo usuario 2
-POST http://localhost:3000/api/users
+POST http://localhost:3000/api/users/register
 Content-Type: application/json
 
 {
@@ -21,8 +22,7 @@ Content-Type: application/json
     "surname": "mansilla",
     "email": "g2221@gmail.com",
     "password": "password123",
-    "type": "user",
-    "cinema":1
+    "type": "user"
 }
 
 ### GET /users - Obtener todos los usuarios
@@ -36,11 +36,11 @@ PUT http://localhost:3000/api/users/1
 Content-Type: application/json
 
 {
-    "name": "martina Updated",
-    "surname": "fernandez Updated",
-    "email": "martina.updated@egmail.com",
-    "password": "newpassword",
-    "type": "admin"
+    "name": "Manager",
+    "surname": "Root",
+    "email": "manager@gmail.com",
+    "password": "manager",
+    "type": "manager"
 }
 
 ### DELETE /users/:dni - Eliminar un usuario por ID

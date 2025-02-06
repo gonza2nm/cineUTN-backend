@@ -37,5 +37,4 @@ export class Buy extends BaseEntity {
   @OneToMany(() => PromotionBuy, (cp) => cp.buy)
   promotionsBuy = new Collection<PromotionBuy>(this);
 
-  
 }

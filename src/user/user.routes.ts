@@ -19,8 +19,8 @@ export const userRouter = Router();
 // No cambiar el orden de las rutas
 userRouter.post('/login', sanitizeUserInput, login);
 userRouter.post('/logout', authMiddleware(['user','manager']), logout);
-userRouter.get('/verify-token-find-data', verifyTokenAndFindData);
 userRouter.post('/register', sanitizeUserInput, add);
+userRouter.get('/verify-token-find-data', verifyTokenAndFindData);
 
 userRouter.get('/managers', authMiddleware(['manager']), findAllManagers);
 userRouter.get('/managers/:id', authMiddleware(['manager']), sanitizeUserInput, findOneManager);

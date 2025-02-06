@@ -118,7 +118,7 @@ async function validateQRCode(req: Request, res: Response) {
     const buyId = decoded.buyId;
 
     // Buscar la compra en la base de datos
-    const buy = await em.findOne(Buy, { id: buyId }, { populate: ['tickets', 'tickets.show', 'tickets.show.movie', 'tickets.show.theater', ] }); //estos tickets.XXX son para popular esas relaciones tambien
+    const buy = await em.findOne(Buy, { id: buyId }, { populate: ['tickets', 'tickets.show', 'tickets.show.movie', 'tickets.show.theater', 'tickets.show.theater.cinema'] }); //estos tickets.XXX son para popular esas relaciones tambien
     //Santi, borré la relacion con snack porque me daba error por las nuevas relaciones que hice. Despues revisalo.
     if (!buy) {
       return res.status(404).json({ message: 'Buy not found.' });

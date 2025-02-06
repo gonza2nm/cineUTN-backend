@@ -5,30 +5,30 @@ import { Buy } from "../buy/buy.entity.js";
 import { PromotionBuy } from "../intermediate-tables/promotion-buy.entity.js";
 
 @Entity()
-export class Promotion{
+export class Promotion {
 
-  @PrimaryKey({nullable: false, unique: true})
+  @PrimaryKey({ nullable: false, unique: true })
   code!: string;
 
-  @Property({nullable: false})
+  @Property({ nullable: false })
   name!: string;
 
-  @Property({nullable: false})
+  @Property({ nullable: false })
   description!: string;
 
-  @Property({ type: DateTimeType, nullable: false})
+  @Property({ type: DateTimeType, nullable: false })
   promotionStartDate = new Date();
 
-  @Property({ type: DateTimeType, nullable: false})
+  @Property({ type: DateTimeType, nullable: false })
   promotionFinishDate = new Date();
 
-  @Property({nullable: false})
+  @Property({ nullable: false })
   price!: number;
 
   @ManyToMany(() => Cinema, (cinema) => cinema.promotions)
   cinemas = new Collection<Cinema>(this);
 
-  @ManyToMany(() => Snack, (snack)=> snack.promotions)
+  @ManyToMany(() => Snack, (snack) => snack.promotions)
   snacks = new Collection<Snack>(this);
 
   @OneToMany(() => PromotionBuy, (cp) => cp.promotion)
