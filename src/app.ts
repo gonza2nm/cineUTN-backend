@@ -62,3 +62,5 @@ startCronTimeJobs(); //empieza todo lo relacionado a cron (cosas por tiempo, ej:
 app.listen(3000, () => {
   console.log('Server running on http://localhost:3000/');
 });
+
+export default app; //para los test

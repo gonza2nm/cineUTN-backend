@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import QRCode from 'qrcode';
-import { generateQRCode } from '../utils/qrCodeGenerator';
+import { generateQRCode } from '../../utils/qrCodeGenerator';
 
 // Este test verifica que generateQRCode() funcione correctamente y maneje errores correctamente.
 
