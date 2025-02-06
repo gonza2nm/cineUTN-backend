@@ -177,7 +177,7 @@ async function login(req: Request, res: Response) {
           { expiresIn: process.env.JWT_EXPIRESIN }
         );
         //produccion
-         /* 
+        /*
         res.cookie("authToken", token, {
           httpOnly: true,
           secure: true,
@@ -185,16 +185,16 @@ async function login(req: Request, res: Response) {
           maxAge: 1000 * 60 * 60,
           partitioned: true
         })
-         */
+        */
         //desarrollo
-        
+        ///*
         res.cookie("authToken", token, {
           httpOnly: true,
           secure: true,
           sameSite: 'lax',
           maxAge: 1000 * 60 * 60,
         })
-        
+        //*/
         res.status(200).json({ message: 'Found user', data: user, });
       } else {
         res.status(401).json({ message: "Email o contraseña incorrecta", error: "Credenciales incorrectas" });
@@ -221,14 +221,14 @@ async function logout(req: Request, res: Response) {
     });
     */
     //desarrollo
-    
+    ///*
     res.cookie('authToken', '', {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
       maxAge: 0,
     });
-    
+    //*/
     res.status(200).json({ message: 'Logout exitoso' });
   } catch (error: any) {
     res.status(500).json({
