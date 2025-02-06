@@ -213,24 +213,29 @@ async function remove(req: Request, res: Response) {
 
 async function addSeats(show: Show) {
 
-  await em.populate(show, ['theater']);
-  const rows = show.theater.cantRows;
-  const cols = show.theater.cantCols;
+  try {
+    await em.populate(show, ['theater']);
+    const rows = show.theater.cantRows;
+    const cols = show.theater.cantCols;
+    console.log(`Rows: ${rows}, Cols: ${cols}`);
 
-  const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
-  const seats = [];
+    const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
+    const seats = [];
 
-  for (let fila = 0; fila < rows; fila++) {
-    for (let col = 0; col < cols; col++) {
-      seats.push(em.create(Seat, {
-        seatNumber: `${letras[fila]}${col + 1}`,
-        status: 'Disponible',
-        show: show
-      }))
-    }
-  }
+    for (let fila = 0; fila < rows; fila++) {
+      for (let col = 0; col < cols; col++) {
+        seats.push(em.create(Seat, {
+          seatNumber: `${letras[fila]}${col + 1}`,
+          status: 'Disponible',
+          show: show
+        }))
+      }
+    }  
+    await em.persistAndFlush(seats);
   
-  await em.persistAndFlush(seats);
+  } catch (error) {
+    console.error("Error creating seats:", error);
+  }
 }
 
 export { sanitizeShowInput, sanitizeShowInputToFindByCinemaAndMovie, findAll, findOne, add,findByCinemaAndMovie, findAllByCinema, update, remove }

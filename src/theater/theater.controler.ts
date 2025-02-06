@@ -8,10 +8,8 @@ const em = orm.em;
 function sanitizeTheaterInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     numChairs: req.body.numChairs,
-    //---------------------------------
     cantRows: req.body.cantRows,
     cantCols: req.body.cantCols,
-    //------------------------------------
     cinema: req.body.cinema,
   };
 
