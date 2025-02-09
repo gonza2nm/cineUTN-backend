@@ -1,6 +1,7 @@
 import request from "supertest";
 import express from "express";
 import jwt from "jsonwebtoken";
+import cookieParser from 'cookie-parser';
 import { authMiddleware } from "../../utils/authMiddleware";
 
 // Mockea la librería 'jsonwebtoken'
@@ -9,7 +10,7 @@ jest.mock('jsonwebtoken');
 // Configura las constantes necesarias
 const app = express();
 app.use(express.json());
-app.use(require("cookie-parser")()); // Añadir middleware para parsear cookies
+app.use(cookieParser()); // Añadir middleware para parsear cookies
 
 // Configura el enrutador de prueba
 const mockRouter = express.Router();
