@@ -16,5 +16,5 @@
     "skipLibCheck": true                                 
   },
   "include": ["src/**/*", "**/*.ts"],
-  "exclude": ["node_modules","jest.config.ts"]
+  "exclude": ["node_modules","jest.config.ts","vitest.config.ts"]
 }

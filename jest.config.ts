@@ -7,7 +7,10 @@ const config: JestConfigWithTsJest = {
   moduleFileExtensions: ["ts", "js", "json", "node"],
   transform: {
     "^.+\\.(ts|tsx)$": ["ts-jest", {}],
-  }
+  },
+  testMatch: [
+    "**/tests/unit/**/*.test.ts"  // Solo archivos .test.ts dentro de tests/unit/
+  ]
 };
 
 export default config;
