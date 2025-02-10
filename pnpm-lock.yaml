@@ -90,6 +90,9 @@ importers:
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.12.12)(ts-node@10.9.2(@types/node@20.12.12)(typescript@5.4.5))
+      jest-mock:
+        specifier: ^29.7.0
+        version: 29.7.0
       supertest:
         specifier: ^7.0.0
         version: 7.0.0
@@ -3301,7 +3304,7 @@ snapshots:
     optionalDependencies:
       '@mikro-orm/mysql': 5.8.10(@mikro-orm/core@5.8.10)
 
-  '@mikro-orm/knex@5.8.10(@mikro-orm/core@5.8.10)(mysql2@3.6.2)':
+  '@mikro-orm/knex@5.8.10(@mikro-orm/core@5.8.10(@mikro-orm/mysql@5.8.10))(mysql2@3.6.2)':
     dependencies:
       '@mikro-orm/core': 5.8.10(@mikro-orm/mysql@5.8.10)
       fs-extra: 11.1.1
@@ -3317,7 +3320,7 @@ snapshots:
   '@mikro-orm/mysql@5.8.10(@mikro-orm/core@5.8.10)':
     dependencies:
       '@mikro-orm/core': 5.8.10(@mikro-orm/mysql@5.8.10)
-      '@mikro-orm/knex': 5.8.10(@mikro-orm/core@5.8.10)(mysql2@3.6.2)
+      '@mikro-orm/knex': 5.8.10(@mikro-orm/core@5.8.10(@mikro-orm/mysql@5.8.10))(mysql2@3.6.2)
       mysql2: 3.6.2
     transitivePeerDependencies:
       - better-sqlite3
