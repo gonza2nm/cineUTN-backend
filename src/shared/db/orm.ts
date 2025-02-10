@@ -15,9 +15,9 @@ dotenv.config() //lo llamamos de vuelta porque si usamos solo el de app.ts llega
 //  debug: true,
 //  schemaGenerator: {
 //never in production
-//    disableForeignKeys: true, //desactiva las FK al momento de crear la base para que no haya problemas
-//    createForeignKeyConstraints: true, //crea las FK que se salteo en el comando anterior.
-//    ignoreSchema: [],
+//    //disableForeignKeys: true, //Desactivar claves foráneas puede romper la integridad de la base de datos
+//    //createForeignKeyConstraints: true, //Si la base de datos ya tiene datos reales, puede haber problemas al volver a activar las FK si hay datos inconsistentes.
+//    //ignoreSchema: [],
 //  },
 //});
 
