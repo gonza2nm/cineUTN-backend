@@ -23,11 +23,10 @@ async function findAllByMovie(req: Request, res: Response) {
   try {
     const movieId = Number.parseInt(req.params.id);
     const cinemas = await em.find(Cinema, { movies: { id: movieId } }, { populate: ['movies', 'movies.cinemas'] });
-    console.log(cinemas)
-    res.status(200).json({ message: 'found all cinemas', data: cinemas });
+    res.status(200).json({ message: 'found all cinemas by movie', data: cinemas });
   } catch (error: any) {
     res.status(500).json({
-      message: 'An error occurred while querying all cinemas',
+      message: 'An error occurred while querying all cinemas by movie',
       error: error.message,
     });
   }
