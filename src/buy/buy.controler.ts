@@ -226,9 +226,9 @@ async function addPurchase(req: Request, res: Response) {
 
     res.status(200).json({ message: 'Buy and Tickets created', data: buy });
 
-  } catch (error) {
+  } catch (error:any) {
     console.error('Error en la transacción:', error);
-    res.status(500).send('Error al crear la compra y las entradas');
+    res.status(500).send({ message: 'Error al crear la compra y las entradas', error: error.message});
   }
 }
 

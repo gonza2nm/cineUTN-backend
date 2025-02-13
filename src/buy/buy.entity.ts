@@ -2,8 +2,6 @@ import { Cascade, Collection, DateTimeType, Entity, ManyToMany, ManyToOne, OneTo
 import { BaseEntity } from '../shared/db/baseEntity.entity.js'
 import { User } from '../user/user.entity.js';
 import { Ticket } from '../ticket/ticket.entity.js';
-import { Snack } from '../snack/snack.entity.js';
-import { Promotion } from '../promotion/promotion.entity.js';
 import { SnackBuy } from '../intermediate-tables/snack-buy.entity.js';
 import { PromotionBuy } from '../intermediate-tables/promotion-buy.entity.js';
 
