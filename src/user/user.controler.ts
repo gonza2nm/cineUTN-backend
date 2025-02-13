@@ -120,7 +120,12 @@ async function update(req: Request, res: Response) {
       if (userToUpdate.type === 'manager' && !userToUpdate.cinema) {
         res.status(400).json({ message: 'The manager must be assinged to only one cinema.', error: "Bad Request" });
       } else {
-        const hashedPassword = await hashPassword(req.body.sanitizedInput.password);
+
+        let hashedPassword = userToUpdate.password;  // Mantenemos la contraseña guardada
+
+        if (req.body.sanitizedInput.password && req.body.sanitizedInput.password !== userToUpdate.password) { // Si la nueva contraseña no es vacia y es diferente a la vieja, la hasheamos.
+          hashedPassword = await hashPassword(req.body.sanitizedInput.password);
+        }
         em.assign(userToUpdate, { ...req.body.sanitizedInput, password: hashedPassword });
         await em.flush();
         res.status(200).json({
