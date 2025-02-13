@@ -20,6 +20,7 @@ import { snackRouter } from './snack/snack.routes.js';
 import { promotionRouter } from './promotion/promotion.routes.js';
 import { startCronTimeJobs } from './utils/timeReminders.js';
 import { seatRouter } from './seat/seat.router.js';
+import { setupSwagger } from './swagger.js';
 
 dotenv.config() // carga las variables de entorno definidas en .env
 
@@ -37,6 +38,7 @@ app.use((req, res, next) => {
   RequestContext.create(orm.em, next);
 });
 
+
 app.use('/api/genres', genreRouter);
 app.use('/api/cinemas', cinemaRouter);
 app.use('/api/theaters', theaterRouter);
@@ -52,6 +54,7 @@ app.use('/api/snacks', snackRouter);
 app.use('/api/promotions', promotionRouter);
 app.use('/api/seats', seatRouter);
 
+setupSwagger(app);
 
 app.use((_, res) => {
   return res.status(404).send({ message: 'Resource not found' });

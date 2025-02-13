@@ -118,7 +118,7 @@ async function removeAllTicketsByPurchase(req: Request, res: Response) {
       res.status(404).json({ message: 'Tickets not found for deletion.' });
     } else {
       await em.removeAndFlush(tickets);
-      res.status(200).json({ data: tickets, message: 'All tickets deleted' });
+      res.status(200).json({ message: 'All tickets deleted' });
     }
   } catch (error: any) {
     res.status(500).json({

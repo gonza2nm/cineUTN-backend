@@ -29,7 +29,7 @@ function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
       delete req.body.sanitizedBuyInput[key]
     }
   })
-  
+
   req.body.snacks = snacks;
   req.body.promotions = promos;
   req.body.seats = seats
@@ -118,8 +118,9 @@ async function validateQRCode(req: Request, res: Response) {
     const buyId = decoded.buyId;
 
     // Buscar la compra en la base de datos
-    const buy = await em.findOne(Buy, { id: buyId }, { populate: ['tickets', 'tickets.show', 'tickets.show.movie', 'tickets.show.theater', 'tickets.show.theater.cinema'] }); //estos tickets.XXX son para popular esas relaciones tambien
-    //Santi, borré la relacion con snack porque me daba error por las nuevas relaciones que hice. Despues revisalo.
+    const buy = await em.findOne(Buy, { id: buyId }, {
+      populate: ['tickets.show.movie', 'tickets.show.theater.cinema', 'snacksBuy.snack', 'promotionsBuy.promotion']
+    }); //estos tickets.XXX tambien traen las relaciones superiores, ej: tickets.show.movie me trae tickets y show
     if (!buy) {
       return res.status(404).json({ message: 'Buy not found.' });
     }
@@ -158,7 +159,7 @@ async function add(req: Request, res: Response) {
 
 async function addPurchase(req: Request, res: Response) {
   try {
-    const buy  = await em.transactional(async (em) => {
+    const buy = await em.transactional(async (em) => {
 
       if (req.body.sanitizedBuyInput["user"] === undefined) {
         throw new Error("the buy must have an user");
@@ -175,14 +176,14 @@ async function addPurchase(req: Request, res: Response) {
       if (req.body.sanitizedBuyInput.description === 'Compra de entradas') {
 
         for (const seat of req.body.seats) {
-          
+
           //Crea los tickets 
           const ticket = em.create(Ticket, req.body.sanitizedTicketInput);
           ticket.seat = seat
           tickets.push(ticket)
 
           //Actualiza el estado del asiento
-          const seattoupdate = await em.findOneOrFail(Seat, {id: seat.id})
+          const seattoupdate = await em.findOneOrFail(Seat, { id: seat.id })
           seattoupdate.status = 'Ocupado';
         }
 
@@ -196,7 +197,7 @@ async function addPurchase(req: Request, res: Response) {
         for (const snackData of req.body.snacks) {
           const snackRef = em.getReference(Snack, snackData.id);
           const snackBuy = em.create(SnackBuy, {
-            buy: buy, 
+            buy: buy,
             snack: snackRef,
             quantity: snackData.cant
           });
@@ -209,7 +210,7 @@ async function addPurchase(req: Request, res: Response) {
         for (const promotionData of req.body.promotions) {
           const promotionRef = em.getReference(Promotion, promotionData.code);
           const promotionBuy = em.create(PromotionBuy, {
-            buy: buy, 
+            buy: buy,
             promotion: promotionRef,
             quantity: promotionData.cant
           });
@@ -225,9 +226,9 @@ async function addPurchase(req: Request, res: Response) {
 
     res.status(200).json({ message: 'Buy and Tickets created', data: buy });
 
-  } catch (error) {
+  } catch (error:any) {
     console.error('Error en la transacción:', error);
-    res.status(500).send('Error al crear la compra y las entradas');
+    res.status(500).send({ message: 'Error al crear la compra y las entradas', error: error.message});
   }
 }
 

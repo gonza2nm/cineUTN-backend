@@ -140,7 +140,7 @@ async function update(req: Request, res: Response) {
     const code = req.params.code;
     const snackToUpdate = await em.findOne(Promotion, { code });
     if (snackToUpdate) {
-      //--------
+
       if (req.body.sanitizedInput.cinemas) {
         snackToUpdate.cinemas.set(req.body.sanitizedInput.cinemas.map((cinema: { id: number }) => em.getReference(Cinema, cinema.id)));
       }
