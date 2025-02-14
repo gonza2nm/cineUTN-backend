@@ -14,7 +14,7 @@ export class Seat extends BaseEntity {
   @Property({ nullable: false })
   status!: string;
 
-  //Relacion con la entidad usuario
+  //Relacion con la entidad show
   @ManyToOne(() => Show, { nullable: true, onDelete: 'CASCADE' })
   show!: Rel<Show>  
 }

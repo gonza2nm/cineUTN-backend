@@ -8,16 +8,13 @@ export class Theater extends BaseEntity {
 
   @Property({ nullable: false })
   numChairs!: number;
-  
-  //---------------------------------------------------------
+
   @Property({ nullable: false })
   cantRows!: number;
 
   @Property({ nullable: false })
   cantCols!: number;
   
-
-
   @ManyToOne(() => Cinema, { nullable: false })
   cinema!: Rel<Cinema>;
 

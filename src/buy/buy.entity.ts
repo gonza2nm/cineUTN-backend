@@ -8,9 +8,6 @@ import { PromotionBuy } from '../intermediate-tables/promotion-buy.entity.js';
 @Entity()
 export class Buy extends BaseEntity {
 
-  @Property({ nullable: true })
-  description!: string;
-
   @Property({ nullable: false })
   total!: number;
 
@@ -26,7 +23,6 @@ export class Buy extends BaseEntity {
 
   //Relacion con la entidad entrada
   @OneToMany(() => Ticket, (ticket) => ticket.buy, { cascade: [Cascade.REMOVE] })
-  // @OneToMany(() => Ticket, ticket => ticket.buy, { cascade: ['remove'] })
   tickets = new Collection<Ticket>(this)
 
   @OneToMany(() => SnackBuy, (cp) => cp.buy)
