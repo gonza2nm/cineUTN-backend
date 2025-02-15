@@ -51,6 +51,7 @@ export const buyRouter = Router();
  *           example: 123
  *         status:
  *           type: string
+ *           enum: ["Válida", "Expirada"]
  *           example: 'Válida'
  */
 

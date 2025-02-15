@@ -264,21 +264,5 @@ async function verifyTokenAndFindData(req: Request, res: Response) {
   }
 }
 
-async function verifyToken(req: Request, res: Response) {
-  try {
-    const token = req.cookies.authToken;
-    if (!token) {
-      return res.status(401).json({ message: 'No token provided', });
-    }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number; role: string };
-    res.status(200).json({ id: decoded.id, role: decoded.role });
-  } catch (error: any) {
-    res.status(500).json({
-      message: 'An error occurred while querying the user',
-      error: error.message,
-    });
-  }
-}
 
-
-export { sanitizeUserInput, findAll, findAllManagers, verifyToken, verifyTokenAndFindData, findOneManager, add, update, remove, login, logout, findOne };
+export { sanitizeUserInput, findAll, findAllManagers, verifyTokenAndFindData, findOneManager, add, update, remove, login, logout, findOne };
