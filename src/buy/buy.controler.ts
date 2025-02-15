@@ -19,7 +19,6 @@ function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
   const promos = req.body.promotions;
   const seats = req.body.seats;
   req.body.sanitizedBuyInput = {
-    description: req.body.description,
     user: req.body.user,
     total: req.body.total,
     status: req.body.status,
@@ -53,7 +52,7 @@ async function findAllpurchasebyUser(req: Request, res: Response) {
     const id = Number.parseInt(req.params.id);
     await updateExpirateBuys();
 
-    const buys = await em.find(Buy, { user: id }, { populate: ['user'] });
+    const buys = await em.find(Buy, { user: id }, { populate: ['tickets.show.movie'] });
     res.status(200).json({ message: 'found all buys', data: buys });
 
   } catch (error: any) {
@@ -173,25 +172,19 @@ async function addPurchase(req: Request, res: Response) {
 
       const tickets = [];
 
-      if (req.body.sanitizedBuyInput.description === 'Compra de entradas') {
+      for (const seat of req.body.seats) {
 
-        for (const seat of req.body.seats) {
+        //Crea los tickets 
+        const ticket = em.create(Ticket, req.body.sanitizedTicketInput);
+        ticket.seat = seat
+        tickets.push(ticket)
 
-          //Crea los tickets 
-          const ticket = em.create(Ticket, req.body.sanitizedTicketInput);
-          ticket.seat = seat
-          tickets.push(ticket)
-
-          //Actualiza el estado del asiento
-          const seattoupdate = await em.findOneOrFail(Seat, { id: seat.id })
-          seattoupdate.status = 'Ocupado';
-        }
-
-        await em.persistAndFlush(tickets);
-
-      } else {
-        throw new Error('Hubo un error al hacer la compra.');
+        //Actualiza el estado del asiento
+        const seattoupdate = await em.findOneOrFail(Seat, { id: seat.id })
+        seattoupdate.status = 'Ocupado';
       }
+
+      await em.persistAndFlush(tickets);
 
       if (req.body.snacks) {
         for (const snackData of req.body.snacks) {
