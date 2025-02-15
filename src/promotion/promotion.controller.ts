@@ -30,7 +30,8 @@ function sanitizePromotionInput(req: Request, res: Response, next: NextFunction)
 
 async function findAll(req: Request, res: Response) {
   try {
-    const promotions = await em.find(Promotion, {}, {populate: ["snacks","cinemas"]});
+    const currentDate = new Date();
+    const promotions = await em.find(Promotion, {promotionFinishDate: { $gte: currentDate }}, {populate: ["snacks","cinemas"]});
     res.status(200).json({ message: 'found all promotions', data: promotions });
   } catch (error: any) {
     res.status(500).json({
@@ -50,7 +51,10 @@ async function findAllByCinema(req: Request, res: Response) {
         error: "Cinema not found"
       })
     } else {
-      const promotions = cinema.promotions.getItems();
+      const currentDate = new Date();
+      const promotions = cinema.promotions.getItems().filter(
+        promotion => promotion.promotionFinishDate >= currentDate
+      )
       if (promotions.length > 0) {
         res.status(200).json({
           data: promotions,
