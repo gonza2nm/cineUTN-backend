@@ -20,7 +20,7 @@ export const userRouter = Router();
  * @swagger
  * tags:
  *   name: Users
- *   description: Usuarios del sistema de cines
+ *   description: Gestiona Usuarios del sistema de cines
 */
 
 /**
@@ -100,7 +100,32 @@ export const userRouter = Router();
  *                   type: string
  *                   example: "Found user"
  *                 data:
- *                   $ref: '#/components/schemas/User'
+ *                   type: object
+ *                   properties:
+ *                     dni:
+ *                       type: string
+ *                       example: "12345678"
+ *                     name:
+ *                       type: string
+ *                       example: "Juan"
+ *                     surname:
+ *                       type: string
+ *                       example: "Perez"
+ *                     email:
+ *                       type: string
+ *                       example: "juan.perez@example.com"
+ *                     password:
+ *                       type: string
+ *                       example: "hashed_password"
+ *                     type:
+ *                       type: string
+ *                       enum:
+ *                         - "user"
+ *                         - "manager"
+ *                       example: "user"
+ *                     cinema:
+ *                       type: integer
+ *                       example: 1
  *       404:
  *         description: Usuario no encontrado.
  *         content:
@@ -219,7 +244,7 @@ userRouter.post('/logout', authMiddleware(['user','manager']), logout);
  *               cinema:
  *                 type: string
  *                 description: Identificador del cine al que el "manager" estará asociado (solo para tipo "manager").
- *                 example: "cinema123"
+ *                 example: "1"
  *     responses:
  *       201:
  *         description: Usuario creado exitosamente. Si el usuario es tipo "manager", puede que no esté asociado a un cine dependiendo de las condiciones.
@@ -338,7 +363,32 @@ userRouter.get('/verify-token-find-data', verifyTokenAndFindData);
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/User'
+ *                     type: object
+ *                     properties:
+ *                      dni:
+ *                        type: string
+ *                        example: "12345678"
+ *                      name:
+ *                        type: string
+ *                        example: "Juan"
+ *                      surname:
+ *                        type: string
+ *                        example: "Perez"
+ *                      email:
+ *                        type: string
+ *                        example: "juan.perez@example.com"
+ *                      password:
+ *                        type: string
+ *                        example: "hashed_password"
+ *                      type:
+ *                        type: string
+ *                        enum:
+ *                          - "user"
+ *                          - "manager"
+ *                        example: "user"
+ *                      cinema:
+ *                        type: integer
+ *                        example: 1
  *       500:
  *         description: Error en el servidor al obtener los managers.
  *         content:
@@ -381,7 +431,32 @@ userRouter.get('/managers', authMiddleware(['manager']), findAllManagers);
  *                   type: string
  *                   example: "manager found"
  *                 data:
- *                   $ref: '#/components/schemas/User'
+ *                     type: object
+ *                     properties:
+ *                      dni:
+ *                        type: string
+ *                        example: "12345678"
+ *                      name:
+ *                        type: string
+ *                        example: "Juan"
+ *                      surname:
+ *                        type: string
+ *                        example: "Perez"
+ *                      email:
+ *                        type: string
+ *                        example: "juan.perez@example.com"
+ *                      password:
+ *                        type: string
+ *                        example: "hashed_password"
+ *                      type:
+ *                        type: string
+ *                        enum:
+ *                          - "user"
+ *                          - "manager"
+ *                        example: "user"
+ *                      cinema:
+ *                        type: integer
+ *                        example: 1
  *       404:
  *         description: El manager no fue encontrado.
  *         content:
@@ -428,7 +503,32 @@ userRouter.get('/managers/:id', authMiddleware(['manager']), sanitizeUserInput, 
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/User'
+ *                      type: object
+ *                      properties:
+ *                          dni:
+ *                            type: string
+ *                            example: "12345678"
+ *                          name:
+ *                            type: string
+ *                            example: "Juan"
+ *                          surname:
+ *                            type: string
+ *                            example: "Perez"
+ *                          email:
+ *                            type: string
+ *                            example: "juan.perez@example.com"
+ *                          password:
+ *                            type: string
+ *                            example: "hashed_password"
+ *                          type:
+ *                            type: string
+ *                            enum:
+ *                              - "user"
+ *                              - "manager"
+ *                            example: "user"
+ *                          cinema:
+ *                            type: integer
+ *                            example: 1
  *       500:
  *         description: Error en el servidor al obtener los usuarios.
  *         content:
@@ -471,7 +571,32 @@ userRouter.get('/', authMiddleware(['manager']), findAll);
  *                   type: string
  *                   example: "found user"
  *                 data:
- *                   $ref: '#/components/schemas/User'
+ *                     type: object
+ *                     properties:
+ *                      dni:
+ *                        type: string
+ *                        example: "12345678"
+ *                      name:
+ *                        type: string
+ *                        example: "Juan"
+ *                      surname:
+ *                        type: string
+ *                        example: "Perez"
+ *                      email:
+ *                        type: string
+ *                        example: "juan.perez@example.com"
+ *                      password:
+ *                        type: string
+ *                        example: "hashed_password"
+ *                      type:
+ *                        type: string
+ *                        enum:
+ *                          - "user"
+ *                          - "manager"
+ *                        example: "user"
+ *                      cinema:
+ *                        type: integer
+ *                        example: 1
  *       404:
  *         description: El usuario no fue encontrado.
  *         content:
@@ -530,7 +655,6 @@ userRouter.get('/:id', sanitizeUserInput, findOne);
  *                     type: string
  *                   cinema:
  *                     type: string
- *                   // Agregar cualquier otro campo relevante para actualizar
  *     responses:
  *       200:
  *         description: Usuario actualizado con éxito.
@@ -543,7 +667,32 @@ userRouter.get('/:id', sanitizeUserInput, findOne);
  *                   type: string
  *                   example: "user updated"
  *                 data:
- *                   $ref: '#/components/schemas/User'
+ *                     type: object
+ *                     properties:
+ *                      dni:
+ *                        type: string
+ *                        example: "12345678"
+ *                      name:
+ *                        type: string
+ *                        example: "Juan"
+ *                      surname:
+ *                        type: string
+ *                        example: "Perez"
+ *                      email:
+ *                        type: string
+ *                        example: "juan.perez@example.com"
+ *                      password:
+ *                        type: string
+ *                        example: "hashed_password"
+ *                      type:
+ *                        type: string
+ *                        enum:
+ *                          - "user"
+ *                          - "manager"
+ *                        example: "user"
+ *                      cinema:
+ *                        type: integer
+ *                        example: 1
  *       400:
  *         description: Error de solicitud incorrecta, como un manager sin asignación de cine.
  *         content:
@@ -628,7 +777,32 @@ userRouter.put('/:id', authMiddleware(), sanitizeUserInput, update);
  *                   type: string
  *                   example: "user updated"
  *                 data:
- *                   $ref: '#/components/schemas/User'
+ *                     type: object
+ *                     properties:
+ *                      dni:
+ *                        type: string
+ *                        example: "12345678"
+ *                      name:
+ *                        type: string
+ *                        example: "Juan"
+ *                      surname:
+ *                        type: string
+ *                        example: "Perez"
+ *                      email:
+ *                        type: string
+ *                        example: "juan.perez@example.com"
+ *                      password:
+ *                        type: string
+ *                        example: "hashed_password"
+ *                      type:
+ *                        type: string
+ *                        enum:
+ *                          - "user"
+ *                          - "manager"
+ *                        example: "user"
+ *                      cinema:
+ *                        type: integer
+ *                        example: 1
  *       400:
  *         description: Error de solicitud incorrecta, como un manager sin asignación de cine.
  *         content:
@@ -694,7 +868,32 @@ userRouter.patch('/:id', authMiddleware(), sanitizeUserInput, update);
  *                   type: string
  *                   example: "User deleted"
  *                 data:
- *                   $ref: '#/components/schemas/User'
+ *                     type: object
+ *                     properties:
+ *                      dni:
+ *                        type: string
+ *                        example: "12345678"
+ *                      name:
+ *                        type: string
+ *                        example: "Juan"
+ *                      surname:
+ *                        type: string
+ *                        example: "Perez"
+ *                      email:
+ *                        type: string
+ *                        example: "juan.perez@example.com"
+ *                      password:
+ *                        type: string
+ *                        example: "hashed_password"
+ *                      type:
+ *                        type: string
+ *                        enum:
+ *                          - "user"
+ *                          - "manager"
+ *                        example: "user"
+ *                      cinema:
+ *                        type: integer
+ *                        example: 1
  *       404:
  *         description: El usuario no fue encontrado.
  *         content:

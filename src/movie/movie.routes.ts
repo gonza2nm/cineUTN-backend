@@ -6,6 +6,13 @@ export const movieRouter = Router()
 
 /**
  * @swagger
+ * tags:
+ *   name: Movies
+ *   description: Gestiona peliculas de los cines
+*/
+
+/**
+ * @swagger
  * components:
  *   schemas:
  *     Movie:

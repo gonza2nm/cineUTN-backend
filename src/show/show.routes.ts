@@ -16,6 +16,13 @@ export const showRouter = Router();
 
 /**
  * @swagger
+ * tags:
+ *   name: Shows
+ *   description: Gestiona Funciones de los cines
+*/
+
+/**
+ * @swagger
  * components:
  *   schemas:
  *     Show:

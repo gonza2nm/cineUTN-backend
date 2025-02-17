@@ -10,6 +10,14 @@ import {
 import { authMiddleware } from '../utils/authMiddleware.js';
 
 export const theaterRouter = Router();
+
+/**
+ * @swagger
+ * tags:
+ *   name: Theaters
+ *   description: Gestiona Salas de los cines
+*/
+
 /**
  * @swagger
  * components:
@@ -61,7 +69,23 @@ export const theaterRouter = Router();
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Theater'
+ *                    type: object
+ *                    properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
+ *                      numChairs:
+ *                        type: integer
+ *                        example: 100
+ *                      cantRows:
+ *                        type: integer
+ *                        example: 10
+ *                      cantCols:
+ *                        type: integer
+ *                        example: 10
+ *                      cinema:
+ *                        type: integer
+ *                        example: 1
  *       500:
  *         description: Error en el servidor al obtener las salas.
  *         content:
@@ -104,7 +128,23 @@ theaterRouter.get('/', findAll);
  *                   type: string
  *                   example: "found theater"
  *                 data:
- *                   $ref: '#/components/schemas/Theater'
+ *                    type: object
+ *                    properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
+ *                      numChairs:
+ *                        type: integer
+ *                        example: 100
+ *                      cantRows:
+ *                        type: integer
+ *                        example: 10
+ *                      cantCols:
+ *                        type: integer
+ *                        example: 10
+ *                      cinema:
+ *                        type: integer
+ *                        example: 1 
  *       404:
  *         description: No se encontró la sala con el ID especificado.
  *         content:
@@ -225,7 +265,23 @@ theaterRouter.post('/', authMiddleware(['manager']), sanitizeTheaterInput, add);
  *                   type: string
  *                   example: "theater updated"
  *                 data:
- *                   $ref: '#/components/schemas/Theater'
+ *                    type: object
+ *                    properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
+ *                      numChairs:
+ *                        type: integer
+ *                        example: 100
+ *                      cantRows:
+ *                        type: integer
+ *                        example: 10
+ *                      cantCols:
+ *                        type: integer
+ *                        example: 10
+ *                      cinema:
+ *                        type: integer
+ *                        example: 1
  *       404:
  *         description: No se encontró la sala con el ID especificado.
  *         content:
@@ -277,6 +333,24 @@ theaterRouter.put('/:id', authMiddleware(['manager']), sanitizeTheaterInput, upd
  *                 message:
  *                   type: string
  *                   example: "theater deleted"
+  *                data:
+ *                    type: object
+ *                    properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
+ *                      numChairs:
+ *                        type: integer
+ *                        example: 100
+ *                      cantRows:
+ *                        type: integer
+ *                        example: 10
+ *                      cantCols:
+ *                        type: integer
+ *                        example: 10
+ *                      cinema:
+ *                        type: integer
+ *                        example: 1
  *       404:
  *         description: No se encontró la sala con el ID especificado.
  *         content:
