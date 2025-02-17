@@ -41,23 +41,23 @@ export const movieRouter = Router()
  *         genres:
  *           type: array
  *           items:
- *             type: string
- *           example: ["Sci-Fi", "Action", "Thriller"]
+ *             $ref: '#/components/schemas/Genre'
  *         cinemas:
  *           type: array
  *           items:
- *             type: string
- *           example: ["Cinema 1", "Cinema 2"]
+ *             $ref: '#/components/schemas/Cinema'
  *         formats:
  *           type: array
  *           items:
- *             type: string
- *           example: ["IMAX", "2D"]
+ *             $ref: '#/components/schemas/Format'
  *         languages:
  *           type: array
  *           items:
- *             type: string
- *           example: ["English", "Spanish"]
+ *             $ref: '#/components/schemas/Language'
+ *         shows:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Show'
  */
 
 /**
@@ -80,7 +80,39 @@ export const movieRouter = Router()
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Movie'
+ *                      type: object
+ *                      properties:
+ *                        id:
+ *                          type: integer
+ *                          example: 1
+ *                        name:
+ *                          type: string
+ *                          example: "Inception"
+ *                        description:
+ *                          type: string
+ *                          example: "A mind-bending thriller that explores the concept of dreams within dreams."
+ *                        imageLink:
+ *                          type: string
+ *                          example: "https://example.com/inception.jpg"
+ *                        duration:
+ *                          type: integer
+ *                          example: 148
+ *                        genres:
+ *                          type: array
+ *                          items:
+ *                            $ref: '#/components/schemas/Genre'
+ *                        cinemas:
+ *                          type: array
+ *                          items:
+ *                            $ref: '#/components/schemas/Cinema'
+ *                        formats:
+ *                          type: array
+ *                          items:
+ *                            $ref: '#/components/schemas/Format'
+ *                        languages:
+ *                          type: array
+ *                          items:
+ *                            $ref: '#/components/schemas/Language'
  *       500:
  *         description: Error en el servidor al obtener las películas.
  *         content:
@@ -116,7 +148,27 @@ movieRouter.get('/', findAll)
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Movie'
+ *                      type: object
+ *                      properties:
+ *                        id:
+ *                          type: integer
+ *                          example: 1
+ *                        name:
+ *                          type: string
+ *                          example: "Inception"
+ *                        description:
+ *                          type: string
+ *                          example: "A mind-bending thriller that explores the concept of dreams within dreams."
+ *                        imageLink:
+ *                          type: string
+ *                          example: "https://example.com/inception.jpg"
+ *                        duration:
+ *                          type: integer
+ *                          example: 148
+ *                        shows:
+ *                          type: array
+ *                          items:
+ *                            $ref: '#/components/schemas/Show'
  *       500:
  *         description: Error en el servidor al obtener las próximas películas.
  *         content:
@@ -159,7 +211,41 @@ movieRouter.get('/next-releases', findNextMoviesReleases) //Cuidado con el orden
  *                   type: string
  *                   example: "movie found"
  *                 data:
- *                   $ref: '#/components/schemas/Movie'
+ *                   type: array
+ *                   items:
+ *                      type: object
+ *                      properties:
+ *                        id:
+ *                          type: integer
+ *                          example: 1
+ *                        name:
+ *                          type: string
+ *                          example: "Inception"
+ *                        description:
+ *                          type: string
+ *                          example: "A mind-bending thriller that explores the concept of dreams within dreams."
+ *                        imageLink:
+ *                          type: string
+ *                          example: "https://example.com/inception.jpg"
+ *                        duration:
+ *                          type: integer
+ *                          example: 148
+ *                        genres:
+ *                          type: array
+ *                          items:
+ *                            $ref: '#/components/schemas/Genre'
+ *                        cinemas:
+ *                          type: array
+ *                          items:
+ *                            $ref: '#/components/schemas/Cinema'
+ *                        formats:
+ *                          type: array
+ *                          items:
+ *                            $ref: '#/components/schemas/Format'
+ *                        languages:
+ *                          type: array
+ *                          items:
+ *                            $ref: '#/components/schemas/Language'
  *       404:
  *         description: Película no encontrada.
  *         content:
@@ -339,7 +425,23 @@ movieRouter.post('/', authMiddleware(['manager']), sanitizeMovieInput, add)
  *                   type: string
  *                   example: "Movie updated"
  *                 data:
- *                   $ref: '#/components/schemas/Movie'
+ *                      type: object
+ *                      properties:
+ *                        id:
+ *                          type: integer
+ *                          example: 1
+ *                        name:
+ *                          type: string
+ *                          example: "Inception"
+ *                        description:
+ *                          type: string
+ *                          example: "A mind-bending thriller that explores the concept of dreams within dreams."
+ *                        imageLink:
+ *                          type: string
+ *                          example: "https://example.com/inception.jpg"
+ *                        duration:
+ *                          type: integer
+ *                          example: 148
  *       500:
  *         description: Error en el servidor al actualizar la película.
  *         content:
@@ -394,7 +496,23 @@ movieRouter.put('/:id', authMiddleware(['manager']), sanitizeMovieInput, update)
  *                   type: string
  *                   example: "Movie updated"
  *                 data:
- *                   $ref: '#/components/schemas/Movie'
+ *                      type: object
+ *                      properties:
+ *                        id:
+ *                          type: integer
+ *                          example: 1
+ *                        name:
+ *                          type: string
+ *                          example: "Inception"
+ *                        description:
+ *                          type: string
+ *                          example: "A mind-bending thriller that explores the concept of dreams within dreams."
+ *                        imageLink:
+ *                          type: string
+ *                          example: "https://example.com/inception.jpg"
+ *                        duration:
+ *                          type: integer
+ *                          example: 148
  *       500:
  *         description: Error en el servidor al actualizar parcialmente la película.
  *         content:
@@ -437,7 +555,27 @@ movieRouter.patch('/:id', authMiddleware(['manager']), sanitizeMovieInput, updat
  *                   type: string
  *                   example: "movie deleted"
  *                 data:
- *                   $ref: '#/components/schemas/Movie'
+ *                      type: object
+ *                      properties:
+ *                        id:
+ *                          type: integer
+ *                          example: 1
+ *                        name:
+ *                          type: string
+ *                          example: "Inception"
+ *                        description:
+ *                          type: string
+ *                          example: "A mind-bending thriller that explores the concept of dreams within dreams."
+ *                        imageLink:
+ *                          type: string
+ *                          example: "https://example.com/inception.jpg"
+ *                        duration:
+ *                          type: integer
+ *                          example: 148
+ *                        shows:
+ *                          type: array
+ *                          items:
+ *                            $ref: '#/components/schemas/Show'
  *       404:
  *         description: Película no encontrada para eliminar.
  *         content:

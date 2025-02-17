@@ -40,29 +40,13 @@ export const showRouter = Router();
  *           format: date-time
  *           example: "2025-03-10T20:00:00.000Z"
  *         theater:
- *           type: object
- *           properties:
- *             id:
- *               type: integer
- *               example: 2
+ *            $ref: '#/components/schemas/Theater' 
  *         movie:
- *           type: object
- *           properties:
- *             id:
- *               type: integer
- *               example: 5
+ *              $ref: '#/components/schemas/Movie' 
  *         format:
- *           type: object
- *           properties:
- *             id:
- *               type: integer
- *               example: 1
+ *                $ref: '#/components/schemas/Format' 
  *         language:
- *           type: object
- *           properties:
- *             id:
- *               type: integer
- *               example: 3
+ *               $ref: '#/components/schemas/Language' 
  *         tickets:
  *           type: array
  *           items: 
@@ -91,7 +75,23 @@ export const showRouter = Router();
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Show'
+ *                      type: object
+ *                      properties:
+ *                        id:
+ *                          type: integer
+ *                          example: 1
+ *                        dayAndTime:
+ *                          type: string
+ *                          format: date-time
+ *                          example: "2025-03-10T18:00:00.000Z"
+ *                        finishTime:
+ *                          type: string
+ *                          format: date-time
+ *                          example: "2025-03-10T20:00:00.000Z"
+ *                        theater:
+ *                          $ref: '#/components/schemas/Theater'
+ *                        movie:
+ *                          $ref: '#/components/schemas/Movie'
  *       500:
  *         description: Error en el servidor al obtener las funciones.
  *         content:
@@ -141,7 +141,27 @@ showRouter.get('/', findAll);
  *                   type: string
  *                   example: "Found show"
  *                 data:
- *                   $ref: '#/components/schemas/Show'
+ *                    type: object
+ *                    properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
+ *                      dayAndTime:
+ *                        type: string
+ *                        format: date-time
+ *                        example: "2025-03-10T18:00:00.000Z"
+ *                      finishTime:
+ *                        type: string
+ *                        format: date-time
+ *                        example: "2025-03-10T20:00:00.000Z"
+ *                      theater:
+ *                          $ref: '#/components/schemas/Theater' 
+ *                      movie:
+ *                            $ref: '#/components/schemas/Movie' 
+ *                      format:
+ *                              $ref: '#/components/schemas/Format' 
+ *                      language:
+ *                            $ref: '#/components/schemas/Language' 
  *       500:
  *         description: Error en el servidor al obtener la función de cine.
  *         content:
@@ -185,7 +205,27 @@ showRouter.get('/:id', findOne);
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Show'
+ *                    type: object
+ *                    properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
+ *                      dayAndTime:
+ *                        type: string
+ *                        format: date-time
+ *                        example: "2025-03-10T18:00:00.000Z"
+ *                      finishTime:
+ *                        type: string
+ *                        format: date-time
+ *                        example: "2025-03-10T20:00:00.000Z"
+ *                      theater:
+ *                          $ref: '#/components/schemas/Theater' 
+ *                      movie:
+ *                            $ref: '#/components/schemas/Movie' 
+ *                      format:
+ *                              $ref: '#/components/schemas/Format' 
+ *                      language:
+ *                            $ref: '#/components/schemas/Language' 
  *       500:
  *         description: Error en el servidor al obtener las funciones del cine.
  *         content:
@@ -236,7 +276,27 @@ showRouter.get('/bycinema/:id',authMiddleware(["user",'manager']), findAllByCine
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Show'
+ *                    type: object
+ *                    properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
+ *                      dayAndTime:
+ *                        type: string
+ *                        format: date-time
+ *                        example: "2025-03-10T18:00:00.000Z"
+ *                      finishTime:
+ *                        type: string
+ *                        format: date-time
+ *                        example: "2025-03-10T20:00:00.000Z"
+ *                      theater:
+ *                          $ref: '#/components/schemas/Theater' 
+ *                      movie:
+ *                            $ref: '#/components/schemas/Movie' 
+ *                      format:
+ *                              $ref: '#/components/schemas/Format' 
+ *                      language:
+ *                            $ref: '#/components/schemas/Language' 
  *       400:
  *         description: Error en los datos enviados.
  *         content:
