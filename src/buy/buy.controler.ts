@@ -21,7 +21,6 @@ function sanitizeBuyInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedBuyInput = {
     user: req.body.user,
     total: req.body.total,
-    status: req.body.status,
   }
   Object.keys(req.body.sanitizedBuyInput).forEach((key) => {
     if (req.body.sanitizedBuyInput[key] === undefined) {

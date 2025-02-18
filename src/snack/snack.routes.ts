@@ -25,20 +25,47 @@ export const snackRouter = Router();
  *       required:
  *         - name
  *         - description
+ *         - urlphoto
  *         - price
  *       properties:
  *         id:
  *           type: integer
- *           example: 1
  *         name:
  *           type: string
- *           example: Pororo caramelizado
  *         description:
  *           type: string
- *           example: Palomitas de maíz cubiertas de caramelo
+ *         urlPhoto:
+ *           type: string
  *         price:
  *           type: integer
- *           example: 1500
+ *         promotions:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               code:
+ *                 type: string
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               promotionStartDate:
+ *                 type: string
+ *                 format: date
+ *               promotionFinishDate:
+ *                 type: string
+ *                 format: date
+ *               price:
+ *                 type: number
+ *         snacksBuy:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: integer
+ *               quantity:
+ *                 type: number
  */
 
 
@@ -63,7 +90,14 @@ export const snackRouter = Router();
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Snack'
-
+ *             example:
+ *               message: found all snacks
+ *               data:
+ *                 - id: 1
+ *                   name: "Pororo caramelizado"
+ *                   description: "Palomitas de maíz cubiertas de caramelo"
+ *                   urlPhoto: "https://imag.bonviveur.com/hamburguesa-clasica.jpg"
+ *                   price: 1500
  *       500:
  *         description: Error al obtener los snacks
  *         content:
@@ -104,9 +138,17 @@ snackRouter.get("/", findAll);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: found snack
  *                 data:
  *                   $ref: '#/components/schemas/Snack'
+ *             example:
+ *               message: found snack
+ *               data:
+ *                 id: 1
+ *                 name: "Pororo caramelizado"
+ *                 description: "Palomitas de maíz cubiertas de caramelo"
+ *                 urlPhoto: "https://imag.bonviveur.com/hamburguesa-clasica.jpg"
+ *                 price: 1500
+ * 
  *       404:
  *         description: Snack no encontrado
  *         content:
@@ -149,21 +191,12 @@ snackRouter.get("/:id", findOne);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - name
- *               - description
- *               - price
- *             properties:
- *               name:
- *                 type: string
- *                 example: Nachos con queso
- *               description:
- *                 type: string
- *                 example: Nachos crujientes con salsa de queso.
- *               price:
- *                 type: number
- *                 example: 1800
+ *             $ref: '#/components/schemas/Snack'
+ *           example:
+ *             name: Pororo caramelizado
+ *             description: Palomitas de maíz cubiertas de caramelo
+ *             urlPhoto: https://imag.bonviveur.com/hamburguesa-clasica.jpg
+ *             price: 1500
  *     responses:
  *       201:
  *         description: Snack creado
@@ -174,22 +207,18 @@ snackRouter.get("/:id", findOne);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Snack created
  *                 data:
- *                   type: object
- *                   properties:
- *                     id: 
- *                       type: string
- *                       example: 2
- *                     name: 
- *                       type: string
- *                       example: Nachos con queso
- *                     description:
- *                       type: string
- *                       example: Nachos crujientes con salsa de queso.
- *                     price:
- *                       type: number
- *                       example: 1800
+ *                   $ref: '#/components/schemas/Snack'
+ *             example:
+ *               message: Snack created
+ *               data:
+ *                 id: 1
+ *                 name: Pororo caramelizado
+ *                 description: Palomitas de maíz cubiertas de caramelo
+ *                 urlPhoto: https://imag.bonviveur.com/hamburguesa-clasica.jpg
+ *                 price: 1500
+ *                 promotions: []
+ *                 snacksBuy: []
  * 
  *       500:
  *         description: Error al crear el snack
@@ -229,10 +258,10 @@ snackRouter.post("/", authMiddleware(['manager']),sanitizeSanckInput, add);
  *           schema: 
  *             $ref: '#/components/schemas/Snack'
  *           example:
- *             name: Pororo clasico
- *             description: Pororos sin caramelo
- *             price: 1200
-
+ *             name: Pororo caramelizado
+ *             description: Palomitas de maíz cubiertas de caramelo
+ *             urlPhoto: https://imag.bonviveur.com/hamburguesa-clasica.jpg
+ *             price: 1500
  *     responses:
  *       200:
  *         description: Snack actualizado
@@ -243,14 +272,16 @@ snackRouter.post("/", authMiddleware(['manager']),sanitizeSanckInput, add);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Snack updated successfully
  *                 data:
  *                   $ref: '#/components/schemas/Snack'
  *             example:
- *               id: 1
- *               name: Pororo clasico
- *               description: Pororos sin caramelo
- *               price: 1200
+ *               message: Snack updated successfully
+ *               data:
+ *                 id: 1
+ *                 name: Pororo caramelizado
+ *                 description: Palomitas de maíz cubiertas de caramelo
+ *                 urlPhoto: https://imag.bonviveur.com/hamburguesa-clasica.jpg
+ *                 price: 1500
  * 
  *       404:
  *         description: Snack no encontrado
@@ -262,8 +293,9 @@ snackRouter.post("/", authMiddleware(['manager']),sanitizeSanckInput, add);
  *                 message:
  *                   type: string
  *                   example: snack not found
- *                 data:
- *                   type: null
+ *                 error:
+ *                   type: string
+ *                   example: Not found
  *               
  *       500:
  *         description: Error al actualizar el snack
@@ -306,7 +338,16 @@ snackRouter.put("/:id", authMiddleware(['manager']),sanitizeSanckInput, update )
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Snack deleted
+ *                 data:
+ *                   type: object
+ *             example:
+ *               message: Snack deleted
+ *               data:
+ *                 id: 1
+ *                 name: Pororo caramelizado
+ *                 description: Palomitas de maíz cubiertas de caramelo
+ *                 urlPhoto: https://imag.bonviveur.com/hamburguesa-clasica.jpg
+ *                 price: 1500
  * 
  *       404:
  *         description: Snack no encontrado
@@ -318,8 +359,9 @@ snackRouter.put("/:id", authMiddleware(['manager']),sanitizeSanckInput, update )
  *                 message:
  *                   type: string
  *                   example: snack not found
- *                 data:
- *                   type: null
+ *                 error:
+ *                   type: string
+ *                   example: Not found
  *               
  *       500:
  *         description: Error al eliminar el snack

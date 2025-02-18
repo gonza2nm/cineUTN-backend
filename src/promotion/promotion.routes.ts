@@ -25,20 +25,61 @@ export const promotionRouter = Router();
  *       required:
  *         - name
  *         - description
+ *         - promotionStartDate 
+ *         - promotionFinishDate 
+ *         - price 
+ *         - cinemas 
+ *         - snacks 
  *       properties:
  *         code:
  *           type: string
- *           example: ABC123
  *         name:
  *           type: string
- *           example: '2x1'
  *         description:
  *           type: string
- *           example: Podes llevar 2 pororos al precio de 1
- *       example:
- *         code: ABC123
- *         name: 2x1
- *         description: Podes llevar 2 pororos al precio de 1
+ *         promotionStartDate:
+ *           type: string
+ *           format: date
+ *         promotionFinishDate:
+ *           type: string
+ *           format: date
+ *         price:
+ *           type: number
+ *         cinemas:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: integer
+ *               name:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *         snacks:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: integer
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               urlPhoto:
+ *                 type: string
+ *               price:
+ *                 type: integer
+ *         promotionsBuy:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: integer
+ *               quantity:
+ *                 type: number
  */
 
 /**
@@ -49,7 +90,7 @@ export const promotionRouter = Router();
  *     tags: [Promotions]
  *     responses:
  *       200:
- *         description: found all promotions
+ *         description: Lista de todas las promociones
  *         content:
  *           application/json:
  *             schema:
@@ -57,7 +98,6 @@ export const promotionRouter = Router();
  *               properties:
  *                 message:
  *                   type: string
- *                   example: found all promotions
  *                 data:
  *                   type: array
  *                   items:
@@ -65,11 +105,24 @@ export const promotionRouter = Router();
  *             example:
  *               message: found all promotions
  *               data:
- *                 - code: ABC123
- *                   description: Podes llevar 2 pororos al precio de 1
- *                   name: 2x1
+ *                 - code: "ABC123"
+ *                   name: "2x1"
+ *                   description: "Podes llevar 2 pororos al precio de 1"
+ *                   promotionStartDate: "2025-02-10"
+ *                   promotionFinishDate: "2025-02-20"
+ *                   price: 2500
+ *                   cinemas:
+ *                     - id: 1
+ *                       name: "Cine UTN"
+ *                       address: "Zeballos 1000, Rosario, Santa Fe"
+ *                   snacks:
+ *                     - id: 1
+ *                       name: "Pororo caramelizado"
+ *                       description: "Palomitas de maíz cubiertas de caramelo"
+ *                       urlPhoto: "https://imag.bonviveur.com/hamburguesa-clasica.jpg"
+ *                       price: 1500
  *       500:
- *         description: An error occurred while finding all the promotions
+ *         description: Error al encontrar las promociones
  *         content:
  *           application/json:
  *             schema:
@@ -101,7 +154,7 @@ promotionRouter.get("/", findAll);
  *         description: ID del cine
  *     responses:
  *       200:
- *         description: This cinema has these promotions
+ *         description: Listado de promociones de un cine
  *         content:
  *           application/json:
  *             schema:
@@ -109,7 +162,6 @@ promotionRouter.get("/", findAll);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: This cinema has these promotions
  *                 data:
  *                   type: array
  *                   items:
@@ -118,10 +170,14 @@ promotionRouter.get("/", findAll);
  *               message: This cinema has these promotions
  *               data:
  *                 - code: ABC123
- *                   description: Podes llevar 2 pororos al precio de 1
  *                   name: 2x1
+ *                   description: Lleva 2 pororos al precio de 1
+ *                   promotionStartDate: 2025-02-20
+ *                   promotionFinishDate: 2025-02-25
+ *                   price: 1500
+
  *       404:
- *         description: Promotions by cinema not found
+ *         description: Promociones no encontradas
  *         content:
  *           application/json:
  *             schema:
@@ -134,7 +190,7 @@ promotionRouter.get("/", findAll);
  *                   type: string
  *                   example: Cinema not found
  *       500:
- *         description: An error ocurred while querying promotions by cinema
+ *         description: Error al encontrar las promociones
  *         content:
  *           application/json:
  *             schema:
@@ -166,7 +222,7 @@ promotionRouter.get("/bycinema/:cid", findAllByCinema);
  *         description: ID de la promocion
  *     responses:
  *       200:
- *         description: found promotion
+ *         description: Promocion encontrada
  *         content:
  *           application/json:
  *             schema:
@@ -174,19 +230,32 @@ promotionRouter.get("/bycinema/:cid", findAllByCinema);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: found promotion
  *                 data:
- *                   type: array
+ *                   type: object
  *                   items:
  *                     $ref: '#/components/schemas/Promotion'
  *             example:
- *               message: found promotion
+ *               message: Found promotion
  *               data:
- *                 - code: ABC123
- *                   description: Podes llevar 2 pororos al precio de 1
- *                   name: 2x1
+ *                 code: ABC123
+ *                 name: 2x1
+ *                 description: Lleva 2 pororos al precio de 1
+ *                 promotionStartDate: 2025-02-20
+ *                 promotionFinishDate: 2025-02-25
+ *                 price: 1500
+ *                 cinemas:
+ *                   - id: 1
+ *                     name: "Cine UTN"
+ *                     address: "Zeballos 1000, Rosario, Santa Fe"
+ *                 snacks:
+ *                   - id: 1
+ *                     name: "Pororo caramelizado"
+ *                     description: "Palomitas de maíz cubiertas de caramelo"
+ *                     urlPhoto: "https://imag.bonviveur.com/hamburguesa-clasica.jpg"
+ *                     price: 1500
+
  *       404:
- *         description: promotion not found
+ *         description: Promocion no encontrada
  *         content:
  *           application/json:
  *             schema:
@@ -198,7 +267,7 @@ promotionRouter.get("/bycinema/:cid", findAllByCinema);
  *                 data:
  *                   type: null
  *       500:
- *         description: An error occurred while finding the promotion
+ *         description: Error al encontrar las promocion
  *         content:
  *           application/json:
  *             schema:
@@ -223,23 +292,32 @@ promotionRouter.get("/:code", findOne);
  *       - cookieAuth: []
  *     requestBody:
  *       required: true
- *       content:
+  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - name
- *               - description
- *             properties:
- *               name:
- *                 type: string
- *                 example: 2x1
- *               description:
- *                 type: string
- *                 example: Lleva 2 gaseosas al precio de 1
+ *             $ref: '#/components/schemas/Promotion'
+ *           example:
+ *             name: "2x1"
+ *             description: "Lleva 2 pororos al precio de 1"
+ *             promotionStartDate: "2025-02-16"
+ *             promotionFinishDate: "2025-02-25"
+ *             price: 1500
+ *             cinemas:
+ *               - id: 1
+ *                 name: ""
+ *                 address: ""
+ *                 theaters: []
+ *                 movies: []
+ *             snacks:
+ *               - id: 6
+ *                 name: ""
+ *                 description: ""
+ *                 urlPhoto: ""
+ *                 price: 0
+ *                 
  *     responses:
  *       201:
- *         description: 'Promotion created'
+ *         description: Promocion creada
  *         content:
  *           application/json:
  *             schema:
@@ -247,17 +325,48 @@ promotionRouter.get("/:code", findOne);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: 'Promotion created'
  *                 data:
  *                   $ref: '#/components/schemas/Promotion'
  *             example:
  *               message: 'Promotion created'
  *               data:
- *                 code: ABC123
+ *                 code: abc123
  *                 name: 2x1
- *                 description: Lleva 2 gaseosas al precio de 1
+ *                 description: Lleva 2 pororos al precio de 1
+ *                 promotionStartDate: 2025-02-16
+ *                 promotionFinishDate: 2025-02-25
+ *                 price: 1500
+ *                 promocionBuy: []
+ *                 cinemas:
+ *                   - id: 1
+ *                     name: ""
+ *                     address: ""
+ *                     theaters: []
+ *                     movies: []
+ *                     events: []
+ *                     managers: []
+ *                     promotions: [abc123]
+ *                 snacks:
+ *                   - id: 6
+ *                     name: ""
+ *                     description: ""
+ *                     urlPhoto: ""
+ *                     price: 0
+ *                     snacksBuy: []
+ *                     promotions: [abc123]
+ *       400:
+ *         description: Problemas con la fecha
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *             example:
+ *               message: La fecha de inicio o de fin no puede ser anterior a la fecha de hoy.
  *       500:
- *         description: An error occurred while adding the promotion
+ *         description: Error al crear la promocion
  *         content:
  *           application/json:
  *             schema:
@@ -268,7 +377,7 @@ promotionRouter.get("/:code", findOne);
  *                   example: An error occurred while adding the promotion
  *                 error:
  *                   type: string
- *                   example: error message
+ *                   example: error.message
  */
 promotionRouter.post("/", authMiddleware(['manager']), sanitizePromotionInput, add);
 
@@ -292,20 +401,28 @@ promotionRouter.post("/", authMiddleware(['manager']), sanitizePromotionInput, a
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - name
- *               - description
- *             properties:
- *               name:
- *                 type: string
- *                 example: 2x1
- *               description:
- *                 type: string
- *                 example: Lleva 2 gaseosas al precio de 1
+ *             $ref: '#/components/schemas/Promotion'
+ *           example:
+ *             name: "2x1"
+ *             description: "Lleva 2 pororos al precio de 1"
+ *             promotionStartDate: "2025-02-16"
+ *             promotionFinishDate: "2025-02-25"
+ *             price: 1500
+ *             cinemas:
+ *               - id: 1
+ *                 name: ""
+ *                 address: ""
+ *                 theaters: []
+ *                 movies: []
+ *             snacks:
+ *               - id: 6
+ *                 name: ""
+ *                 description: ""
+ *                 urlPhoto: ""
+ *                 price: 0
  *     responses:
  *       200:
- *         description: Promotion updated successfully
+ *         description: Promocion actualizada
  *         content:
  *           application/json:
  *             schema:
@@ -313,15 +430,30 @@ promotionRouter.post("/", authMiddleware(['manager']), sanitizePromotionInput, a
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Promotion updated successfully
  *                 data:
  *                   $ref: '#/components/schemas/Promotion'
  *             example:
  *               message: Promotion updated successfully
  *               data:
- *                 code: ABC123 
+ *                 code: ABC123
  *                 name: 2x1
- *                 description: Promotion updated successfully
+ *                 description: Lleva 2 pororos al precio de 1
+ *                 promotionStartDate: 2025-02-20
+ *                 promotionFinishDate: 2025-02-25
+ *                 price: 1500
+ *                 cinemas: [1]
+ *                 snacks: [6]
+ *       400:
+ *         description: Problemas con la fecha
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *             example:
+ *               message: La fecha de inicio o de fin no puede ser anterior a la fecha de hoy.
  *       500:
  *         description: An error occurred while updating the promotion
  *         content:
@@ -356,7 +488,7 @@ promotionRouter.put("/:code", authMiddleware(['manager']), sanitizePromotionInpu
  *         description: ID de la promocion
  *     responses:
  *       200:
- *         description: Promotion deleted
+ *         description: Promocion eliminada
  *         content:
  *           application/json:
  *             schema:
@@ -364,9 +496,30 @@ promotionRouter.put("/:code", authMiddleware(['manager']), sanitizePromotionInpu
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Promotion deleted
+ *                 data:
+ *                   $ref: '#/components/schemas/Promotion'
  *             example:
  *               message: Promotion deleted
+ *               data:
+ *                 code: ABC123
+ *                 name: 2x1
+ *                 description: Lleva 2 pororos al precio de 1
+ *                 promotionStartDate: 2025-02-20
+ *                 promotionFinishDate: 2025-02-25
+ *                 price: 1500
+ *       400:
+ *         description: Promocion no encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message: 
+ *                   type: string
+ *                   example: Promotion not found
+ *                 error:
+ *                   type: string
+ *                   example: Not found
  *       500:
  *         description: An error ocurred while deleting the promotion
  *         content:

@@ -20,9 +20,8 @@ export const buyRouter = Router();
  * @swagger
  * tags:
  *   name: Buys
- *   description: Gestióna la compra de entradas y otros pruductos
+ *   description: Gestióna la compra de entradas y otros productos
  */
-
 
 /**
  * @swagger
@@ -38,21 +37,57 @@ export const buyRouter = Router();
  *       required:
  *         - total
  *         - status
- *         - userId
+ *         - fechaHora
+ *         - user
  *       properties:
  *         id:
  *           type: integer
- *           example: 1
  *         total:
  *           type: number
- *           example: 8500
- *         userId:
- *           type: integer
- *           example: 123
  *         status:
  *           type: string
- *           example: 'Válida'
+ *         fechaHora:
+ *           type: string
+ *           format: date-time
+ *         user:
+ *           type: object
+ *           properties:
+ *             id: 
+ *               type: integer 
+ *             dni: 
+ *               type: string 
+ *             name: 
+ *               type: string 
+ *             surname: 
+ *               type: string 
+ *             email: 
+ *               type: string 
+ *             password: 
+ *               type: string 
+ *             type: 
+ *               type: string 
+ *             cinema: 
+ *               type: integer 
+ *         tickets:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *             id: 
+ *               type: integer 
+ *             show: 
+ *               type: integer 
+ *             buy: 
+ *               type: integer 
+ *             seat: 
+ *               type: integer 
+ *         snacksBuy:
+ *           type: array
+ *         promotionsBuy:
+ *           type: array
+ *
  */
+
 
 
 /**
@@ -63,7 +98,7 @@ export const buyRouter = Router();
  *     tags: [Buys]
  *     responses:
  *       200:
- *         description: Lista de compras encontradas
+ *         description: Listado de todas las compras
  *         content:
  *           application/json:
  *             schema:
@@ -71,11 +106,31 @@ export const buyRouter = Router();
  *               properties:
  *                 message:
  *                   type: string
- *                   example: found all buys
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Buy'
+ *                     $ref: '#/components/schemas/Promotion'
+ *             example:
+ *               message: found all buys
+ *               data:
+ *                 - id: 1
+ *                   total: 9000
+ *                   status: "Válida"
+ *                   fechaHora: "2025-02-10"
+ *                   user:
+ *                     id: 4
+ *                     dni: 4
+ *                     name: "Nombre"
+ *                     surname: "Apellido"
+ *                     email: "ejemplogmail.com"
+ *                     password: "123456"
+ *                     type: "user"
+ *                     cinema: null
+ *                   tickets:
+ *                     - id: 1
+ *                       show: 5
+ *                       buy: 5
+ *                       seat: 6
  *       500:
  *         description: Error al encontrar las compras
  *         content:
@@ -90,8 +145,6 @@ export const buyRouter = Router();
  *                   type: string
  *                   example: error.message
  */
-
-
 buyRouter.get('/', authMiddleware(["manager"]), findAll);
 
 
@@ -99,8 +152,10 @@ buyRouter.get('/', authMiddleware(["manager"]), findAll);
  * @swagger
  * /api/buys/{id}:
  *   get:
- *     summary: Obtiene una compra por su ID
+ *     summary: Obtiene una compra por su id
  *     tags: [Buys]
+ *     security:
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -118,9 +173,118 @@ buyRouter.get('/', authMiddleware(["manager"]), findAll);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: found buy
  *                 data:
- *                   $ref: '#/components/schemas/Buy'
+ *                   type: object
+ *                   items:
+ *                     $ref: '#/components/schemas/Buy'
+ *                     tickets:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id: 
+ *                             type: integer 
+ *                           show: 
+ *                             type: object  
+ *                             properties: 
+ *                               id: 
+ *                                 type: integer 
+ *                               dayAndTime: 
+ *                                 type: string 
+ *                               finishTime: 
+ *                                 type: string 
+ *                               theater: 
+ *                                 type: integer 
+ *                               movie: 
+ *                                 type: object  
+ *                                 properties:  
+ *                                   id:  
+ *                                     type: integer   
+ *                                   name:  
+ *                                     type: string   
+ *                                   description:  
+ *                                     type: string   
+ *                                   imageLink:  
+ *                                     type: string   
+ *                                   duration:  
+ *                                     type: integer   
+ *                               format: 
+ *                                 type: object  
+ *                                 properties:  
+ *                                   id:  
+ *                                     type: integer   
+ *                                   formatName:  
+ *                                     type: string   
+ *                               language: 
+ *                                 type: object  
+ *                                 properties:  
+ *                                   id:  
+ *                                     type: integer   
+ *                                   languageName:  
+ *                                     type: string   
+ *                     seat:
+ *                       type: object
+ *                       properties:
+ *                         id: 
+ *                           type: integer 
+ *                         seatNumber: 
+ *                           type: string 
+ *                         status: 
+ *                           type: string 
+ *                         show: 
+ *                           type: object 
+ * 
+ *             example:
+ *               message: Found buy
+ *               data:
+ *                 - id: 1
+ *                   total: 9000
+ *                   status: "Válida"
+ *                   fechaHora: "2025-02-10"
+ *                   user: 4
+ *                   tickets:
+ *                     - id: 1
+ *                       show: 
+ *                         id: 1 
+ *                         dayAndTime: "2025-02-17T02:00:00.000Z" 
+ *                         finishTime: "2025-02-17T03:30:00.000Z"
+ *                         theater: 1 
+ *                         movie: 
+ *                           id: 1 
+ *                           name: "Nombre peli" 
+ *                           description: "Descripcion de la peli" 
+ *                           imageLink: "Portada" 
+ *                           duration: 90 
+ *                         format: 
+ *                           id: 1 
+ *                           formatName: "formato" 
+ *                         language: 
+ *                           id: 1 
+ *                           languageName: "idioma" 
+ *                       buy: 5
+ *                       seat: 
+ *                         id: 1 
+ *                         seatNumber: "A1" 
+ *                         status: "ocupado"
+ *                         show:
+ *                           id: 1 
+ *                           dayAndTime: "2025-02-17T02:00:00.000Z" 
+ *                           finishTime: "2025-02-17T03:30:00.000Z"
+ *                           theater: 1 
+ *                           movie: 
+ *                             id: 1 
+ *                             name: "Nombre peli" 
+ *                             description: "Descripcion de la peli" 
+ *                             imageLink: "Portada" 
+ *                             duration: 90 
+ *                           format: 
+ *                             id: 1 
+ *                             formatName: "formato" 
+ *                           language: 
+ *                             id: 1 
+ *                             languageName: "idioma"
+ *                   snacksBuy: []
+ *                   promotionsBuy: []
  *       500:
  *         description: Error al encontrar la compra
  *         content:
@@ -136,6 +300,7 @@ buyRouter.get('/', authMiddleware(["manager"]), findAll);
  *                   example: error.message
  */
 buyRouter.get('/:id', authMiddleware(["user", "manager"]), findOne);
+
 
 
 /**
@@ -163,13 +328,37 @@ buyRouter.get('/:id', authMiddleware(["user", "manager"]), findOne);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Found all buys
  *                 data:
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Buy'
+ *             example:
+ *               message: Found all buys
+ *               data:
+ *                 - id: 1
+ *                   total: 9000
+ *                   status: "Válida"
+ *                   fechaHora: "2025-02-10"
+ *                   user: 4
+ *                   tickets:
+ *                     - id: 1
+ *                       show: 
+ *                         id: 1 
+ *                         dayAndTime: "2025-02-17T02:00:00.000Z" 
+ *                         finishTime: "2025-02-17T03:30:00.000Z"
+ *                         theater: 1 
+ *                         movie: 
+ *                           id: 1 
+ *                           name: "Nombre peli" 
+ *                           description: "Descripcion de la peli" 
+ *                           imageLink: "Portada" 
+ *                           duration: 90 
+ *                         format: 1
+ *                         language: 1
+ *                       buy: 5
+ *                       seat: 1 
  *       500:
- *         description: Error al encontrar las compras de un usuario
+ *         description: Error al encontrar las compras
  *         content:
  *           application/json:
  *             schema:
@@ -182,15 +371,15 @@ buyRouter.get('/:id', authMiddleware(["user", "manager"]), findOne);
  *                   type: string
  *                   example: error.message
  */
-
-
 buyRouter.get('/byUser/:id', authMiddleware(["user", "manager"]), findAllpurchasebyUser)
+
+
 
 /**
  * @swagger
  * /api/buys/generateQr/{id}:
  *   get:
- *     summary: Genera un código QR para una compra
+ *     summary: Genera un código QR para una compra específica
  *     tags: [Buys]
  *     security:
  *       - cookieAuth: []
@@ -200,10 +389,10 @@ buyRouter.get('/byUser/:id', authMiddleware(["user", "manager"]), findAllpurchas
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID de la compra
+ *         description: ID de la compra para la cual se generará el código QR
  *     responses:
  *       200:
- *         description: Codigo QR generado
+ *         description: Código QR generado exitosamente
  *         content:
  *           application/json:
  *             schema:
@@ -211,23 +400,10 @@ buyRouter.get('/byUser/:id', authMiddleware(["user", "manager"]), findAllpurchas
  *               properties:
  *                 message:
  *                   type: string
- *                   example: QR code generated successfully
- *                 data:
+ *                   example: 'QR code generated successfully'
+ *                 qrCodeUrl:
  *                   type: string
- *                   example: "QR_CODE_IMAGE_DATA"
- *       500:
- *         description: Error al generar el codigo QR
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: An error occurred while generating QR code
- *                 error:
- *                   type: string
- *                   example: error.message
+ *                   example: 'https://example.com/qrcode/123'
  *       404:
  *         description: Compra no encontrada
  *         content:
@@ -237,18 +413,31 @@ buyRouter.get('/byUser/:id', authMiddleware(["user", "manager"]), findAllpurchas
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Buy not found
+ *                   example: 'Buy not found'
+ *       500:
+ *         description: Error al generar el código QR
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'An error occurred while generating the QR'
+ *                 error:
+ *                   type: string
+ *                   example: 'Error details here'
  */
-
 
 buyRouter.get('/generateQr/:id', authMiddleware(["user", "manager"]), generateQRCodeForBuy)
 //buyRouter.post('/',authMiddleware(["user", "manager"]), sanitizeBuyInput, add);
+
 
 /**
  * @swagger
  * /api/buys:
  *   post:
- *     summary: Crea una nueva compra
+ *     summary: Crea una nueva compra y sus entradas
  *     tags: [Buys]
  *     security:
  *       - cookieAuth: []
@@ -257,29 +446,35 @@ buyRouter.get('/generateQr/:id', authMiddleware(["user", "manager"]), generateQR
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - total
- *               - status
- *               - description
- *               - userId
- *             properties:
- *               total:
- *                 type: number
- *                 example: 9500
- *               userId:
- *                 type: integer
- *                 example: 321
- *               status:
- *                 type: string
- *                 example: 'Válida'
- *               description:
- *                 type: string
- *                 example: 'Compra de entrada'
-
+ *             $ref: '#/components/schemas/Buy'
+ *             show:
+ *               type: integer
+ *             seats:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id: 
+ *                     type: integer 
+ *                   seatNumber: 
+ *                     type: string 
+ *                   status: 
+ *                      type: string 
+ *                   show: 
+ *                      type: integer
+ *           example:
+ *             total: 9000
+ *             fechaHora: "2025-02-10" 
+ *             user: 7 
+ *             show: 25 
+ *             seats: 
+ *               - id: 2
+ *                 seatNumber: A2 
+ *                 status: "Disponible" 
+ *                 show: 25 
  *     responses:
- *       201:
- *         description: Compra creada
+ *       200:
+ *         description: Compra y entradas creadas exitosamente.
  *         content:
  *           application/json:
  *             schema:
@@ -290,15 +485,26 @@ buyRouter.get('/generateQr/:id', authMiddleware(["user", "manager"]), generateQR
  *                 data:
  *                   $ref: '#/components/schemas/Buy'
  *             example:
- *               message: Buy created successfully
+ *               message: "Buy and Tickets created"
  *               data:
- *                 id: 2
- *                 total: 9500
- *                 userId: 321
- *                 status: 'Válida'
- *                 example: 'Compra de entrada'
+ *                 id: 1
+ *                 fechaHora: "2025-02-18T21:49:04.202Z"
+ *                 status: "Válida"
+ *                 total: 9000
+ *                 user: 7
+ *                 tickets:
+ *                   - id: 1
+ *                     show: 25
+ *                     buy: 1
+ *                     seats: 
+ *                       id: 1 
+ *                       seatNumber: A1 
+ *                       status: "Ocupado" 
+ *                       show: 25 
+ *                 snacksBuy: []
+ *                 promotionsBuy: []
  *       500:
- *         description: Error al crear la compra
+ *         description: Error interno al crear la compra y las entradas.
  *         content:
  *           application/json:
  *             schema:
@@ -306,19 +512,21 @@ buyRouter.get('/generateQr/:id', authMiddleware(["user", "manager"]), generateQR
  *               properties:
  *                 message:
  *                   type: string
- *                   example: An error occurred while creating the buy
+ *                   example: "Error al crear la compra y las entradas"
  *                 error:
  *                   type: string
- *                   example: error message
+ *                   example: "Internal Server Error"
  */
 
 buyRouter.post('/',authMiddleware(["user", "manager"]), sanitizeBuyInput, sanitizeTicketInput,  addPurchase);
+
+
 
 /**
  * @swagger
  * /api/buys/validateQr:
  *   post:
- *     summary: Valida un código QR de compra
+ *     summary: Valida un código QR asociado a una compra.
  *     tags: [Buys]
  *     security:
  *       - cookieAuth: []
@@ -328,15 +536,15 @@ buyRouter.post('/',authMiddleware(["user", "manager"]), sanitizeBuyInput, saniti
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - qrCode
  *             properties:
- *               qrCode:
+ *               token:
  *                 type: string
- *                 example: "QR_CODE_IMAGE_DATA"
+ *                 description: Token JWT generado para la compra (incluye el `buyId`).
+ *             example:
+ *               token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJidXlJZCI6MjUsImlhdCI6MTY4MDA4ODAwMH0.4Q9c7GHE2BkL6b5sVpyyEmuT-7EqxYw8gOKx8C24IoQ"
  *     responses:
  *       200:
- *         description: Valida el codigo QR
+ *         description: QR válido.
  *         content:
  *           application/json:
  *             schema:
@@ -344,9 +552,77 @@ buyRouter.post('/',authMiddleware(["user", "manager"]), sanitizeBuyInput, saniti
  *               properties:
  *                 message:
  *                   type: string
- *                   example: QR code validated successfully
- *       500:
- *         description: Error al validad eL codigo QR
+ *                   example: "QR is valid."
+ *                 data:
+ *                   type: object
+ *                   description: Datos completos de la compra.
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 25
+ *                     status:
+ *                       type: string
+ *                       example: "válida"
+ *                     tickets:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                             example: 1
+ *                           show:
+ *                             type: object
+ *                             properties:
+ *                               id:
+ *                                 type: integer
+ *                                 example: 20
+ *                               movie:
+ *                                 type: object
+ *                                 properties:
+ *                                   name:
+ *                                     type: string
+ *                                     example: "Avengers: Endgame"
+ *                               theater:
+ *                                 type: object
+ *                                 properties:
+ *                                   name:
+ *                                     type: string
+ *                                     example: "Sala 1"
+ *                                   cinema:
+ *                                     type: object
+ *                                     properties:
+ *                                       name:
+ *                                         type: string
+ *                                         example: "Cinepolis"
+ *                     snacksBuy:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           snack:
+ *                             type: object
+ *                             properties:
+ *                               name:
+ *                                 type: string
+ *                                 example: "Popcorn"
+ *                           quantity:
+ *                             type: integer
+ *                             example: 2
+ *                     promotionsBuy:
+ *                       type: array
+ *                       description: Lista de promociones compradas.
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           promotion:
+ *                             type: object
+ *                             properties:
+ *                               name:
+ *                                 type: string
+ *                                 example: "2x1 Nachos"
+ *       400:
+ *         description: Token inválido o expirado.
  *         content:
  *           application/json:
  *             schema:
@@ -354,20 +630,40 @@ buyRouter.post('/',authMiddleware(["user", "manager"]), sanitizeBuyInput, saniti
  *               properties:
  *                 message:
  *                   type: string
- *                   example: An error occurred while validating the QR code
+ *                   example: "Invalid or expired token."
  *                 error:
  *                   type: string
- *                   example: error message
+ *                   example: "jwt expired"
+ *       404:
+ *         description: Compra no encontrada.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Buy not found."
+ *       500:
+ *         description: Error del servidor (clave secreta no configurada).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "QR secret key is not configured in the environment."
  */
 
-
 buyRouter.post('/validateQr', authMiddleware(["manager"]), validateQRCode) //post para poder enviar datos en el body de la solicitud
+
 
 /**
  * @swagger
  * /api/buys/{id}:
  *   patch:
- *     summary: Actualiza una compra por su ID
+ *     summary: Actualiza una compra existente.
  *     tags: [Buys]
  *     security:
  *       - cookieAuth: []
@@ -377,22 +673,19 @@ buyRouter.post('/validateQr', authMiddleware(["manager"]), validateQRCode) //pos
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID de la compra
+ *           description: ID de la compra que se desea actualizar.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - status
- *             properties:
- *               status:
- *                 type: string
- *                 example: 'Cancelada'
+ *             $ref: '#/components/schemas/Buy'
+ *           example:
+ *             status: "Cancelada"
+ *             
  *     responses:
  *       200:
- *         description: Compra actualizada
+ *         description: Compra actualizada.
  *         content:
  *           application/json:
  *             schema:
@@ -403,29 +696,34 @@ buyRouter.post('/validateQr', authMiddleware(["manager"]), validateQRCode) //pos
  *                 data:
  *                   $ref: '#/components/schemas/Buy'
  *             example:
- *               message: Buy updated
- *               data:
+ *               message: "Buy updated"
+ *               data: 
  *                 id: 1
- *                 status: 'Cancelada'
+ *                 total: 9000
+ *                 status: "Válida"
+ *                 fechaHora: "2025-01-19T02:33:33.000Z"
+ *                 user: 4
  *       500:
- *         description: Error al actualizar la compra
+ *         description: Error al actualizar la compra.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 error:
+ *                 message:
  *                   type: string
- *                   example: error.message
+ *                   example: "An unexpected error occurred."
  */
 
 buyRouter.patch('/:id',authMiddleware(["user", "manager"]), sanitizeBuyInput, update); //REVISAR
+
+
 
 /**
  * @swagger
  * /api/buys/{id}:
  *   delete:
- *     summary: Elimina una compra
+ *     summary: Elimina una compra existente.
  *     tags: [Buys]
  *     security:
  *       - cookieAuth: []
@@ -435,10 +733,10 @@ buyRouter.patch('/:id',authMiddleware(["user", "manager"]), sanitizeBuyInput, up
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID de la compra
+ *           description: ID de la compra que se desea eliminar.
  *     responses:
  *       200:
- *         description: Compra eliminada
+ *         description: Compra eliminada.
  *         content:
  *           application/json:
  *             schema:
@@ -446,9 +744,18 @@ buyRouter.patch('/:id',authMiddleware(["user", "manager"]), sanitizeBuyInput, up
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Buy deleted successfully
+ *                 data:
+ *                   $ref: '#/components/schemas/Buy'
+ *             example:
+ *               message: "Buy deleted"
+ *               data:
+ *                 id: 1
+ *                 total: 9000
+ *                 status: "Válida"
+ *                 fechaHora: "2025-01-19T02:33:33.000Z"
+ *                 user: 4
  *       404:
- *         description: Compra no encontrada
+ *         description: La compra no fue encontrada para su eliminación.
  *         content:
  *           application/json:
  *             schema:
@@ -456,9 +763,9 @@ buyRouter.patch('/:id',authMiddleware(["user", "manager"]), sanitizeBuyInput, up
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Buy not found for deletion.
+ *                   example: "Buy not found for deletion."
  *       500:
- *         description: Error al eliminar la compra
+ *         description: Error interno al intentar eliminar la compra.
  *         content:
  *           application/json:
  *             schema:
@@ -466,10 +773,9 @@ buyRouter.patch('/:id',authMiddleware(["user", "manager"]), sanitizeBuyInput, up
  *               properties:
  *                 message:
  *                   type: string
- *                   example: An error occurred while deleting the purchase
+ *                   example: "An error occurred while deleting the buy."
  *                 error:
  *                   type: string
- *                   example: error message
- */ 
-
+ *                   example: "Internal Server Error"
+ */
 buyRouter.delete('/:id',authMiddleware(["user", "manager"]), remove);

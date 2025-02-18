@@ -36,7 +36,7 @@ async function findAllTicketbyPurchase(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
     const tickets = await em.find(Ticket, { buy: id }, { populate: ['show', 'show.movie', 'show.theater', 'show.format', 'show.language', 'seat', 'buy']});
-    res.status(200).json({ message: 'ticket found', data: tickets });
+    res.status(200).json({ message: 'tickets found', data: tickets });
   } catch (error: any) {
     res.status(500).json({
       message: 'An error occurred while finding the ticket',

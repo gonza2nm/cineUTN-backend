@@ -30,15 +30,72 @@ export const ticketRouter = Router();
  *       properties:
  *         id:
  *           type: integer
- *           example: 1
  *         show:
- *           type: number
- *           example: 15
+ *           type: object
+ *           properties:
+ *             id:
+ *               type: integer
+ *             dayAndTime:
+ *               type: string
+ *             finishTime:
+ *               type: string
+ *             theater:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 cantChairs:
+ *                   type: integer
+ *                 cantRows:
+ *                   type: integer
+ *                 cantCols:
+ *                   type: integer
+ *                 cinema:
+ *                   type: integer
+ *             movie:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 name:
+ *                   type: string
+ *                 description:
+ *                   type: string
+ *                 imagenLink:
+ *                   type: string
+ *                 duration:
+ *                   type: integer
+ *             format:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 formatName:
+ *                   type: string
+ *             language:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 languageName:
+ *                   type: string
  *         buy:
+ *           type: object
+ *           properties:
+ *             id:
+ *               type: integer
+ *             total:
+ *               type: integer
+ *             status:
+ *               type: string
+ *             fechaHora:
+ *               type: string
+ *             user:
+ *               type: integer
+ *         seat:
  *           type: integer
- *           example: 10
- */
 
+ */
 
 
 /**
@@ -57,11 +114,29 @@ export const ticketRouter = Router();
  *               properties:
  *                 message:
  *                   type: string
- *                   example: found all tickets
  *                 data:
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Ticket'
+ *             example:
+ *               message: found all tickets
+ *               data:
+ *                - id: 1
+ *                  show:
+ *                    id: 5
+ *                    dayAndTime: "2024-11-11T01:07:00.000Z"
+ *                    finishTime: "2024-11-11T02:07:00.000Z"
+ *                    theater: 2
+ *                    movie: 5
+ *                    format: 1
+ *                    language: 2
+ *                  buy:
+ *                    id: 10
+ *                    total: 9000
+ *                    status: "Válida"
+ *                    fechaHora: "2024-11-08T14:42:25.000Z"
+ *                    user: 4
+ *                  seat: 5
  *       500:
  *         description: Error al encotrar las entradas
  *         content:
@@ -106,11 +181,24 @@ ticketRouter.get('/', authMiddleware(["manager"]), findAll)
  *                 data:
  *                   $ref: '#/components/schemas/Ticket'
  *             example:
- *               message: ticket found
+ *               message: Ticket found
  *               data:
- *                   id: 1
- *                   show: 15
- *                   buy: 10
+ *                id: 1
+ *                show:
+ *                  id: 5
+ *                  dayAndTime: "2024-11-11T01:07:00.000Z"
+ *                  finishTime: "2024-11-11T02:07:00.000Z"
+ *                  theater: 2
+ *                  movie: 5
+ *                  format: 1
+ *                  language: 2
+ *                buy:
+ *                  id: 10
+ *                  total: 9000
+ *                  status: "Válida"
+ *                  fechaHora: "2024-11-08T14:42:25.000Z"
+ *                  user: 4
+ *                seat: 5
  *       500:
  *         description: Error al encontrar las entradas
  *         content:
@@ -158,11 +246,38 @@ ticketRouter.get('/:id', authMiddleware(["user", "manager"]), findOne)
  *                   items:
  *                     $ref: '#/components/schemas/Ticket'
  *             example:
- *               message: Found tickets
+ *               message: Found all tickets
  *               data:
  *                 - id: 1
- *                   total: 15
- *                   userId: 10
+ *                   show:
+ *                     id: 5
+ *                     dayAndTime: "2024-11-11T01:07:00.000Z"
+ *                     finishTime: "2024-11-11T02:07:00.000Z"
+ *                     theater: 
+ *                       id: 1 
+ *                       numChairs: 75
+ *                       cantRows: 8 
+ *                       cantCols: 7 
+ *                       cinema: 1 
+ *                     movie: 
+ *                       id: 3
+ *                       name: "A Silent Voice: The Movie"
+ *                       description: "Acá va la decripcion de la pelicula"
+ *                       imageLink: "Aca la portada de la pelicula"
+ *                       duration: 90
+ *                     format:
+ *                       id: 1
+ *                       formatName: 2D
+ *                     language:
+ *                       id: 1
+ *                       languageName: "2"
+ *                   buy:
+ *                     id: 10
+ *                     total: 9000
+ *                     status: "Válida"
+ *                     fechaHora: "2024-11-08T14:42:25.000Z"
+ *                     user: 4
+ *                   seat: 5
  *       500:
  *         description: Error al encontrar las entradas
  *         content:
@@ -192,17 +307,10 @@ ticketRouter.get('/byBuy/:id', authMiddleware(["user", "manager"]), findAllTicke
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - buy
- *               - show
- *             properties:
- *               buy:
- *                 type: integer
- *                 example: 10
- *               show:
- *                 type: string
- *                 example: '15'
+ *             $ref: '#/components/schemas/Ticket'
+ *           example:
+ *             buy: 20
+ *             show: 25
  *     responses:
  *       201:
  *         description: Ticket creado
@@ -219,8 +327,8 @@ ticketRouter.get('/byBuy/:id', authMiddleware(["user", "manager"]), findAllTicke
  *               message: Ticket created
  *               data:
  *                 id: 2
- *                 show: 15
- *                 buy: 10
+ *                 show: 20
+ *                 buy: 25
  *       500:
  *         description: Error al crear el ticket
  *         content:
@@ -240,7 +348,7 @@ ticketRouter.post('/', authMiddleware(["user", "manager"]), sanitizeTicketInput,
 /**
  * @swagger
  * /api/tickets/{id}:
- *   patch:
+ *   put:
  *     summary: Actualiza un ticket por su ID
  *     tags: [Tickets]
  *     security:
@@ -257,13 +365,10 @@ ticketRouter.post('/', authMiddleware(["user", "manager"]), sanitizeTicketInput,
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - show
- *             properties:
- *               show:
- *                 type: string
- *                 example: 16
+ *             $ref: '#/components/schemas/Ticket'
+ *           example:
+ *             buy: 20
+ *             show: 26
  *     responses:
  *       200:
  *         description: Ticket actualizado
@@ -274,14 +379,15 @@ ticketRouter.post('/', authMiddleware(["user", "manager"]), sanitizeTicketInput,
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Ticket updated
  *                 data:
  *                   $ref: '#/components/schemas/Ticket'
  *             example:
  *               message: Ticket updated
  *               data:
  *                 id: 1
- *                 show: 16
+ *                 show: 20
+ *                 buy: 26
+ *                 seat: 20
  *       500:
  *         description: Error al actualizar el ticket
  *         content:
@@ -315,7 +421,7 @@ ticketRouter.put('/:id', sanitizeTicketInput, update)
  *         description: ID de la compra
  *     responses:
  *       200:
- *         description: Tickets deleted
+ *         description: Tickets eliminados
  *         content:
  *           application/json:
  *             schema:
@@ -323,9 +429,13 @@ ticketRouter.put('/:id', sanitizeTicketInput, update)
  *               properties:
  *                 message:
  *                   type: string
- *                   example: All tickets deleted
+ *                 data:
+ *                   $ref: '#/components/schemas/Ticket'
+ *             example:
+ *               message: All tickets deleted
+ *                   
  *       404:
- *         description: Tickets not found for deletion.
+ *         description: Tickets no encontrados
  *         content:
  *           application/json:
  *             schema:
@@ -335,7 +445,7 @@ ticketRouter.put('/:id', sanitizeTicketInput, update)
  *                   type: string
  *                   example: Tickets not found for deletion.
  *       500:
- *         description: An error occurred while finding the ticket
+ *         description: Error al encontrar los tickets
  *         content:
  *           application/json:
  *             schema:
@@ -368,7 +478,7 @@ ticketRouter.delete('/byBuy/:id', authMiddleware(["user", "manager"]), removeAll
  *         description: ID de la compra
  *     responses:
  *       200:
- *         description: Ticket deleted
+ *         description: Ticket eliminado
  *         content:
  *           application/json:
  *             schema:
@@ -376,9 +486,17 @@ ticketRouter.delete('/byBuy/:id', authMiddleware(["user", "manager"]), removeAll
  *               properties:
  *                 message:
  *                   type: string
- *                   example: All tickets deleted
+ *                 data:
+ *                   $ref: '#/components/schemas/Ticket'
+ *             example:
+ *               message: Ticket deleted
+ *               data:
+ *                 id: 1
+ *                 show: 20
+ *                 buy: 26
+ *                 seat: 20
  *       404:
- *         description: Tickets not found for deletion.
+ *         description: Ticket no encontrado
  *         content:
  *           application/json:
  *             schema:
@@ -388,7 +506,7 @@ ticketRouter.delete('/byBuy/:id', authMiddleware(["user", "manager"]), removeAll
  *                   type: string
  *                   example: Tickets not found for deletion.
  *       500:
- *         description: An error occurred while finding the ticket
+ *         description: Error al buscar el ticket
  *         content:
  *           application/json:
  *             schema:

@@ -16,8 +16,8 @@ Content-Type: application/json
   "description": "Descuento del 25% en todos los cines durante el mes de enero.",
   "promotionStartDate": "2025-01-01 00:00:00",
   "promotionFinishDate": "2025-01-31 23:59:59",
-  "discount": 25,
-  "snacks":[1,2],
+  "price": 25,
+  "snacks":[1],
   "cinemas": [1]
 }
 
