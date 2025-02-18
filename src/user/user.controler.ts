@@ -182,7 +182,7 @@ async function login(req: Request, res: Response) {
           { expiresIn: process.env.JWT_EXPIRESIN }
         );
         //produccion
-        /*
+        ///*
         res.cookie("authToken", token, {
           httpOnly: true,
           secure: true,
@@ -190,16 +190,16 @@ async function login(req: Request, res: Response) {
           maxAge: 1000 * 60 * 60,
           partitioned: true
         })
-        */
+        //*/
         //desarrollo
-        ///*
+        /*
         res.cookie("authToken", token, {
           httpOnly: true,
           secure: true,
           sameSite: 'lax',
           maxAge: 1000 * 60 * 60,
         })
-        //*/
+        */
         res.status(200).json({ message: 'Found user', data: user, });
       } else {
         res.status(401).json({ message: "Email o contraseña incorrecta", error: "Credenciales incorrectas" });
@@ -216,7 +216,7 @@ async function login(req: Request, res: Response) {
 async function logout(req: Request, res: Response) {
   try {
     //produccion
-    /*
+    ///*
     res.cookie('authToken', '', {
       httpOnly: true,
       secure: true,
@@ -224,16 +224,16 @@ async function logout(req: Request, res: Response) {
       maxAge: 0,
       partitioned: true
     });
-    */
+    //*/
     //desarrollo
-    ///*
+    /*
     res.cookie('authToken', '', {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
       maxAge: 0,
     });
-    //*/
+    */
     res.status(200).json({ message: 'Logout exitoso' });
   } catch (error: any) {
     res.status(500).json({
@@ -269,21 +269,5 @@ async function verifyTokenAndFindData(req: Request, res: Response) {
   }
 }
 
-async function verifyToken(req: Request, res: Response) {
-  try {
-    const token = req.cookies.authToken;
-    if (!token) {
-      return res.status(401).json({ message: 'No token provided', });
-    }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number; role: string };
-    res.status(200).json({ id: decoded.id, role: decoded.role });
-  } catch (error: any) {
-    res.status(500).json({
-      message: 'An error occurred while querying the user',
-      error: error.message,
-    });
-  }
-}
 
-
-export { sanitizeUserInput, findAll, findAllManagers, verifyToken, verifyTokenAndFindData, findOneManager, add, update, remove, login, logout, findOne };
+export { sanitizeUserInput, findAll, findAllManagers, verifyTokenAndFindData, findOneManager, add, update, remove, login, logout, findOne };
