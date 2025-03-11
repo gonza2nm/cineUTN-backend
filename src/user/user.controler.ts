@@ -16,7 +16,7 @@ function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
     surname: req.body.surname,
     email: req.body.email,
     password: req.body.password,
-    type: req.body.ttype,
+    type: req.body.type,
     cinema: req.body.cinema,
     buys: req.body.buys
   };
